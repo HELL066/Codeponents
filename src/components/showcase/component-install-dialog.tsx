@@ -87,8 +87,10 @@ export function ComponentInstallDialog({
       <DialogContent className="w-[min(42rem,calc(100vw-1.5rem))] max-w-none gap-0 p-0">
         <div className="grid gap-5 p-5 sm:gap-6 sm:p-7">
           <DialogHeader className="gap-1.5">
-            <DialogTitle>Add to your project</DialogTitle>
-            <DialogDescription className="text-base leading-6 font-medium text-code-muted not-italic sm:text-[1.0625rem]">
+            <DialogTitle className="font-heading text-code-section leading-[1.12] font-normal tracking-[-0.015em]">
+              Add to your project
+            </DialogTitle>
+            <DialogDescription className="mt-1 max-w-[56ch] text-code-body leading-6 font-normal text-code-muted not-italic">
               Copy editable components into a React and Tailwind CSS 4 project.
             </DialogDescription>
           </DialogHeader>

@@ -31,8 +31,12 @@ export function FoundationSpecimen({ entryId }: { entryId: string }) {
     return (
       <div className="foundation-type">
         <h2>Project overview</h2>
-        <p>Recent work, gathered in one clear view</p>
-        <span>Unna · Source Sans 3</span>
+        <p>Recent work and updates, gathered in one clear view</p>
+        <div className="foundation-type__section">
+          <h3>Recent activity</h3>
+          <p>Interface copy stays readable and easy to scan</p>
+        </div>
+        <span>Unna 400 · Source Sans 3 400–700</span>
       </div>
     )
   }
@@ -59,7 +63,34 @@ export function getFoundationSnippet(entryId: string) {
   }
 
   if (entryId === "type") {
-    return `h1, h2 {\n  font-family: var(--font-heading);\n  font-weight: 400;\n  text-wrap: balance;\n}\n\nbody, button, input {\n  font-family: var(--font-sans);\n}`
+    return `:root {
+  --font-sans: "Source Sans 3 Variable", sans-serif;
+  --font-heading: "Unna", Georgia, serif;
+  --code-type-page: clamp(2rem, 3.2vw, 2.75rem);
+  --code-type-section: clamp(1.5rem, 2.2vw, 1.75rem);
+}
+
+h1, h2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--code-type-page);
+  line-height: 1.08;
+}
+
+h2 {
+  font-size: var(--code-type-section);
+  line-height: 1.1;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+}`
   }
 
   if (entryId === "layout") {

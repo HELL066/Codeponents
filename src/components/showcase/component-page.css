@@ -14,19 +14,19 @@
   margin: 0;
   color: var(--library-accent);
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: clamp(34px, 3.2vw, 40px);
+  font-size: var(--library-type-page, clamp(2rem, 3.2vw, 2.75rem));
   font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 1.16;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
   text-wrap: balance;
 }
 
 .library-component-detail__header p {
   max-width: 58ch;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   color: var(--library-muted);
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: var(--library-type-body, 1rem);
+  line-height: 1.5;
   text-wrap: pretty;
 }
 
@@ -335,8 +335,8 @@
   }
 
   .library-component-detail__header p {
-    margin-top: 8px;
-    font-size: 13px;
+    margin-top: 10px;
+    font-size: var(--library-type-ui, 0.875rem);
   }
 
   .library-component-detail .library-component-detail__stage {

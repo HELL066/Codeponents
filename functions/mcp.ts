@@ -43,8 +43,27 @@ const designGuidance = {
         "Use the provided Ateneo CODE asset on a dark surface. Do not redraw, approximate, or recolor the logo.",
     },
     typography: {
-      interface: "Source Sans 3 Variable",
-      display: "Unna",
+      interface: {
+        family: "Source Sans 3 Variable",
+        weights: [400, 600, 700],
+      },
+      display: {
+        family: "Unna",
+        headingWeight: 400,
+        availableWeights: [400, 700],
+        availableStyles: ["normal", "italic"],
+      },
+      sizeRoles: [
+        "--code-type-display",
+        "--code-type-page",
+        "--code-type-section",
+        "--code-type-group",
+        "--code-type-body",
+        "--code-type-ui",
+        "--code-type-meta",
+      ],
+      usage:
+        "Use size and spacing to establish hierarchy before increasing font weight. Use Unna for display, page, section, and group headings; use Source Sans 3 for body copy, controls, and metadata.",
     },
     light: {
       canvas: "#f5f5f6",
