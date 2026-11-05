@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { TextMorph } from "torph/react"
 import { Button } from "@/components/ui/button"
+import { EventListItem } from "@/components/ui/event-list-item"
 import { cn } from "@/lib/utils"
 
 export type EventCalendarTone = "accent" | "positive" | "warning" | "neutral"
@@ -684,27 +685,17 @@ function EventsCalendar({
               <ol className="divide-y divide-code-line/25">
                 {activeDayEvents.map((event) => (
                   <li key={event.id}>
-                    <button
-                      type="button"
-                      onClick={() => handleEventSelect(event)}
-                      className="grid min-h-12 w-full grid-cols-[max-content_minmax(0,1fr)] items-start gap-2 rounded-sm px-1.5 py-2 text-left transition-colors hover:bg-code-canvas/60 focus-visible:ring-2 focus-visible:ring-code-ring/55 focus-visible:outline-none focus-visible:ring-inset @sm:gap-3 @sm:px-2"
-                    >
-                      <span className="text-xs leading-5 font-medium whitespace-nowrap text-code-muted tabular-nums">
-                        {eventTimeRange(event)}
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm leading-5 font-medium text-code-ink">
-                          {event.title}
-                        </span>
-                        {event.category || event.location ? (
-                          <span className="mt-0.5 block truncate text-xs text-code-muted">
-                            {[event.category, event.location]
-                              .filter(Boolean)
-                              .join(" · ")}
-                          </span>
-                        ) : null}
-                      </span>
-                    </button>
+                    <EventListItem
+                      allDay={event.allDay}
+                      category={event.category}
+                      className="hover:bg-code-canvas/60"
+                      end={event.end}
+                      locale={locale}
+                      onSelect={() => handleEventSelect(event)}
+                      start={event.start}
+                      title={event.title}
+                      location={event.location}
+                    />
                   </li>
                 ))}
               </ol>

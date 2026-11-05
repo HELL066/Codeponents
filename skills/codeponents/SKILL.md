@@ -62,8 +62,9 @@ The server exposes the Codeponents skill, component search, component metadata a
 
 ## Current foundations
 
-- Interface type: Source Sans 3 Variable
-- Display type: Unna
+- Interface type: Source Sans 3 Variable, weights 400–700
+- Heading type: Unna 700, with 400 and italic faces available
+- Type roles: `text-code-display`, `text-code-page`, `text-code-section`, `text-code-group`, `text-code-body`, `text-code-ui`, and `text-code-meta`
 - Theme stylesheet: `@/components/ui/codeponents-theme.css`
 - Public registry: `https://codeponents.pages.dev/r/v1`
 - MCP endpoint: `https://codeponents.pages.dev/mcp`

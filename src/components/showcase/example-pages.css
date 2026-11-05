@@ -16,10 +16,10 @@
   margin: 0;
   color: var(--library-accent);
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: clamp(34px, 3.2vw, 42px);
+  font-size: var(--library-type-page, clamp(2rem, 3.2vw, 2.75rem));
   font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 1.12;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
   text-wrap: balance;
 }
 
@@ -31,7 +31,9 @@
 .example-pages__heading p {
   margin: 8px 0 0;
   color: var(--library-muted);
-  font-size: 14px;
+  font-size: var(--library-type-body, 1rem);
+  line-height: 1.5;
+  text-wrap: pretty;
 }
 
 .example-pages__frame {
@@ -166,10 +168,11 @@
   margin: 0;
   color: var(--library-ink);
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: clamp(23px, 2.5vw, 29px);
+  font-size: var(--library-type-section, clamp(1.5rem, 2.2vw, 1.75rem));
   font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.08;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  text-wrap: balance;
 }
 
 .example-pages__screen-heading p {
@@ -201,9 +204,12 @@
 
 .example-pages__project-header [data-slot="card-title"] {
   margin: 0;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-family: var(--font-heading, "Unna", Georgia, serif);
+  font-size: var(--library-type-group, 1.25rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
 .example-pages__project-header p,
@@ -312,9 +318,12 @@
 .example-pages__section-heading h3 {
   margin: 0;
   color: var(--library-ink);
-  font-size: 15px;
-  font-weight: 600;
+  font-family: var(--font-heading, "Unna", Georgia, serif);
+  font-size: var(--library-type-group, 1.25rem);
+  font-weight: 400;
   letter-spacing: -0.01em;
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
 .example-pages__section-heading > span {
@@ -390,6 +399,14 @@
 
 .example-pages__activity-chart {
   max-width: none;
+}
+
+.example-pages__activity-chart [data-slot="card-title"] {
+  font-family: var(--font-heading, "Unna", Georgia, serif);
+  font-size: var(--library-type-group, 1.25rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
 }
 
 .example-pages__profile-card {

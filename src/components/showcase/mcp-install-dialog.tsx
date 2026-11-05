@@ -29,8 +29,10 @@ export function McpInstallDialog({ trigger }: { trigger: ReactNode }) {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-w-[36rem]">
         <DialogHeader>
-          <DialogTitle>Connect Codeponents</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="font-heading text-code-section leading-[1.12] font-normal tracking-[-0.015em]">
+            Connect Codeponents
+          </DialogTitle>
+          <DialogDescription className="mt-1 max-w-[52ch] text-code-body leading-6 text-code-muted">
             Find components, check install commands, and get setup guidance.
           </DialogDescription>
         </DialogHeader>

@@ -8,6 +8,11 @@ import {
   getAdvancedSnippet,
 } from "./advanced-specimens"
 import { FoundationSpecimen, getFoundationSnippet } from "./foundation-specimens"
+import {
+  PatternSpecimen,
+  getPatternSnippet,
+  patternEntryIds,
+} from "./pattern-specimens"
 
 export function ComponentSpecimen({
   entryId,
@@ -21,6 +26,9 @@ export function ComponentSpecimen({
   if (["colors", "type", "layout"].includes(entryId)) {
     return <FoundationSpecimen entryId={entryId} />
   }
+  if (patternEntryIds.has(entryId)) {
+    return <PatternSpecimen entryId={entryId} />
+  }
   if (advancedEntryIds.has(entryId)) {
     return <AdvancedSpecimen entryId={entryId} onNavigate={onNavigate} />
   }
@@ -31,6 +39,7 @@ export function ComponentSpecimen({
 export function getComponentSnippet(entryId: string) {
   return (
     getGeneralSnippet(entryId) ||
+    getPatternSnippet(entryId) ||
     getAdvancedSnippet(entryId) ||
     getFoundationSnippet(entryId)
   )

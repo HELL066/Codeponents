@@ -95,6 +95,9 @@ export const libraryGroups: LibraryGroup[] = [
       "card",
       "item",
       "metric-card",
+      "activity-feed",
+      "list-toolbar",
+      "event-list-item",
       "events-calendar",
       "table",
       "data-table",
@@ -256,10 +259,28 @@ const definitions = [
     "calendar date month day",
   ],
   [
+    "event-list-item",
+    "Event list item",
+    "Scan an event at a glance",
+    "event row agenda time date details location participants",
+  ],
+  [
     "events-calendar",
     "Events calendar",
     "Explore events by month or agenda.",
     "events calendar agenda schedule event time location month",
+  ],
+  [
+    "activity-feed",
+    "Activity feed",
+    "Scan recent changes in one place",
+    "activity feed timeline updates notifications history",
+  ],
+  [
+    "list-toolbar",
+    "List toolbar",
+    "Search, filter, and act on a list",
+    "list toolbar search filter sort bulk selection actions",
   ],
   [
     "date-picker",

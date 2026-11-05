@@ -1,6 +1,8 @@
 @import "@fontsource-variable/source-sans-3";
 @import "@fontsource/unna/400.css";
+@import "@fontsource/unna/400-italic.css";
 @import "@fontsource/unna/700.css";
+@import "@fontsource/unna/700-italic.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -41,6 +43,15 @@
   --skullet-text-top: cap-height;
   --skullet-text-bottom: baseline;
   --radius: 0.75rem;
+  --font-source-sans: "Source Sans 3 Variable", "Source Sans 3", sans-serif;
+  --font-unna: "Unna", Georgia, serif;
+  --code-type-display: clamp(2.75rem, 4.4vw, 3.5rem);
+  --code-type-page: clamp(2rem, 3.2vw, 2.75rem);
+  --code-type-section: clamp(1.5rem, 2.2vw, 1.75rem);
+  --code-type-group: 1.25rem;
+  --code-type-body: 1rem;
+  --code-type-ui: 0.875rem;
+  --code-type-meta: 0.75rem;
 
   --background: var(--code-canvas);
   --foreground: var(--code-ink);
@@ -65,8 +76,15 @@
 @theme inline {
   /* Tailwind spacing utilities share a four-pixel base across the library. */
   --spacing: 0.25rem;
-  --font-sans: "Source Sans 3 Variable", "Source Sans 3", sans-serif;
-  --font-heading: "Unna", Georgia, serif;
+  --font-sans: var(--font-source-sans);
+  --font-heading: var(--font-unna);
+  --text-code-display: var(--code-type-display);
+  --text-code-page: var(--code-type-page);
+  --text-code-section: var(--code-type-section);
+  --text-code-group: var(--code-type-group);
+  --text-code-body: var(--code-type-body);
+  --text-code-ui: var(--code-type-ui);
+  --text-code-meta: var(--code-type-meta);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
