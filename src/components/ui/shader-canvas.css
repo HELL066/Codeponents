@@ -1,0 +1,90 @@
+.shader-canvas {
+  --shader-pointer-x: 50%;
+  --shader-pointer-y: 50%;
+  position: relative;
+  isolation: isolate;
+  display: block;
+  overflow: hidden;
+  background: var(--code-shader-fallback, var(--code-hero, #06192f));
+}
+
+.shader-canvas__fallback,
+.shader-canvas__drawing {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.shader-canvas__fallback {
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 76% 116% at var(--shader-pointer-x) var(--shader-pointer-y),
+      color-mix(in srgb, var(--code-shader-accent, #4986ac) 27%, transparent),
+      transparent 72%
+    ),
+    linear-gradient(
+      132deg,
+      color-mix(in srgb, var(--code-shader-base, #06192f) 92%, #102c49),
+      var(--code-shader-base, #06192f) 68%
+    );
+  transition: opacity 260ms ease-out;
+}
+
+.shader-canvas__drawing {
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 260ms ease-out;
+}
+
+.shader-canvas__drawing.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.shader-canvas[data-status="running"] .shader-canvas__fallback {
+  opacity: 0;
+}
+
+.shader-canvas
+  > :not(.shader-canvas__fallback):not(.shader-canvas__drawing):not(
+    .shader-canvas__error
+  ) {
+  z-index: 2;
+}
+
+.shader-canvas__error {
+  position: absolute;
+  z-index: 3;
+  inset: 12px 12px auto;
+  max-height: 60%;
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--code-danger) 42%, transparent);
+  border-radius: 10px;
+  background: var(--code-surface);
+  color: var(--code-danger);
+  font:
+    11px/1.6 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  white-space: pre-wrap;
+}
+
+.shader-canvas__error:focus-visible {
+  outline: 2px solid var(--code-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shader-canvas__fallback,
+  .shader-canvas__drawing {
+    transition: none;
+  }
+}

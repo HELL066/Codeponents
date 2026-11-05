@@ -1,0 +1,1444 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "codeponents",
+  "homepage": "https://ateneocode.org",
+  "items": [
+    {
+      "name": "codeponents-base",
+      "type": "registry:base",
+      "title": "Codeponents foundations",
+      "description": "CODE theme tokens, shared class utility, and reduced-motion support.",
+      "dependencies": [
+        "cn@^0.5.2",
+        "@fontsource-variable/source-sans-3@^5.3.1",
+        "@fontsource/unna@^5.3.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/codeponents-theme.css",
+          "type": "registry:style",
+          "target": "@ui/codeponents-theme.css"
+        },
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "@lib/utils.ts"
+        },
+        {
+          "path": "src/hooks/use-prefers-reduced-motion.ts",
+          "type": "registry:hook",
+          "target": "@hooks/use-prefers-reduced-motion.ts"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Actions with a clear hierarchy",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "registry:ui",
+          "target": "@ui/button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "Button group",
+      "description": "Related actions in one place",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/button-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/button-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "description": "A single on or off choice",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toggle.tsx",
+          "type": "registry:ui",
+          "target": "@ui/toggle.tsx"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle group",
+      "description": "A small set of related choices",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toggle-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/toggle-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "copy-button",
+      "type": "registry:ui",
+      "title": "Copy button",
+      "description": "Copy a link with clear feedback",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/copy-button.tsx",
+          "type": "registry:ui",
+          "target": "@ui/copy-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "A label, control, and message together",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./label.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/field.tsx",
+          "type": "registry:ui",
+          "target": "@ui/field.tsx"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "A visible name for a control",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/label.tsx",
+          "type": "registry:ui",
+          "target": "@ui/label.tsx"
+        }
+      ]
+    },
+    {
+      "name": "color-picker",
+      "type": "registry:ui",
+      "title": "Color picker",
+      "description": "Choose and refine a color",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/color-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/color-picker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "A focused field for short text",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/input.tsx",
+          "type": "registry:ui",
+          "target": "@ui/input.tsx"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "Room for a longer response",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/textarea.tsx",
+          "type": "registry:ui",
+          "target": "@ui/textarea.tsx"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "Input group",
+      "description": "A field with a useful prefix or suffix",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/input-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/input-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "number-field",
+      "type": "registry:ui",
+      "title": "Number field",
+      "description": "Edit a value in measured steps",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/number-field.tsx",
+          "type": "registry:ui",
+          "target": "@ui/number-field.tsx"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Choose from a short list",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "type": "registry:ui",
+          "target": "@ui/select.tsx"
+        }
+      ]
+    },
+    {
+      "name": "native-select",
+      "type": "registry:ui",
+      "title": "Native select",
+      "description": "A compact choice with browser behavior",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/native-select.tsx",
+          "type": "registry:ui",
+          "target": "@ui/native-select.tsx"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Search and select from a longer list",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json",
+        "./command.json",
+        "./popover.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/combobox.tsx",
+          "type": "registry:ui",
+          "target": "@ui/combobox.tsx"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Select independent options",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "type": "registry:ui",
+          "target": "@ui/checkbox.tsx"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio group",
+      "description": "Choose one visible option",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/radio-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/radio-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Change a setting immediately",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/switch.tsx",
+          "type": "registry:ui",
+          "target": "@ui/switch.tsx"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Adjust a value across a range",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/slider.tsx",
+          "type": "registry:ui",
+          "target": "@ui/slider.tsx"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "description": "Browse dates and choose a day",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "motion@^14.9.1",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/calendar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/calendar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "events-calendar",
+      "type": "registry:ui",
+      "title": "Events calendar",
+      "description": "Explore events by month or agenda",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "motion@^14.9.1",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/events-calendar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/events-calendar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "Date picker",
+      "description": "Choose a date from a field",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./calendar.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/date-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/date-picker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "date-range-picker",
+      "type": "registry:ui",
+      "title": "Date range picker",
+      "description": "Choose a start and end date",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./calendar.json",
+        "./popover.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/date-range-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/date-range-picker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "time-picker",
+      "type": "registry:ui",
+      "title": "Time picker",
+      "description": "Choose a time",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json",
+        "./popover.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/time-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/time-picker.tsx"
+        },
+        {
+          "path": "src/components/ui/time-picker.css",
+          "type": "registry:style",
+          "target": "@ui/time-picker.css"
+        }
+      ]
+    },
+    {
+      "name": "date-time-picker",
+      "type": "registry:ui",
+      "title": "Date and time picker",
+      "description": "Choose a local date and time",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./date-picker.json",
+        "./time-picker.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/date-time-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/date-time-picker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "multi-select",
+      "type": "registry:ui",
+      "title": "Multi-select",
+      "description": "Choose several options from a searchable list",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json",
+        "./checkbox.json",
+        "./command.json",
+        "./popover.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/multi-select.tsx",
+          "type": "registry:ui",
+          "target": "@ui/multi-select.tsx"
+        }
+      ]
+    },
+    {
+      "name": "file-upload",
+      "type": "registry:ui",
+      "title": "File upload",
+      "description": "Select and review files before uploading",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json",
+        "./spinner.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "motion@^14.9.1",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/file-upload.tsx",
+          "type": "registry:ui",
+          "target": "@ui/file-upload.tsx"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "One-time code",
+      "description": "Enter a short verification code",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "input-otp@^1.5.0",
+        "lucide-react@^1.67.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/input-otp.tsx",
+          "type": "registry:ui",
+          "target": "@ui/input-otp.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "Group navigation beside the page",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/sidebar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/sidebar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tree-view",
+      "type": "registry:ui",
+      "title": "Tree view",
+      "description": "Browse and select nested items",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tree-view.tsx",
+          "type": "registry:ui",
+          "target": "@ui/tree-view.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Switch between related views",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui",
+          "target": "@ui/tabs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "Show the current place in a hierarchy",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/breadcrumb.tsx",
+          "type": "registry:ui",
+          "target": "@ui/breadcrumb.tsx"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Reveal optional details on demand",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/accordion.tsx",
+          "type": "registry:ui",
+          "target": "@ui/accordion.tsx"
+        },
+        {
+          "path": "src/components/ui/disclosure.css",
+          "type": "registry:style",
+          "target": "@ui/disclosure.css"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "Show or hide a section",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/collapsible.tsx",
+          "type": "registry:ui",
+          "target": "@ui/collapsible.tsx"
+        },
+        {
+          "path": "src/components/ui/disclosure.css",
+          "type": "registry:style",
+          "target": "@ui/disclosure.css"
+        }
+      ]
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation menu",
+      "description": "Browse related destinations",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/navigation-menu.tsx",
+          "type": "registry:ui",
+          "target": "@ui/navigation-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "description": "Group app-level commands",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/menubar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/menubar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "Move through a long list",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/pagination.tsx",
+          "type": "registry:ui",
+          "target": "@ui/pagination.tsx"
+        }
+      ]
+    },
+    {
+      "name": "bottom-navigation",
+      "type": "registry:ui",
+      "title": "Bottom navigation",
+      "description": "Move between the main areas of a workspace",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "motion@^14.9.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/bottom-navigation.tsx",
+          "type": "registry:ui",
+          "target": "@ui/bottom-navigation.tsx"
+        }
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command menu",
+      "description": "Search actions from the keyboard",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./dialog.json"
+      ],
+      "dependencies": [
+        "cmdk@^1.1.1",
+        "lucide-react@^1.67.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/command.tsx",
+          "type": "registry:ui",
+          "target": "@ui/command.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown menu",
+      "description": "Open secondary actions near an item",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/dropdown-menu.tsx",
+          "type": "registry:ui",
+          "target": "@ui/dropdown-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context menu",
+      "description": "Show actions for a specific surface",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/context-menu.tsx",
+          "type": "registry:ui",
+          "target": "@ui/context-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "A small task anchored to its trigger",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/popover.tsx",
+          "type": "registry:ui",
+          "target": "@ui/popover.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Add a short hint to a control",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tooltip.tsx",
+          "type": "registry:ui",
+          "target": "@ui/tooltip.tsx"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Hover card",
+      "description": "Preview related details in context",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/hover-card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/hover-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Focus a brief task in the current view",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "type": "registry:ui",
+          "target": "@ui/dialog.tsx"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert dialog",
+      "description": "Confirm an action with consequences",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/alert-dialog.tsx",
+          "type": "registry:ui",
+          "target": "@ui/alert-dialog.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "description": "Open a side panel for focused work",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./dialog.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/sheet.tsx",
+          "type": "registry:ui",
+          "target": "@ui/sheet.tsx"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "Open a bottom panel on small screens",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./sheet.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/drawer.tsx",
+          "type": "registry:ui",
+          "target": "@ui/drawer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Make status easy to scan",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/badge.tsx",
+          "type": "registry:ui",
+          "target": "@ui/badge.tsx"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "Keep a useful message in the page flow",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/alert.tsx",
+          "type": "registry:ui",
+          "target": "@ui/alert.tsx"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress bar",
+      "description": "Show how far a task has moved",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/progress.tsx",
+          "type": "registry:ui",
+          "target": "@ui/progress.tsx"
+        },
+        {
+          "path": "src/components/ui/progress.css",
+          "type": "registry:style",
+          "target": "@ui/progress.css"
+        }
+      ]
+    },
+    {
+      "name": "progress-ring",
+      "type": "registry:ui",
+      "title": "Progress ring",
+      "description": "Show progress in a compact space",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/progress-ring.tsx",
+          "type": "registry:ui",
+          "target": "@ui/progress-ring.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "Signal an active wait",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/spinner.tsx",
+          "type": "registry:ui",
+          "target": "@ui/spinner.tsx"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "Hold a place while content loads",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "skullet@^0.0.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/skeleton.tsx",
+          "type": "registry:ui",
+          "target": "@ui/skeleton.tsx"
+        }
+      ]
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:ui",
+      "title": "Empty state",
+      "description": "Give an empty view a next step",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/empty-state.tsx",
+          "type": "registry:ui",
+          "target": "@ui/empty-state.tsx"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "Confirm a change without interrupting",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "sonner@^2.0.8"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toast.tsx",
+          "type": "registry:ui",
+          "target": "@ui/toast.tsx"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "Identify a person or team",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/avatar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/avatar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "Group information with a clear focus",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "description": "Arrange content and actions in a flexible row",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/item.tsx",
+          "type": "registry:ui",
+          "target": "@ui/item.tsx"
+        }
+      ]
+    },
+    {
+      "name": "metric-card",
+      "type": "registry:ui",
+      "title": "Metric card",
+      "description": "Show one value with context at a glance",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/metric-card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/metric-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "Read structured rows and columns",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/table.tsx",
+          "type": "registry:ui",
+          "target": "@ui/table.tsx"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "Data table",
+      "description": "Sort a dense list of records",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json",
+        "./checkbox.json",
+        "./input.json",
+        "./table.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "motion@^14.9.1",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/data-table.tsx",
+          "type": "registry:ui",
+          "target": "@ui/data-table.tsx"
+        }
+      ]
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "Compare values over time",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "recharts@^3.10.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "Create a quiet break between groups",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/separator.tsx",
+          "type": "registry:ui",
+          "target": "@ui/separator.tsx"
+        }
+      ]
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable panels",
+      "description": "Adjust the space between two views",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "react-resizable-panels@^4.18.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/resizable.tsx",
+          "type": "registry:ui",
+          "target": "@ui/resizable.tsx"
+        }
+      ]
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect ratio",
+      "description": "Keep media at its intended shape",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/aspect-ratio.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aspect-ratio.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll area",
+      "description": "Keep long content in a bounded view",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/scroll-area.tsx",
+          "type": "registry:ui",
+          "target": "@ui/scroll-area.tsx"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "Browse a short sequence of items",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./button.json"
+      ],
+      "dependencies": [
+        "embla-carousel-react@^8.6.0",
+        "lucide-react@^1.67.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/carousel.tsx",
+          "type": "registry:ui",
+          "target": "@ui/carousel.tsx"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Keyboard shortcut",
+      "description": "Show a key or shortcut clearly",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/kbd.tsx",
+          "type": "registry:ui",
+          "target": "@ui/kbd.tsx"
+        }
+      ]
+    },
+    {
+      "name": "code-block",
+      "type": "registry:ui",
+      "title": "Code block",
+      "description": "Present source with clear, copyable formatting",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./copy-button.json"
+      ],
+      "dependencies": [
+        "shiki@^4.6.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/code-block.tsx",
+          "type": "registry:ui",
+          "target": "@ui/code-block.tsx"
+        },
+        {
+          "path": "src/components/ui/code-block.css",
+          "type": "registry:style",
+          "target": "@ui/code-block.css"
+        }
+      ]
+    },
+    {
+      "name": "shader-canvas",
+      "type": "registry:ui",
+      "title": "Shader canvas",
+      "description": "A soft animated color surface",
+      "registryDependencies": [
+        "./codeponents-base.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/shader-canvas.tsx",
+          "type": "registry:ui",
+          "target": "@ui/shader-canvas.tsx"
+        },
+        {
+          "path": "src/components/ui/shader-canvas.css",
+          "type": "registry:style",
+          "target": "@ui/shader-canvas.css"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+.code-progress-indeterminate {
+  animation: code-progress-sweep 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes code-progress-sweep {
+  from { transform: translateX(-105%); }
+  to { transform: translateX(405%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-progress-indeterminate {
+    animation: none;
+    transform: translateX(100%);
+  }
+}
