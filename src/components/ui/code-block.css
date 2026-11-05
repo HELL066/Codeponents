@@ -1,0 +1,139 @@
+.code-block {
+  --code-block-bg: var(--code-hero, #06192f);
+  --code-block-ink: #eaf1f6;
+  --code-block-line: color-mix(in srgb, #91aac0 22%, transparent);
+  --code-block-muted: #9bb0c2;
+  overflow: hidden;
+  border: 1px solid var(--code-block-line);
+  border-radius: 14px;
+  background: var(--code-block-bg);
+  color: var(--code-block-ink);
+  box-shadow: 0 14px 34px rgb(6 25 47 / 8%);
+}
+
+.code-block__header {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 10px 6px 16px;
+  border-bottom: 1px solid var(--code-block-line);
+  background: color-mix(in srgb, var(--code-block-bg) 82%, white);
+}
+
+.code-block__heading {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.code-block__title {
+  overflow: hidden;
+  color: var(--code-block-ink);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.code-block__language {
+  color: var(--code-block-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.code-block__copy {
+  min-height: 32px;
+  padding-inline: 9px;
+  color: var(--code-block-muted);
+}
+
+.code-block__copy:hover {
+  color: var(--code-block-ink);
+}
+
+.code-block__content {
+  max-height: 34rem;
+  margin: 0;
+  padding: 17px 0 19px;
+  overflow: auto;
+  color: var(--code-block-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.75;
+  scrollbar-color: color-mix(in srgb, #9bb0c2 45%, transparent) transparent;
+  tab-size: 2;
+  white-space: pre;
+}
+
+.code-block__content:focus-visible {
+  outline: 2px solid var(--code-ring, #4986ac);
+  outline-offset: -2px;
+}
+
+.code-block__content code {
+  display: block;
+  min-width: max-content;
+}
+
+.code-block__line {
+  display: block;
+  min-height: 1.75em;
+  padding-inline: 18px;
+}
+
+.code-block__content--numbered .code-block__line {
+  padding-left: 0;
+}
+
+.code-block__line-number {
+  display: inline-block;
+  width: 3.25rem;
+  margin-right: 18px;
+  color: color-mix(in srgb, var(--code-block-muted) 70%, transparent);
+  text-align: right;
+  user-select: none;
+}
+
+.code-block__content--wrapped,
+.code-block__content--wrapped code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code-block__content--wrapped code {
+  min-width: 0;
+}
+
+.code-block__content--wrapped .code-block__line {
+  padding-right: 18px;
+}
+
+@media (max-width: 480px) {
+  .code-block__header {
+    min-height: 42px;
+    padding-left: 12px;
+  }
+
+  .code-block__content {
+    padding-block: 13px 15px;
+    font-size: 11px;
+  }
+
+  .code-block__line {
+    padding-inline: 12px;
+  }
+
+  .code-block__content--numbered .code-block__line {
+    padding-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-block__copy {
+    transition: none;
+  }
+}

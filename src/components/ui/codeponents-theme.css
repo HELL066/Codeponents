@@ -1,0 +1,110 @@
+@import "@fontsource-variable/source-sans-3";
+@import "@fontsource/unna/400.css";
+@import "@fontsource/unna/700.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Verified from Ateneo CODE's current interface theme. */
+:root {
+  color-scheme: light;
+  --code-canvas: #f5f5f6;
+  --code-surface: #ffffff;
+  --code-surface-raised: #ffffff;
+  --code-ink: #121315;
+  --code-muted: #3d5266;
+  --code-quiet: #d7dfe9;
+  --code-line: #aaafb5;
+  --code-input: #717d89;
+  --code-accent: #0c315c;
+  --code-accent-soft: #d7dfe9;
+  --code-accent-foreground: #ffffff;
+  --code-ring: #4986ac;
+  --code-danger: #a33f4b;
+  --code-positive: #216d55;
+  --code-warning: #8c5e23;
+  --code-hero: #06192f;
+  --code-shader-base: #06192f;
+  --code-shader-accent: #4986ac;
+  --code-shader-highlight: #d7dfe9;
+  --code-shader-fallback: #06192f;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --skullet-base: color-mix(in srgb, var(--code-accent) 9%, transparent);
+  --skullet-highlight: color-mix(in srgb, var(--code-ring) 18%, white);
+  --skullet-radius: 0.375rem;
+  --skullet-animation: shimmer;
+  --skullet-speed: slow;
+  --skullet-text-top: cap-height;
+  --skullet-text-bottom: baseline;
+  --radius: 0.75rem;
+
+  --background: var(--code-canvas);
+  --foreground: var(--code-ink);
+  --card: var(--code-surface);
+  --card-foreground: var(--code-ink);
+  --popover: var(--code-surface-raised);
+  --popover-foreground: var(--code-ink);
+  --primary: var(--code-hero);
+  --primary-foreground: #ffffff;
+  --secondary: var(--code-accent-soft);
+  --secondary-foreground: var(--code-ink);
+  --muted: var(--code-quiet);
+  --muted-foreground: var(--code-muted);
+  --accent: var(--code-accent);
+  --accent-foreground: #ffffff;
+  --destructive: var(--code-danger);
+  --border: var(--code-line);
+  --input: var(--code-input);
+  --ring: var(--code-ring);
+}
+
+@theme inline {
+  /* Tailwind spacing utilities share a four-pixel base across the library. */
+  --spacing: 0.25rem;
+  --font-sans: "Source Sans 3 Variable", "Source Sans 3", sans-serif;
+  --font-heading: "Unna", Georgia, serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-code-canvas: var(--code-canvas);
+  --color-code-surface: var(--code-surface);
+  --color-code-surface-raised: var(--code-surface-raised);
+  --color-code-ink: var(--code-ink);
+  --color-code-muted: var(--code-muted);
+  --color-code-quiet: var(--code-quiet);
+  --color-code-line: var(--code-line);
+  --color-code-input: var(--code-input);
+  --color-code-accent: var(--code-accent);
+  --color-code-accent-foreground: var(--code-accent-foreground);
+  --color-code-hero: var(--code-hero);
+  --color-code-accent-soft: var(--code-accent-soft);
+  --color-code-ring: var(--code-ring);
+  --color-code-danger: var(--code-danger);
+  --color-code-positive: var(--code-positive);
+  --color-code-warning: var(--code-warning);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+}
