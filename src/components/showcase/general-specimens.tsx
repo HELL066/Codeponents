@@ -342,7 +342,7 @@ const snippets: Record<GeneralEntryId, string> = {
   popover: `import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"\nimport { Button } from "@/components/ui/button"\n\n<Popover>\n  <PopoverTrigger asChild><Button variant="outline">Filters</Button></PopoverTrigger>\n  <PopoverContent>Related controls go here.</PopoverContent>\n</Popover>`,
   tooltip: `import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"\nimport { Button } from "@/components/ui/button"\n\n<TooltipProvider>\n  <Tooltip>\n    <TooltipTrigger asChild><Button aria-label="More information" size="icon">i</Button></TooltipTrigger>\n    <TooltipContent>Last updated today</TooltipContent>\n  </Tooltip>\n</TooltipProvider>`,
   dialog: `import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog"\nimport { Button } from "@/components/ui/button"\n\n<Dialog>\n  <DialogTrigger asChild><Button>Open item</Button></DialogTrigger>\n  <DialogContent>\n    <DialogTitle>Item details</DialogTitle>\n    <DialogDescription>Review the title and description.</DialogDescription>\n  </DialogContent>\n</Dialog>`,
-  badge: `import { Badge } from "@/components/ui/badge"\n\n<Badge tone="positive">Complete</Badge>\n<Badge tone="warning">In progress</Badge>`,
+  badge: `import { Badge } from "@/components/ui/badge"\n\n<Badge appearance="tinted" tone="positive">Complete</Badge>\n<Badge appearance="minimal" tone="warning">In progress</Badge>`,
   alert: `import { Alert } from "@/components/ui/alert"\n\n<Alert role="alert" tone="warning" title="Unsaved changes">\n  Save your edits before leaving this page.\n</Alert>`,
   progress: `import { Progress } from "@/components/ui/progress"\n\n<Progress aria-label="Upload progress" value={60} />`,
   skeleton: `import { SkeletonReveal } from "@/components/ui/skeleton"\n\n<SkeletonReveal id="item-details" loading={loading} label="Loading details">\n  <ItemDetails item={item} />\n</SkeletonReveal>`,
@@ -461,6 +461,9 @@ function GeneralSpecimen({
   const [dialogSaveComplete, setDialogSaveComplete] = useState(false)
   const dialogSaveTimeout = useRef<number | null>(null)
   const [badgeIndex, setBadgeIndex] = useState(0)
+  const [badgeAppearance, setBadgeAppearance] = useState<"minimal" | "tinted">(
+    "tinted"
+  )
   const [progressValue, setProgressValue] = useState(60)
   const [showSkeleton, setShowSkeleton] = useState(true)
   const [showEmptyState, setShowEmptyState] = useState(true)
@@ -1484,24 +1487,50 @@ function GeneralSpecimen({
       ]
       const state = states[badgeIndex % states.length]!
       return (
-        <div className="grid justify-items-start gap-3">
-          <Badge aria-live="polite" role="status" tone={state.tone}>
-            <TextMorph
-              as="span"
-              duration={220}
-              ease="cubic-bezier(0.19, 1, 0.22, 1)"
-              respectReducedMotion
+        <div className="grid w-full max-w-sm gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm text-code-muted">Appearance</span>
+            <Select
+              onValueChange={(value) => {
+                if (value === "minimal" || value === "tinted") {
+                  setBadgeAppearance(value)
+                }
+              }}
+              value={badgeAppearance}
             >
-              {state.label}
-            </TextMorph>
-          </Badge>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setBadgeIndex((current) => current + 1)}
-          >
-            Change status
-          </Button>
+              <SelectTrigger aria-label="Badge appearance" className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="minimal">Minimal</SelectItem>
+                <SelectItem value="tinted">Tinted</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex min-h-10 items-center justify-between gap-3">
+            <Badge
+              aria-live="polite"
+              appearance={badgeAppearance}
+              role="status"
+              tone={state.tone}
+            >
+              <TextMorph
+                as="span"
+                duration={220}
+                ease="cubic-bezier(0.19, 1, 0.22, 1)"
+                respectReducedMotion
+              >
+                {state.label}
+              </TextMorph>
+            </Badge>
+            <Button
+              onClick={() => setBadgeIndex((current) => current + 1)}
+              size="sm"
+              variant="outline"
+            >
+              Change status
+            </Button>
+          </div>
         </div>
       )
     }
