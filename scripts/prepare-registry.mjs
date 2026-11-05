@@ -188,9 +188,14 @@ const registry = {
 
 writeFileSync(join(root, "registry.json"), `${JSON.stringify(registry, null, 2)}\n`)
 const skillSource = readFileSync(skillPath, "utf8")
+const escapedSkill = skillSource
+  .replaceAll("\\", "\\\\")
+  .replaceAll("'", "\\'")
+  .replaceAll("\r", "\\r")
+  .replaceAll("\n", "\\n")
 writeFileSync(
   skillOutputPath,
-  `// Generated from skills/codeponents/SKILL.md by npm run prepare:registry.\nexport default ${JSON.stringify(skillSource)}\n`
+  `// Generated from skills/codeponents/SKILL.md by npm run prepare:registry.\nexport default '${escapedSkill}'\n`
 )
 console.log(
   `Prepared Codeponents v1 registry with ${componentItems.length} UI items and embedded the MCP skill.`
