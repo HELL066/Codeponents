@@ -64,6 +64,13 @@ function monthStart(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), 1, 12)
 }
 
+const fadeTextAtEndStyle: React.CSSProperties = {
+  maskImage:
+    "linear-gradient(to right, #000 0%, #000 calc(100% - 1rem), transparent 100%)",
+  WebkitMaskImage:
+    "linear-gradient(to right, #000 0%, #000 calc(100% - 1rem), transparent 100%)",
+}
+
 function addMonths(date: Date, amount: number) {
   const next = new Date(date.getFullYear(), date.getMonth() + amount, 1, 12)
   const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate()
@@ -142,6 +149,15 @@ function EventsCalendar({
   )
   const monthFormatter = React.useMemo(
     () => new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }),
+    [locale]
+  )
+  const dayHeadingFormatter = React.useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
     [locale]
   )
   const dayFormatter = React.useMemo(
@@ -270,46 +286,59 @@ function EventsCalendar({
 
   const eventRowClass = () =>
     cn(
-      "group/event flex min-h-5 min-w-0 items-center gap-1 rounded-md px-0.5 py-0 text-left text-xs leading-[1.125rem] text-code-muted transition-[background-color,color] hover:bg-code-accent-soft/45 hover:text-code-ink focus-visible:ring-2 focus-visible:ring-code-ring/50 focus-visible:outline-none @2xl:gap-2 @2xl:px-1.5"
+      "group/event flex min-h-6 min-w-0 items-center gap-1 rounded-md px-1 py-0 text-left text-xs leading-4 text-code-muted transition-[background-color,color] hover:bg-code-accent-soft/45 hover:text-code-ink focus-visible:ring-2 focus-visible:ring-code-ring/50 focus-visible:outline-none"
     )
 
   const monthLabel = monthFormatter.format(displayedMonth)
+  const dayViewDate = activeDate ?? today
+  const dayViewEvents = eventsByDate.get(dateKey(dayViewDate)) ?? []
+  const headerLabel =
+    view === "day" ? dayHeadingFormatter.format(dayViewDate) : monthLabel
+  const headerEventCount =
+    view === "day" ? dayViewEvents.length : eventsInMonth.length
   const MonthHeading =
     headingLevel === 4 ? "h4" : headingLevel === 3 ? "h3" : "h2"
   const activeDateLabel = activeDate
     ? longDateFormatter.format(activeDate)
     : "Choose a day"
-  const dayViewDate = activeDate ?? today
-  const dayViewEvents = eventsByDate.get(dateKey(dayViewDate)) ?? []
   const renderMonthEvents = (listClassName?: string) =>
     eventsInMonth.length > 0 ? (
       <ol className={cn("divide-y divide-code-line/25", listClassName)}>
-        {eventsInMonth.map((event) => (
-          <li key={event.id}>
-            <button
-              type="button"
-              onClick={() => handleEventSelect(event)}
-              className="grid min-h-14 w-full grid-cols-[3.25rem_minmax(0,1fr)] items-start gap-2 rounded-lg px-1.5 py-2 text-left transition-colors hover:bg-code-canvas focus-visible:ring-2 focus-visible:ring-code-ring/50 focus-visible:outline-none @sm:grid-cols-[3.75rem_minmax(0,1fr)] @sm:gap-3 @sm:px-2 @xl:gap-4"
-            >
-              <span className="pt-0.5 text-xs leading-5 text-code-muted tabular-nums">
-                {new Intl.DateTimeFormat(locale, {
-                  month: "short",
-                  day: "numeric",
-                }).format(event.start)}
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-sm font-medium text-code-ink">
-                  {event.title}
+        {eventsInMonth.map((event) => {
+          const eventSummary = [
+            event.title,
+            eventTimeRange(event),
+            event.category,
+            event.location,
+          ]
+            .filter(Boolean)
+            .join(" · ")
+
+          return (
+            <li key={event.id}>
+              <button
+                type="button"
+                onClick={() => handleEventSelect(event)}
+                aria-label={eventSummary}
+                title={eventSummary}
+                className="grid min-h-10 w-full grid-cols-[3.75rem_minmax(0,1fr)] items-center gap-2 rounded-md px-2 py-2 text-left transition-colors hover:bg-code-canvas focus-visible:ring-2 focus-visible:ring-code-ring/50 focus-visible:outline-none"
+              >
+                <span className="text-xs leading-4 text-code-muted tabular-nums">
+                  {new Intl.DateTimeFormat(locale, {
+                    month: "short",
+                    day: "numeric",
+                  }).format(event.start)}
                 </span>
-                <span className="mt-0.5 block truncate text-xs text-code-muted">
-                  {[eventTimeRange(event), event.category, event.location]
-                    .filter(Boolean)
-                    .join(" · ")}
+                <span
+                  className="block min-w-0 overflow-hidden whitespace-nowrap text-xs leading-4 text-code-ink"
+                  style={fadeTextAtEndStyle}
+                >
+                  {eventSummary}
                 </span>
-              </span>
-            </button>
-          </li>
-        ))}
+              </button>
+            </li>
+          )
+        })}
       </ol>
     ) : (
       <p className="py-2 text-sm text-code-muted">No events this month</p>
@@ -320,7 +349,7 @@ function EventsCalendar({
       aria-labelledby={titleId}
       data-slot="events-calendar"
       className={cn(
-        "@container w-full min-w-0 rounded-2xl bg-code-surface p-3 text-code-ink shadow-[0_1px_2px_color-mix(in_srgb,var(--code-ink)_5%,transparent),0_18px_48px_-36px_color-mix(in_srgb,var(--code-hero)_36%,transparent)] @sm:p-4 @xl:p-6",
+        "@container w-full min-w-0 rounded-2xl bg-code-surface p-4 text-code-ink shadow-[0_1px_2px_color-mix(in_srgb,var(--code-ink)_5%,transparent),0_18px_48px_-36px_color-mix(in_srgb,var(--code-hero)_36%,transparent)] @sm:p-5 @xl:p-6",
         className
       )}
     >
@@ -336,7 +365,7 @@ function EventsCalendar({
               ease="cubic-bezier(0.22, 1, 0.36, 1)"
               respectReducedMotion
             >
-              {monthLabel}
+              {headerLabel}
             </TextMorph>
           </MonthHeading>
           <p className="m-0 text-xs text-code-muted tabular-nums">
@@ -347,7 +376,7 @@ function EventsCalendar({
               numbers
               respectReducedMotion
             >
-              {`${eventsInMonth.length} ${eventsInMonth.length === 1 ? "event" : "events"}`}
+              {`${headerEventCount} ${headerEventCount === 1 ? "event" : "events"}`}
             </TextMorph>
           </p>
         </div>
@@ -429,7 +458,13 @@ function EventsCalendar({
         </div>
       </header>
 
-      <div className="mt-4 grid min-w-0 gap-4 @sm:mt-5 @xl:gap-5 @2xl:grid-cols-[minmax(0,1fr)_15rem] @2xl:gap-4">
+      <div
+        className={cn(
+          "mt-4 grid min-w-0 gap-4 @sm:mt-5 @xl:gap-5",
+          view !== "day" &&
+            "@2xl:grid-cols-[minmax(0,1fr)_15rem] @2xl:gap-4"
+        )}
+      >
         <div className="min-w-0">
           {view === "month" ? (
             <div
@@ -498,10 +533,10 @@ function EventsCalendar({
                                   <td
                                     key={key}
                                     className={cn(
-                                      "h-12 overflow-hidden border-r border-b border-code-line/25 p-0.5 align-top last:border-r-0 @2xl:h-20"
+                                      "h-12 overflow-hidden border-r border-b border-code-line/25 p-1 align-top last:border-r-0 @sm:p-1.5 @2xl:h-20"
                                     )}
                                   >
-                                    <div className="flex h-full min-w-0 flex-col overflow-hidden rounded-lg px-0.5 py-1 transition-colors @sm:px-0 @sm:py-0.5 @xl:px-1.5">
+                                    <div className="flex h-full min-w-0 flex-col overflow-hidden rounded-lg px-0 py-1.5 transition-colors @sm:px-1 @sm:py-2 @xl:px-1.5">
                                       <button
                                         type="button"
                                         aria-label={`Select ${longDateFormatter.format(date)}${dayEvents.length ? `, ${dayEvents.map((event) => event.title).join(", ")}` : ""}`}
@@ -538,7 +573,10 @@ function EventsCalendar({
                                                 ? "All day"
                                                 : eventTime(event)}
                                             </span>
-                                            <span className="line-clamp-2 min-w-0 leading-[1.125rem] font-medium text-code-ink/90">
+                                            <span
+                                              className="block min-w-0 overflow-hidden whitespace-nowrap text-xs leading-4 font-normal text-code-ink/90"
+                                              style={fadeTextAtEndStyle}
+                                            >
                                               {event.title}
                                             </span>
                                           </button>
@@ -826,7 +864,6 @@ function DayTimeline({
     },
     []
   )
-  const titleId = React.useId()
   const allDayEvents = React.useMemo(
     () => events.filter((event) => event.allDay),
     [events]
@@ -848,21 +885,7 @@ function DayTimeline({
   const hourFormatter = new Intl.DateTimeFormat(locale, { hour: "numeric" })
 
   return (
-    <section aria-labelledby={titleId}>
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h3
-          id={titleId}
-          className="[font-family:var(--font-heading)] text-lg leading-tight font-normal text-code-ink @sm:text-xl"
-        >
-          <TextMorph as="span" duration={180} respectReducedMotion>
-            {dayLabel}
-          </TextMorph>
-        </h3>
-        <span className="text-xs text-code-muted tabular-nums">
-          {events.length} {events.length === 1 ? "event" : "events"}
-        </span>
-      </div>
-
+    <section aria-label={`${dayLabel} timeline`}>
       {allDayEvents.length > 0 ? (
         <div className="mb-3 grid grid-cols-[3.5rem_minmax(0,1fr)] items-start gap-2">
           <span className="pt-2 text-xs text-code-muted">All day</span>
