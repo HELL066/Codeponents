@@ -125,6 +125,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { TimePicker } from "@/components/ui/time-picker"
+import { TimeZonePicker } from "@/components/ui/time-zone-picker"
 import { TreeView, type TreeViewItem } from "@/components/ui/tree-view"
 import {
   Tooltip,
@@ -149,6 +150,7 @@ const generalEntryIds = [
   "date-picker",
   "date-range-picker",
   "time-picker",
+  "time-zone-picker",
   "date-time-picker",
   "events-calendar",
   "bottom-navigation",
@@ -332,6 +334,7 @@ const snippets: Record<GeneralEntryId, string> = {
   "date-picker": `import { DatePicker } from "@/components/ui/date-picker"\n\n<DatePicker\n  aria-label="Due date"\n  value={date}\n  onValueChange={setDate}\n/>`,
   "date-range-picker": `import { useState } from "react"\nimport { DateRangePicker, type DateRangeValue } from "@/components/ui/date-range-picker"\n\nconst [range, setRange] = useState<DateRangeValue>({})\n\n<DateRangePicker value={range} onValueChange={setRange} />`,
   "time-picker": `import { useState } from "react"\nimport { TimePicker } from "@/components/ui/time-picker"\n\nconst [time, setTime] = useState<string | null>("14:30")\n\n<TimePicker\n  aria-label="Reminder time"\n  locale="en-PH"\n  value={time}\n  onValueChange={setTime}\n/>`,
+  "time-zone-picker": `import { useState } from "react"\nimport { TimeZonePicker } from "@/components/ui/time-zone-picker"\n\nconst [timeZone, setTimeZone] = useState<string | null>("Asia/Manila")\n\n<TimeZonePicker\n  aria-label="Team time zone"\n  locale="en-PH"\n  value={timeZone}\n  onValueChange={setTimeZone}\n/>`,
   "date-time-picker": `import { DateTimePicker } from "@/components/ui/date-time-picker"\n\n<DateTimePicker\n  aria-label="Meeting time"\n  value={meetingTime}\n  onValueChange={setMeetingTime}\n/>`,
   "multi-select": `import { MultiSelect } from "@/components/ui/multi-select"\n\n<MultiSelect\n  ariaLabel="Categories"\n  options={categories}\n  value={selectedCategories}\n  onValueChange={setSelectedCategories}\n/>`,
   "file-upload": `import { useState } from "react"\nimport { FileUpload } from "@/components/ui/file-upload"\n\nconst [files, setFiles] = useState<File[]>([])\n\n<FileUpload\n  accept=".csv,.pdf,image/*"\n  maxFiles={3}\n  maxSize={5 * 1024 * 1024}\n  value={files}\n  onValueChange={setFiles}\n/>`,
@@ -394,6 +397,11 @@ function FieldHelp({
   )
 }
 
+function timeZoneCityName(timeZone: string) {
+  if (timeZone === "UTC" || timeZone === "Etc/UTC") return "UTC"
+  return (timeZone.split("/").at(-1) ?? timeZone).replaceAll("_", " ")
+}
+
 function GeneralSpecimen({
   entryId,
   onNavigate,
@@ -416,6 +424,7 @@ function GeneralSpecimen({
   )
   const [dueDate, setDueDate] = useState<Date | null>(null)
   const [timeOnly, setTimeOnly] = useState<string | null>("14:30")
+  const [timeZone, setTimeZone] = useState<string | null>("Asia/Manila")
   const [meetingTime, setMeetingTime] = useState<Date | null>(() => {
     const today = new Date()
     return new Date(
@@ -938,6 +947,33 @@ function GeneralSpecimen({
             onValueChange={setTimeOnly}
             value={timeOnly}
           />
+        </div>
+      )
+
+    case "time-zone-picker":
+      return (
+        <div className="w-full max-w-sm space-y-1.5">
+          <label
+            className="block text-sm font-medium text-code-ink"
+            htmlFor="general-time-zone"
+          >
+            Team time zone
+          </label>
+          <TimeZonePicker
+            id="general-time-zone"
+            locale="en-PH"
+            onValueChange={setTimeZone}
+            value={timeZone}
+          />
+          {timeZone ? (
+            <p
+              aria-live="polite"
+              className="pt-1 text-xs text-code-muted"
+              role="status"
+            >
+              Scheduling uses {timeZoneCityName(timeZone)} time.
+            </p>
+          ) : null}
         </div>
       )
 

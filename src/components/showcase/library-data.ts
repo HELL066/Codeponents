@@ -39,6 +39,7 @@ export const libraryGroups: LibraryGroup[] = [
       "date-picker",
       "date-range-picker",
       "time-picker",
+      "time-zone-picker",
       "date-time-picker",
       "multi-select",
       "file-upload",
@@ -299,6 +300,12 @@ const definitions = [
     "Time picker",
     "Choose a time.",
     "time picker clock scheduling local time custom wheel",
+  ],
+  [
+    "time-zone-picker",
+    "Time zone picker",
+    "Search and choose an IANA time zone with its UTC offset.",
+    "timezone time zone world city region utc offset daylight saving scheduling",
   ],
   [
     "date-time-picker",

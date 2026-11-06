@@ -565,6 +565,28 @@
       ]
     },
     {
+      "name": "time-zone-picker",
+      "type": "registry:ui",
+      "title": "Time zone picker",
+      "description": "Search and choose an IANA time zone with its UTC offset",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./command.json",
+        "./popover.json"
+      ],
+      "dependencies": [
+        "lucide-react@^1.67.0",
+        "torph@^0.1.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/time-zone-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/time-zone-picker.tsx"
+        }
+      ]
+    },
+    {
       "name": "date-time-picker",
       "type": "registry:ui",
       "title": "Date and time picker",
