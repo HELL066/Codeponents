@@ -23,7 +23,7 @@ const snippets: Record<string, string> = {
     '    <div className="space-y-3">',
     '      <div className="relative grid size-10 place-items-center">',
     '        <SuccessCheck state="success" label="Upload complete" />',
-    "        <ConfettiBurst particleCount={30} triggerKey={burst} />",
+    "        <ConfettiBurst triggerKey={burst} />",
     "      </div>",
     "      <Button onClick={() => setBurst((value) => value + 1)}>",
     "        Celebrate upload",
@@ -74,7 +74,7 @@ function ConfettiBurstSpecimen() {
     <div className="mx-auto flex w-full max-w-md flex-wrap items-center gap-4 rounded-xl border border-code-line bg-code-surface p-4">
       <div className="relative grid size-10 shrink-0 place-items-center">
         <SuccessCheck label="File uploaded" size="md" state="success" />
-        <ConfettiBurst particleCount={30} triggerKey={burst} />
+        <ConfettiBurst triggerKey={burst} />
       </div>
       <div className="min-w-32 flex-1">
         <p className="text-sm font-medium text-code-ink">File uploaded</p>
