@@ -52,7 +52,12 @@ const definitions = definitionsExpression.elements
   .filter((entry) => entry.name && entry.title && entry.description)
 
 const componentFiles = readdirSync(componentDirectory)
-  .filter((file) => file.endsWith(".tsx") && file !== "index.tsx")
+  .filter(
+    (file) =>
+      file.endsWith(".tsx") &&
+      file !== "index.tsx" &&
+      !/\.(test|spec)\.tsx$/.test(file),
+  )
   .sort()
 const sourceNames = new Set(componentFiles.map((file) => file.slice(0, -4)))
 const components = definitions.filter((entry) => sourceNames.has(entry.name))

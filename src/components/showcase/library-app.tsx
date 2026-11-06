@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
   type ComponentProps,
-  type ReactNode,
   type RefObject,
 } from "react"
 import { LayoutGroup, motion, useReducedMotion } from "motion/react"
@@ -74,15 +73,10 @@ function SearchCommandItem({
   reduceMotion,
   value,
   ...props
-}: Omit<
-  ComponentProps<typeof MotionCommandItem>,
-  "children" | "className" | "layout" | "transition" | "value"
-> & {
-  children: ReactNode
-  className?: string
+}: Omit<ComponentProps<typeof MotionCommandItem>, "children"> & {
+  children: ComponentProps<typeof CommandItem>["children"]
   commandValue: string
   reduceMotion: boolean
-  value: string
 }) {
   const selected = value === commandValue
 
