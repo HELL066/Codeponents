@@ -10,6 +10,7 @@ type CarouselOrientation = "horizontal" | "vertical"
 
 type CarouselContextValue = {
   viewportRef: ReturnType<typeof useEmblaCarousel>[0]
+  viewportElementRef: React.RefObject<HTMLElement | null>
   api: CarouselApi | undefined
   orientation: CarouselOrientation
   canScrollPrev: boolean
@@ -61,7 +62,15 @@ function Carousel({
     }
   }, [opts, orientation, prefersReducedMotion])
 
-  const [viewportRef, api] = useEmblaCarousel(resolvedOpts, plugins)
+  const [emblaViewportRef, api] = useEmblaCarousel(resolvedOpts, plugins)
+  const viewportElementRef = React.useRef<HTMLElement | null>(null)
+  const viewportRef = React.useCallback(
+    (node: HTMLElement | null) => {
+      viewportElementRef.current = node
+      emblaViewportRef(node)
+    },
+    [emblaViewportRef]
+  )
   const [, refreshControls] = React.useReducer(
     (version: number) => version + 1,
     0
@@ -130,6 +139,7 @@ function Carousel({
   const contextValue = React.useMemo<CarouselContextValue>(
     () => ({
       viewportRef,
+      viewportElementRef,
       api,
       orientation,
       canScrollPrev,
@@ -142,6 +152,7 @@ function Carousel({
     }),
     [
       viewportRef,
+      viewportElementRef,
       api,
       orientation,
       canScrollPrev,
@@ -186,8 +197,8 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
     >
       <div
         className={cn(
-          "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+          "flex gap-6",
+          orientation === "horizontal" ? "flex-row" : "flex-col",
           className
         )}
         {...props}
@@ -197,15 +208,10 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
-  const { orientation } = useCarousel()
   return (
     <div
       aria-roledescription="slide"
-      className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
-        className
-      )}
+      className={cn("min-w-0 shrink-0 grow-0 basis-full", className)}
       role="group"
       {...props}
     />
@@ -301,6 +307,7 @@ function CarouselDots({ className, ...props }: React.ComponentProps<"div">) {
             type="button"
             aria-current={isSelected ? "true" : undefined}
             aria-label={`Go to slide ${index + 1}`}
+            data-carousel-control=""
             onClick={() => scrollTo(index)}
             className={cn(
               "group flex size-11 items-center justify-center rounded-full transition-colors outline-none hover:bg-code-quiet focus-visible:ring-2 focus-visible:ring-code-accent focus-visible:ring-offset-1 focus-visible:ring-offset-code-surface motion-reduce:transition-none",

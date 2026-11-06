@@ -77,7 +77,7 @@ import {
 } from "@/components/ui/date-range-picker"
 import { DateTimePicker } from "@/components/ui/date-time-picker"
 import { FileUpload } from "@/components/ui/file-upload"
-import { FieldError } from "@/components/ui/field"
+import { FieldError, FieldLegend, FieldSet } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -342,7 +342,7 @@ const snippets: Record<GeneralEntryId, string> = {
   breadcrumb: `import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"\n\n<Breadcrumb aria-label="Breadcrumb">\n  <BreadcrumbList>\n    <BreadcrumbItem><BreadcrumbLink href="/">Library</BreadcrumbLink></BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem><BreadcrumbLink href="/guides">Guides</BreadcrumbLink></BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem><BreadcrumbPage>Getting started</BreadcrumbPage></BreadcrumbItem>\n  </BreadcrumbList>\n</Breadcrumb>`,
   accordion: `import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"\n\n<Accordion type="single" collapsible>\n  <AccordionItem value="details">\n    <AccordionTrigger>Who can view this?</AccordionTrigger>\n    <AccordionContent>Choose who can see this page.</AccordionContent>\n  </AccordionItem>\n</Accordion>`,
   "dropdown-menu": `import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"\nimport { Button } from "@/components/ui/button"\n\n<DropdownMenu>\n  <DropdownMenuTrigger asChild><Button variant="outline">Item actions</Button></DropdownMenuTrigger>\n  <DropdownMenuContent align="start">\n    <DropdownMenuItem>Open item</DropdownMenuItem>\n    <DropdownMenuItem>Copy link</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>`,
-  popover: `import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"\nimport { Button } from "@/components/ui/button"\n\n<Popover>\n  <PopoverTrigger asChild><Button variant="outline">Filters</Button></PopoverTrigger>\n  <PopoverContent>Related controls go here.</PopoverContent>\n</Popover>`,
+  popover: `import { Checkbox } from "@/components/ui/checkbox"\nimport { FieldLegend, FieldSet } from "@/components/ui/field"\nimport { Label } from "@/components/ui/label"\nimport { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"\nimport { Button } from "@/components/ui/button"\n\n<Popover>\n  <PopoverTrigger asChild><Button variant="outline">Filters</Button></PopoverTrigger>\n  <PopoverContent className="w-72 p-3">\n    <FieldSet className="gap-1">\n      <FieldLegend className="mb-0">Show items</FieldLegend>\n      <div className="flex min-h-10 items-center gap-3">\n        <Checkbox id="active-only" checked={activeOnly} onCheckedChange={(checked) => setActiveOnly(checked === true)} />\n        <Label htmlFor="active-only" className="min-h-10 flex-1 cursor-pointer font-normal leading-normal">Active only</Label>\n      </div>\n    </FieldSet>\n  </PopoverContent>\n</Popover>`,
   tooltip: `import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"\nimport { Button } from "@/components/ui/button"\n\n<TooltipProvider>\n  <Tooltip>\n    <TooltipTrigger asChild><Button aria-label="More information" size="icon">i</Button></TooltipTrigger>\n    <TooltipContent>Last updated today</TooltipContent>\n  </Tooltip>\n</TooltipProvider>`,
   dialog: `import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog"\nimport { Button } from "@/components/ui/button"\n\n<Dialog>\n  <DialogTrigger asChild><Button>Open item</Button></DialogTrigger>\n  <DialogContent>\n    <DialogTitle>Item details</DialogTitle>\n    <DialogDescription>Review the title and description.</DialogDescription>\n  </DialogContent>\n</Dialog>`,
   badge: `import { Badge } from "@/components/ui/badge"\n\n<Badge appearance="tinted" tone="positive">Complete</Badge>\n<Badge appearance="minimal" tone="warning">In progress</Badge>`,
@@ -1309,45 +1309,49 @@ function GeneralSpecimen({
             <PopoverContent
               align="start"
               aria-labelledby="general-popover-title"
-              className="w-72"
+              className="w-72 p-3"
             >
-              <div className="grid gap-4">
-                <h3
-                  className="m-0 text-sm font-medium text-code-ink"
-                  id="general-popover-title"
-                >
-                  Show items
-                </h3>
-                <div className="grid gap-1">
-                  <label
-                    htmlFor="general-popover-active"
-                    className="flex min-h-10 cursor-pointer items-center gap-3 text-sm text-code-ink"
-                  >
-                    <Checkbox
-                      id="general-popover-active"
-                      checked={popoverActiveOnly}
-                      onCheckedChange={(checked) =>
-                        setPopoverActiveOnly(checked === true)
-                      }
-                    />
-                    Active only
-                  </label>
-                  <label
-                    htmlFor="general-popover-archived"
-                    className="flex min-h-10 cursor-pointer items-center gap-3 text-sm text-code-ink"
-                  >
-                    <Checkbox
-                      id="general-popover-archived"
-                      checked={popoverIncludeArchived}
-                      onCheckedChange={(checked) =>
-                        setPopoverIncludeArchived(checked === true)
-                      }
-                    />
-                    Include archived items
-                  </label>
-                </div>
-                <div className="flex items-center justify-between gap-3">
+              <div className="grid gap-3">
+                <FieldSet className="gap-1">
+                  <FieldLegend className="mb-0" id="general-popover-title">
+                    Show items
+                  </FieldLegend>
+                  <div className="grid gap-0.5">
+                    <div className="flex min-h-10 items-center gap-3">
+                      <Checkbox
+                        id="general-popover-active"
+                        checked={popoverActiveOnly}
+                        onCheckedChange={(checked) =>
+                          setPopoverActiveOnly(checked === true)
+                        }
+                      />
+                      <Label
+                        className="min-h-10 flex-1 cursor-pointer font-normal leading-normal"
+                        htmlFor="general-popover-active"
+                      >
+                        Active only
+                      </Label>
+                    </div>
+                    <div className="flex min-h-10 items-center gap-3">
+                      <Checkbox
+                        id="general-popover-archived"
+                        checked={popoverIncludeArchived}
+                        onCheckedChange={(checked) =>
+                          setPopoverIncludeArchived(checked === true)
+                        }
+                      />
+                      <Label
+                        className="min-h-10 flex-1 cursor-pointer font-normal leading-normal"
+                        htmlFor="general-popover-archived"
+                      >
+                        Include archived items
+                      </Label>
+                    </div>
+                  </div>
+                </FieldSet>
+                <div className="flex items-center justify-between gap-2">
                   <Button
+                    className="min-h-10"
                     disabled={!popoverActiveOnly && !popoverIncludeArchived}
                     onClick={() => {
                       setPopoverActiveOnly(false)
@@ -1360,6 +1364,7 @@ function GeneralSpecimen({
                     Clear
                   </Button>
                   <Button
+                    className="min-h-10"
                     onClick={() => setPopoverOpen(false)}
                     size="sm"
                     type="button"

@@ -31,8 +31,8 @@ function DrawerContent({
       side={side}
       className={cn(
         side === "top"
-          ? "rounded-b-xl px-5 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-6 sm:px-6"
-          : "rounded-t-xl px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:px-6",
+          ? "rounded-b-xl px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-5 sm:px-6"
+          : "rounded-t-xl px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:px-6",
         className
       )}
       {...props}

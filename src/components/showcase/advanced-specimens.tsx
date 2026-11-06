@@ -6,7 +6,9 @@ import {
   Field,
   FieldDescription,
   FieldError,
+  FieldLegend,
   FieldLabel,
+  FieldSet,
 } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import {
@@ -99,16 +101,20 @@ import {
 } from "@/components/ui/alert-dialog"
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -126,6 +132,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
   useCarousel,
 } from "@/components/ui/carousel"
 import { Kbd } from "@/components/ui/kbd"
@@ -149,90 +157,92 @@ function CarouselTextControls() {
   const slideCount = Math.max(scrollSnaps.length, 1)
 
   return (
-    <div className="mt-2 flex items-center justify-between gap-4">
-      <span
-        aria-label={`Page ${selectedIndex + 1} of ${slideCount}`}
-        aria-live="polite"
-        className="inline-flex min-w-16 items-baseline gap-1 text-xs text-code-muted tabular-nums"
-      >
-        <TextMorph as="span" duration={220} numbers respectReducedMotion>
-          {String(selectedIndex + 1).padStart(2, "0")}
-        </TextMorph>
-        <span aria-hidden="true">/ {String(slideCount).padStart(2, "0")}</span>
-      </span>
-      <div
-        aria-label="Choose a page"
-        className="flex items-center gap-0.5"
-        role="group"
-      >
-        {scrollSnaps.map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            aria-current={selectedIndex === index ? "page" : undefined}
-            aria-label={`Go to page ${index + 1}`}
-            onClick={() => scrollTo(index)}
-            className="group flex size-11 items-center justify-center rounded-full transition-colors outline-none hover:bg-code-quiet focus-visible:ring-2 focus-visible:ring-code-accent motion-reduce:transition-none"
-          >
-            <span
-              aria-hidden="true"
-              className={cn(
-                "h-1 rounded-full transition-[width,background-color] duration-200 motion-reduce:transition-none",
-                selectedIndex === index
-                  ? "w-3.5 bg-code-ink"
-                  : "w-1 bg-code-line/80 group-hover:bg-code-muted"
-              )}
-            />
-          </button>
-        ))}
+    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+        <span
+          aria-label={`Page ${selectedIndex + 1} of ${slideCount}`}
+          aria-live="polite"
+          className="inline-flex min-w-16 items-baseline gap-1 text-xs text-code-muted tabular-nums"
+        >
+          <TextMorph as="span" duration={220} numbers respectReducedMotion>
+            {String(selectedIndex + 1).padStart(2, "0")}
+          </TextMorph>
+          <span aria-hidden="true">
+            / {String(slideCount).padStart(2, "0")}
+          </span>
+        </span>
+        <div
+          aria-label="Choose a page"
+          className="flex items-center gap-0.5"
+          role="group"
+        >
+          {scrollSnaps.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              aria-current={selectedIndex === index ? "page" : undefined}
+              aria-label={`Go to page ${index + 1}`}
+              data-carousel-control=""
+              onClick={() => scrollTo(index)}
+              className="group flex size-11 items-center justify-center rounded-full transition-[background-color,transform,scale] duration-150 outline-none hover:bg-code-quiet focus-visible:ring-2 focus-visible:ring-code-accent active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100"
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "h-1 rounded-full transition-[width,background-color] duration-200 motion-reduce:transition-none",
+                  selectedIndex === index
+                    ? "w-3.5 bg-code-ink"
+                    : "w-1 bg-code-line/80 group-hover:bg-code-muted"
+                )}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="ml-auto flex items-center gap-1">
+        <CarouselPrevious aria-label="Previous events" />
+        <CarouselNext aria-label="Next events" />
       </div>
     </div>
   )
 }
 
-function CarouselClickZones() {
-  const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useCarousel()
+function CarouselEdgeNavigation() {
+  const { viewportElementRef, orientation, scrollPrev, scrollNext } =
+    useCarousel()
 
-  return (
-    <>
-      <button
-        type="button"
-        aria-label="Previous events"
-        data-carousel-control=""
-        disabled={!canScrollPrev}
-        onClick={scrollPrev}
-        className="absolute inset-y-0 left-0 z-10 w-8 cursor-w-resize rounded-l-xl bg-transparent outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-code-accent disabled:pointer-events-none"
-      >
-        <span className="sr-only">Previous events</span>
-      </button>
-      <button
-        type="button"
-        aria-label="Next events"
-        data-carousel-control=""
-        disabled={!canScrollNext}
-        onClick={scrollNext}
-        className="absolute inset-y-0 right-0 z-10 w-8 cursor-e-resize rounded-r-xl bg-transparent outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-code-accent disabled:pointer-events-none"
-      >
-        <span className="sr-only">Next events</span>
-      </button>
-    </>
-  )
+  useEffect(() => {
+    const viewport = viewportElementRef.current
+    if (!viewport || orientation !== "horizontal") return
+
+    const handleClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.detail === 0) return
+      if (
+        event.target instanceof Element &&
+        event.target.closest(
+          "button, a, input, select, textarea, [role='button'], [data-carousel-control]"
+        )
+      ) {
+        return
+      }
+
+      const rect = viewport.getBoundingClientRect()
+      if (!rect.width) return
+
+      const edgeWidth = Math.min(64, rect.width * 0.16)
+      const x = event.clientX - rect.left
+      if (x <= edgeWidth) scrollPrev()
+      else if (x >= rect.width - edgeWidth) scrollNext()
+    }
+
+    viewport.addEventListener("click", handleClick)
+    return () => viewport.removeEventListener("click", handleClick)
+  }, [orientation, scrollNext, scrollPrev, viewportElementRef])
+
+  return null
 }
 
 function EventCarouselDemo() {
-  const [isNarrow, setIsNarrow] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(max-width: 479px)").matches
-  )
-
-  useEffect(() => {
-    const viewport = window.matchMedia("(max-width: 479px)")
-    const update = () => setIsNarrow(viewport.matches)
-    viewport.addEventListener("change", update)
-    return () => viewport.removeEventListener("change", update)
-  }, [])
-
   const events = [
     {
       dateTime: "2026-11-12T10:30:00",
@@ -263,67 +273,39 @@ function EventCarouselDemo() {
       description: "Set priorities for the next cycle",
     },
   ]
-  const eventsPerPage = isNarrow ? 1 : 2
-  const pages = Array.from(
-    { length: Math.ceil(events.length / eventsPerPage) },
-    (_, index) =>
-      events.slice(index * eventsPerPage, (index + 1) * eventsPerPage)
-  )
-
   return (
     <Carousel
       aria-label="Upcoming events"
       className="w-full max-w-2xl"
       opts={{ align: "start", slidesToScroll: 1 }}
     >
-      <div className="relative">
-        <CarouselContent style={{ marginLeft: 0 }}>
-          {pages.map((page, index) => (
-            <CarouselItem
-              key={index}
-              className="basis-full"
-              style={{ paddingLeft: 0 }}
-            >
-              <div
-                className={cn(
-                  "grid gap-4",
-                  isNarrow ? "grid-cols-1" : "grid-cols-2"
-                )}
-              >
-                {page.map((event) => (
-                  <Card
-                    key={event.title}
-                    className="h-full min-h-32 rounded-xl bg-code-surface shadow-[0_12px_28px_-22px_rgb(6_25_47/38%)]"
-                  >
-                    <CardContent className="flex min-h-32 flex-col p-4">
-                      <div className="flex items-center justify-between gap-2">
-                        <time
-                          dateTime={event.dateTime}
-                          className="min-w-0 text-xs leading-5 text-code-muted"
-                        >
-                          {event.date}
-                        </time>
-                        <span className="shrink-0 text-xs text-code-muted">
-                          {event.duration}
-                        </span>
-                      </div>
-                      <div className="mt-3 grid gap-1">
-                        <CardTitle className="font-heading text-lg leading-[1.15] font-normal tracking-[-0.02em] text-code-ink">
-                          {event.title}
-                        </CardTitle>
-                        <p className="m-0 text-[13px] leading-[1.4] text-code-muted">
-                          {event.description}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselClickZones />
-      </div>
+      <CarouselEdgeNavigation />
+      <CarouselContent>
+        {events.map((event) => (
+          <CarouselItem key={event.dateTime} className="basis-full">
+            <Card className="h-full min-h-48 overflow-hidden rounded-2xl border-code-line/45 bg-code-surface shadow-[0_12px_28px_-22px_rgb(6_25_47/38%)]">
+              <CardContent className="grid min-h-48 gap-5 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-8 sm:p-6">
+                <div className="grid content-start gap-2">
+                  <CardTitle className="font-heading text-xl leading-tight font-normal tracking-[-0.02em] text-code-ink sm:text-2xl">
+                    {event.title}
+                  </CardTitle>
+                  <p className="m-0 max-w-[36ch] text-sm leading-6 text-code-muted">
+                    {event.description}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 border-t border-code-line/45 pt-4 text-sm text-code-muted sm:flex-col sm:items-end sm:gap-3 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-8">
+                  <time className="leading-5" dateTime={event.dateTime}>
+                    {event.date}
+                  </time>
+                  <span className="text-xs leading-4">
+                    {event.duration}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
       <CarouselTextControls />
     </Carousel>
   )
@@ -474,8 +456,8 @@ const snippets: Partial<Record<AdvancedId, string>> = {
   "context-menu": `import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu"\n\n<ContextMenu>\n  <ContextMenuTrigger>Right-click this row</ContextMenuTrigger>\n  <ContextMenuContent><ContextMenuItem>Open</ContextMenuItem></ContextMenuContent>\n</ContextMenu>`,
   "hover-card": `import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"\n\n<HoverCard>\n  <HoverCardTrigger asChild><a href="/profiles/jordan">Jordan Lee</a></HoverCardTrigger>\n  <HoverCardContent>Public profile</HoverCardContent>\n</HoverCard>`,
   "alert-dialog": `import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogTitle } from "@/components/ui/alert-dialog"\n\n<AlertDialog open={open} onOpenChange={setOpen}>\n  <AlertDialogContent><AlertDialogTitle>Archive this item?</AlertDialogTitle>\n    <AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Archive</AlertDialogAction>\n  </AlertDialogContent>\n</AlertDialog>`,
-  sheet: `import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"\n\n<Sheet open={open} onOpenChange={setOpen}>\n  <SheetContent side="right"><SheetHeader><SheetTitle>Filters</SheetTitle></SheetHeader></SheetContent>\n</Sheet>`,
-  drawer: `import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer"\n\n<Drawer open={open} onOpenChange={setOpen}>\n  <DrawerContent><DrawerTitle>Item details</DrawerTitle></DrawerContent>\n</Drawer>`,
+  sheet: `import { Checkbox } from "@/components/ui/checkbox"\nimport { FieldLegend, FieldSet } from "@/components/ui/field"\nimport { Label } from "@/components/ui/label"\nimport { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"\nimport { Button } from "@/components/ui/button"\n\n<Sheet open={open} onOpenChange={setOpen}>\n  <SheetContent side="right" className="w-[min(24rem,calc(100vw-1.5rem))] gap-4 p-5">\n    <SheetHeader className="gap-1"><SheetTitle>Activity</SheetTitle><SheetDescription>Choose which items appear.</SheetDescription></SheetHeader>\n    <FieldSet className="gap-1">\n      <FieldLegend className="mb-0">Time period</FieldLegend>\n      <div className="grid gap-0.5">\n        <div className="flex min-h-10 items-center gap-3"><Checkbox id="upcoming" checked={upcoming} onCheckedChange={(checked) => setUpcoming(checked === true)} /><Label htmlFor="upcoming" className="min-h-10 flex-1 cursor-pointer font-normal">Upcoming</Label></div>\n        <div className="flex min-h-10 items-center gap-3"><Checkbox id="past" checked={past} onCheckedChange={(checked) => setPast(checked === true)} /><Label htmlFor="past" className="min-h-10 flex-1 cursor-pointer font-normal">Past</Label></div>\n      </div>\n    </FieldSet>\n    <SheetFooter className="mt-auto flex-row justify-between sm:justify-between"><Button className="min-h-10" variant="ghost">Reset</Button><SheetClose asChild><Button className="min-h-10">Done</Button></SheetClose></SheetFooter>\n  </SheetContent>\n</Sheet>`,
+  drawer: `import { Button } from "@/components/ui/button"\nimport { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"\n\n<Drawer open={open} onOpenChange={setOpen}>\n  <DrawerContent>\n    <DrawerHeader><DrawerTitle>Design notes</DrawerTitle><DrawerDescription>Updated today</DrawerDescription></DrawerHeader>\n    <p className="mx-auto w-full max-w-xl">One recent change and a short description.</p>\n    <DrawerFooter className="flex-row gap-2 sm:justify-stretch"><DrawerClose asChild><Button className="min-h-10 flex-1" variant="outline">Close</Button></DrawerClose><Button className="min-h-10 flex-1">Open item</Button></DrawerFooter>\n  </DrawerContent>\n</Drawer>`,
   "progress-ring": `import { ProgressRing } from "@/components/ui/progress-ring"\n\n<ProgressRing\n  label="Saved items"\n  value={7}\n  max={10}\n  center={<span className="font-heading text-2xl tabular-nums">7</span>}\n/>`,
   spinner: `import { Spinner } from "@/components/ui/spinner"\n\n<Spinner label="Saving changes" />`,
   "data-table": `import { DataTable } from "@/components/ui/data-table"\n\n<DataTable\n  aria-label="Recent files"\n  columns={columns}\n  getRowLabel={(row) => row.name}\n  pageSize={8}\n  rows={files}\n  rowKey={(row) => row.id}\n  searchBy={(row) => row.name + " " + row.type}\n  selectable\n/>`,
@@ -510,7 +492,7 @@ export function AdvancedSpecimen({
   const [selectedResource, setSelectedResource] = useState("Design notes")
   const [savedCount, setSavedCount] = useState(7)
   const [showUpcoming, setShowUpcoming] = useState(true)
-  const [showPast, setShowPast] = useState(false)
+  const [showPast, setShowPast] = useState(true)
   const prefersReducedMotion = useReducedMotion()
 
   const runCommand = (destination: string) => {
@@ -1021,36 +1003,90 @@ export function AdvancedSpecimen({
           (item.period === "upcoming" && showUpcoming) ||
           (item.period === "past" && showPast)
       )
+      const activeFilterCount = Number(!showUpcoming) + Number(!showPast)
 
       return (
         <div className="grid w-full max-w-lg gap-3">
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline">Filters</Button>
+              <Button className="min-w-32 justify-start" variant="outline">
+                <TextMorph
+                  as="span"
+                  duration={180}
+                  numbers
+                  respectReducedMotion
+                >
+                  {activeFilterCount
+                    ? `Filters · ${activeFilterCount}`
+                    : "Filters"}
+                </TextMorph>
+              </Button>
             </SheetTrigger>
-            <SheetContent side="right">
-              <SheetHeader>
-                <SheetTitle>Filters</SheetTitle>
-                <SheetDescription>Show activity</SheetDescription>
+            <SheetContent
+              className="w-[min(24rem,calc(100vw-1.5rem))] gap-4 p-5"
+              side="right"
+            >
+              <SheetHeader className="gap-1">
+                <SheetTitle>Activity</SheetTitle>
+                <SheetDescription>
+                  Choose which items appear in the list.
+                </SheetDescription>
               </SheetHeader>
-              <div className="grid gap-1">
-                <label className="flex min-h-10 cursor-pointer items-center gap-3 text-sm text-code-ink">
-                  <Checkbox
-                    checked={showUpcoming}
-                    onCheckedChange={(checked) =>
-                      setShowUpcoming(checked === true)
-                    }
-                  />
-                  Upcoming
-                </label>
-                <label className="flex min-h-10 cursor-pointer items-center gap-3 text-sm text-code-ink">
-                  <Checkbox
-                    checked={showPast}
-                    onCheckedChange={(checked) => setShowPast(checked === true)}
-                  />
-                  Past
-                </label>
-              </div>
+              <FieldSet className="gap-1">
+                <FieldLegend className="mb-0">Time period</FieldLegend>
+                <div className="grid gap-0.5">
+                  <div className="flex min-h-10 items-center gap-3">
+                    <Checkbox
+                      checked={showUpcoming}
+                      id="sheet-filter-upcoming"
+                      onCheckedChange={(checked) =>
+                        setShowUpcoming(checked === true)
+                      }
+                    />
+                    <Label
+                      className="min-h-10 flex-1 cursor-pointer leading-normal font-normal"
+                      htmlFor="sheet-filter-upcoming"
+                    >
+                      Upcoming
+                    </Label>
+                  </div>
+                  <div className="flex min-h-10 items-center gap-3">
+                    <Checkbox
+                      checked={showPast}
+                      id="sheet-filter-past"
+                      onCheckedChange={(checked) =>
+                        setShowPast(checked === true)
+                      }
+                    />
+                    <Label
+                      className="min-h-10 flex-1 cursor-pointer leading-normal font-normal"
+                      htmlFor="sheet-filter-past"
+                    >
+                      Past
+                    </Label>
+                  </div>
+                </div>
+              </FieldSet>
+              <SheetFooter className="mt-auto flex-row justify-between sm:justify-between">
+                <Button
+                  className="min-h-10"
+                  disabled={showUpcoming && showPast}
+                  onClick={() => {
+                    setShowUpcoming(true)
+                    setShowPast(true)
+                  }}
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                >
+                  Reset
+                </Button>
+                <SheetClose asChild>
+                  <Button className="min-h-10" size="sm" type="button">
+                    Done
+                  </Button>
+                </SheetClose>
+              </SheetFooter>
             </SheetContent>
           </Sheet>
           <section aria-label="Filtered activity" className="grid gap-1">
@@ -1072,20 +1108,55 @@ export function AdvancedSpecimen({
     }
     case "drawer":
       return (
-        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-          <DrawerTrigger asChild>
-            <Button variant="outline">View item</Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Design notes</DrawerTitle>
-              <DrawerDescription>Updated today</DrawerDescription>
-            </DrawerHeader>
-            <div className="mx-auto w-full max-w-xl pb-6 text-sm text-code-muted">
-              A short description with one recent change.
-            </div>
-          </DrawerContent>
-        </Drawer>
+        <div className="grid justify-items-start gap-2">
+          <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+            <DrawerTrigger asChild>
+              <Button onClick={() => setMessage("")} variant="outline">
+                View item
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent className="gap-4">
+              <DrawerHeader className="gap-1">
+                <DrawerTitle>Design notes</DrawerTitle>
+                <DrawerDescription>Updated today</DrawerDescription>
+              </DrawerHeader>
+              <div className="mx-auto grid w-full max-w-xl gap-3 pb-1 text-sm">
+                <p className="m-0 leading-5 text-code-muted">
+                  A short description with one recent change.
+                </p>
+                <div className="flex items-center justify-between gap-4 border-t border-code-line/45 pt-3 text-xs text-code-muted">
+                  <span>Last updated</span>
+                  <time dateTime="2026-11-06">Today</time>
+                </div>
+              </div>
+              <DrawerFooter className="mx-auto flex w-full max-w-xl flex-row gap-2 sm:justify-stretch">
+                <DrawerClose asChild>
+                  <Button
+                    className="min-h-10 flex-1"
+                    size="sm"
+                    variant="outline"
+                  >
+                    Close
+                  </Button>
+                </DrawerClose>
+                <DrawerClose asChild>
+                  <Button
+                    className="min-h-10 flex-1"
+                    onClick={() => setMessage("Design notes opened")}
+                    size="sm"
+                  >
+                    Open item
+                  </Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+          {message ? (
+            <span className="text-xs text-code-muted" role="status">
+              {message}
+            </span>
+          ) : null}
+        </div>
       )
     case "progress-ring":
       return (
