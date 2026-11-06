@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type ComponentProps,
   type RefObject,
 } from "react"
 import { LayoutGroup, motion, useReducedMotion } from "motion/react"
@@ -46,6 +47,7 @@ import { ComponentPage } from "./component-page"
 import { ExamplePagesPage } from "./example-pages"
 import { McpInstallDialog } from "./mcp-install-dialog"
 import { ComponentInstallDialog } from "./component-install-dialog"
+import { cn } from "@/lib/utils"
 import "./library-app.css"
 
 const ComponentSpecimen = lazy(() =>
@@ -53,6 +55,59 @@ const ComponentSpecimen = lazy(() =>
     default: module.ComponentSpecimen,
   }))
 )
+
+const MotionCommandGroup = motion.create(CommandGroup)
+const MotionCommandItem = motion.create(CommandItem)
+const MotionCommandList = motion.create(CommandList)
+const commandSpring = {
+  type: "spring",
+  stiffness: 560,
+  damping: 42,
+  mass: 0.85,
+} as const
+
+function SearchCommandItem({
+  children,
+  className,
+  commandValue,
+  reduceMotion,
+  value,
+  ...props
+}: ComponentProps<typeof CommandItem> & {
+  commandValue: string
+  reduceMotion: boolean
+}) {
+  const selected = value === commandValue
+
+  return (
+    <MotionCommandItem
+      {...props}
+      className={cn("relative isolate", className)}
+      layout={reduceMotion ? false : "position"}
+      transition={reduceMotion ? { duration: 0 } : commandSpring}
+      value={value}
+    >
+      {selected ? (
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 rounded-[7px]"
+          layoutId={reduceMotion ? undefined : "library-command-selection"}
+          style={{
+            background:
+              "color-mix(in srgb, var(--code-accent-soft) 72%, var(--code-surface))",
+          }}
+          transition={
+            reduceMotion ? { layout: { duration: 0 } } : commandSpring
+          }
+        />
+      ) : null}
+      <span className="relative z-10 flex min-w-0 flex-1 items-center gap-2">
+        {children}
+      </span>
+    </MotionCommandItem>
+  )
+}
+
 function readRouteHash() {
   const value = window.location.hash.slice(1)
   if (!value) return null
@@ -537,6 +592,7 @@ function ComponentShowcase() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
   const [commandQuery, setCommandQuery] = useState("")
+  const reduceMotion = useReducedMotion() ?? false
   const [selectedCommandValue, setSelectedCommandValue] = useState(
     "component gallery browse all components home"
   )
@@ -990,43 +1046,71 @@ function ComponentShowcase() {
                 placeholder="Search components and actions"
                 value={commandQuery}
               />
-              <CommandList aria-label="Components and actions">
-                <CommandEmpty>No matches. Try another search.</CommandEmpty>
-                {hasCommandActions ? (
-                  <CommandGroup heading="Actions">
-                    {showGalleryAction ? (
-                      <CommandItem
-                        onSelect={openGallery}
-                        value="component gallery browse all components home"
-                      >
-                        <span>Component gallery</span>
-                      </CommandItem>
-                    ) : null}
-                    {showExamplesAction ? (
-                      <CommandItem
-                        onSelect={() => navigate("examples")}
-                        value="example pages built with codeponents overview events profile workspace"
-                      >
-                        <span>Examples</span>
-                      </CommandItem>
-                    ) : null}
-                  </CommandGroup>
-                ) : null}
-                {commandGroups.map((group) => (
-                  <CommandGroup heading={group.name} key={group.name}>
-                    {group.entries.map((entry) => (
-                      <CommandItem
-                        key={entry.id}
-                        onSelect={() => navigate(entry.id)}
-                        value={`${entry.name} ${entry.group} ${entry.description} ${entry.terms}`}
-                      >
-                        <span>{entry.name}</span>
-                        <CommandShortcut>{entry.group}</CommandShortcut>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                ))}
-              </CommandList>
+              <LayoutGroup id="library-command-results">
+                <MotionCommandList
+                  aria-label="Components and actions"
+                  layoutScroll
+                >
+                  <CommandEmpty>No matches. Try another search.</CommandEmpty>
+                  {hasCommandActions ? (
+                    <MotionCommandGroup
+                      heading="Actions"
+                      layout={reduceMotion ? false : "position"}
+                      transition={
+                        reduceMotion ? { duration: 0 } : commandSpring
+                      }
+                    >
+                      {showGalleryAction ? (
+                        <SearchCommandItem
+                          commandValue={selectedCommandValue}
+                          reduceMotion={reduceMotion}
+                          onSelect={openGallery}
+                          value="component gallery browse all components home"
+                        >
+                          <span>Component gallery</span>
+                        </SearchCommandItem>
+                      ) : null}
+                      {showExamplesAction ? (
+                        <SearchCommandItem
+                          commandValue={selectedCommandValue}
+                          reduceMotion={reduceMotion}
+                          onSelect={() => navigate("examples")}
+                          value="example pages built with codeponents overview events profile workspace"
+                        >
+                          <span>Examples</span>
+                        </SearchCommandItem>
+                      ) : null}
+                    </MotionCommandGroup>
+                  ) : null}
+                  {commandGroups.map((group) => (
+                    <MotionCommandGroup
+                      heading={group.name}
+                      key={group.name}
+                      layout={reduceMotion ? false : "position"}
+                      transition={
+                        reduceMotion ? { duration: 0 } : commandSpring
+                      }
+                    >
+                      {group.entries.map((entry) => {
+                        const value = `${entry.name} ${entry.group} ${entry.description} ${entry.terms}`
+
+                        return (
+                          <SearchCommandItem
+                            commandValue={selectedCommandValue}
+                            key={entry.id}
+                            onSelect={() => navigate(entry.id)}
+                            reduceMotion={reduceMotion}
+                            value={value}
+                          >
+                            <span>{entry.name}</span>
+                            <CommandShortcut>{entry.group}</CommandShortcut>
+                          </SearchCommandItem>
+                        )
+                      })}
+                    </MotionCommandGroup>
+                  ))}
+                </MotionCommandList>
+              </LayoutGroup>
               <div aria-hidden="true" className="library__command-footer">
                 <span>
                   <Kbd>↑</Kbd>

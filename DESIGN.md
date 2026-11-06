@@ -33,10 +33,12 @@ Professional, modern, precise, and quietly expressive. Let CODE identity show th
 
 ## Motion and feedback
 
-- Use Torph for dynamic or stateful text, including labels such as `On` / `Off`, action feedback, and changing values. Give the text a fixed-width slot or reserve its maximum dimensions before it changes so feedback never shifts the layout.
-- Use Motion for meaningful state transitions and layout changes. Use CSS transitions for small hover, focus, and pressed states.
-- Keep movement short and interruptible. Do not animate page-load content indiscriminately or add continuous motion without a clear purpose.
-- Respect `prefers-reduced-motion` across CSS, Motion, Torph, and `ShaderCanvas`.
+- Use CSS transitions for frequent, interruptible control feedback: hover, focus, selected, and pressed states. Transition only the changing properties, use `150ms` as the default duration, and use an ease-out curve. Prefer `transition-[color,background-color,border-color,box-shadow,opacity,transform]` over `transition-all`; remove transitions with `motion-reduce:transition-none` where appropriate.
+- Use Motion when the spatial relationship matters, such as a selected surface moving between choices or keyed list rows reordering. Keep React keys stable and animate `layout="position"` when only an item's position changes. The default spring is `{ type: "spring", duration: 0.3, bounce: 0 }`: it settles quickly without overshoot. Use `LayoutGroup` to scope shared `layoutId` indicators.
+- Use Torph for short stateful text changes, such as status labels, counts, and `On` / `Off`. Prefer `duration={220}` with `respectReducedMotion`. Reserve the maximum label width or use tabular numerals when a changing value could shift nearby content.
+- Keep interactions interruptible: CSS transitions and Motion layout animations should retarget from their current rendered state when the user changes direction. Avoid keyframes for controls, broad `transition-all`, large positional travel, and unrequested page-load entrances. Use `AnimatePresence initial={false}` when an exit transition is needed for content already present at mount.
+- A `scale(0.96)` press response may be used for actions that benefit from tactile feedback; keep it on a short CSS transition and omit it from controls where scaling would distract.
+- Respect `prefers-reduced-motion` across CSS, Motion, Torph, and `ShaderCanvas`. Disable positional or scale movement while preserving clear immediate state changes. The app-level Motion provider uses `reducedMotion="user"` as a baseline; component-specific CSS and Torph effects still need their own reduced-motion handling.
 - Treat `ShaderCanvas` as an optional visual component with a themed fallback; core controls must not depend on WebGL.
 
 ## Component and gallery standards

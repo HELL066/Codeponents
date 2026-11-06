@@ -337,7 +337,9 @@
 }
 
 .library__command [data-slot="command-list"] {
-  max-height: min(56vh, 440px);
+  height: min(56dvh, 440px, calc(85dvh - 7rem));
+  max-height: min(56dvh, 440px, calc(85dvh - 7rem));
+  min-height: min(180px, calc(85dvh - 7rem));
   padding: 8px;
   overscroll-behavior: contain;
 }
@@ -365,11 +367,7 @@
 }
 
 .library__command [data-slot="command-item"][aria-selected="true"] {
-  background: color-mix(
-    in srgb,
-    var(--code-accent-soft) 72%,
-    var(--code-surface)
-  );
+  background: transparent;
   color: var(--code-ink);
 }
 
