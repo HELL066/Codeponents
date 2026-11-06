@@ -13,9 +13,6 @@ type ConfettiParticleStyle = CSSProperties & {
   "--code-confetti-color": string
   "--code-confetti-delay": string
   "--code-confetti-duration": string
-  "--code-confetti-mid-rotation": string
-  "--code-confetti-mid-x": string
-  "--code-confetti-mid-y": string
   "--code-confetti-rotation": string
   "--code-confetti-size": string
   "--code-confetti-x": string
@@ -57,8 +54,6 @@ function createConfettiBurst(
     const distance = randomBetween(27, 42)
     const x = Math.round(Math.cos(angle) * distance)
     const y = Math.round(Math.sin(angle) * distance - randomBetween(1, 5))
-    const midX = Math.round(x * 0.62)
-    const midY = Math.round(y * 0.62 - randomBetween(1, 4))
     const spin = randomBetween(100, 250) * (Math.random() < 0.5 ? -1 : 1)
     const size = randomBetween(3.5, 5.5)
     const shape = Math.random() < 0.28 ? "dot" : "paper"
@@ -68,9 +63,6 @@ function createConfettiBurst(
         confettiColors[(index + colorOffset) % confettiColors.length],
       "--code-confetti-delay": String(Math.round(randomBetween(0, 48))) + "ms",
       "--code-confetti-duration": String(particleDuration) + "ms",
-      "--code-confetti-mid-rotation": String(Math.round(spin * 0.58)) + "deg",
-      "--code-confetti-mid-x": String(midX) + "px",
-      "--code-confetti-mid-y": String(midY) + "px",
       "--code-confetti-rotation": String(Math.round(spin)) + "deg",
       "--code-confetti-size": String(Math.round(size)) + "px",
       "--code-confetti-x": String(x) + "px",

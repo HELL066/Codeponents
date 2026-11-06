@@ -24,20 +24,8 @@
     transform: translate3d(-50%, -50%, 0) rotate(0deg) scale(0.5);
   }
 
-  12% {
+  14% {
     opacity: 1;
-    transform: translate3d(-50%, -50%, 0) rotate(0deg) scale(1.06);
-  }
-
-  68% {
-    opacity: 0.96;
-    transform: translate3d(-50%, -50%, 0)
-      translate3d(
-        var(--code-confetti-mid-x, 0),
-        var(--code-confetti-mid-y, 0),
-        0
-      )
-      rotate(var(--code-confetti-mid-rotation, 90deg)) scale(0.98);
   }
 
   100% {
