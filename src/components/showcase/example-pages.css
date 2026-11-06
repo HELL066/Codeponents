@@ -263,6 +263,16 @@
   font-weight: 500;
 }
 
+.example-pages__project-completion {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--library-line);
+}
+
 .example-pages__overview-aside {
   display: grid;
   min-width: 0;
@@ -531,6 +541,16 @@
 
   .example-pages__profile-fields {
     grid-template-columns: 1fr;
+  }
+
+  .example-pages__project-completion {
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .example-pages__project-completion > button {
+    grid-column: 2;
+    justify-self: start;
   }
 }
 

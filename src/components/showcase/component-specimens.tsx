@@ -1,13 +1,18 @@
-import {
-  renderGeneralSpecimen,
-  getGeneralSnippet,
-} from "./general-specimens"
+import { renderGeneralSpecimen, getGeneralSnippet } from "./general-specimens"
 import {
   AdvancedSpecimen,
   advancedEntryIds,
   getAdvancedSnippet,
 } from "./advanced-specimens"
-import { FoundationSpecimen, getFoundationSnippet } from "./foundation-specimens"
+import {
+  FoundationSpecimen,
+  getFoundationSnippet,
+} from "./foundation-specimens"
+import {
+  DelightSpecimen,
+  delightEntryIds,
+  getDelightSnippet,
+} from "./delight-specimens"
 import {
   PatternSpecimen,
   getPatternSnippet,
@@ -26,6 +31,9 @@ export function ComponentSpecimen({
   if (["colors", "type", "layout"].includes(entryId)) {
     return <FoundationSpecimen entryId={entryId} />
   }
+  if (delightEntryIds.has(entryId)) {
+    return <DelightSpecimen entryId={entryId} />
+  }
   if (patternEntryIds.has(entryId)) {
     return <PatternSpecimen entryId={entryId} />
   }
@@ -39,6 +47,7 @@ export function ComponentSpecimen({
 export function getComponentSnippet(entryId: string) {
   return (
     getGeneralSnippet(entryId) ||
+    getDelightSnippet(entryId) ||
     getPatternSnippet(entryId) ||
     getAdvancedSnippet(entryId) ||
     getFoundationSnippet(entryId)
