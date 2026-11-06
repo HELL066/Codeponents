@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { cn } from "@/lib/utils"
 
 export type SuccessCheckState = "loading" | "success" | "error"
+export type SuccessCheckSize = "sm" | "md" | "lg"
 
 export interface SuccessCheckProps extends Omit<
   ComponentProps<"span">,
@@ -13,33 +14,44 @@ export interface SuccessCheckProps extends Omit<
   state: SuccessCheckState
   /** Accessible status text. Defaults to a short label for the current state. */
   label?: string
+  /** Overall mark size. Defaults to md. */
+  size?: SuccessCheckSize
+}
+
+const sizeClasses: Record<SuccessCheckSize, { root: string; icon: string }> = {
+  sm: { root: "size-8", icon: "size-4" },
+  md: { root: "size-10", icon: "size-5" },
+  lg: { root: "size-12", icon: "size-6" },
 }
 
 const stateLabels: Record<SuccessCheckState, string> = {
   loading: "In progress",
   success: "Complete",
-  error: "Something went wrong",
+  error: "Action failed",
 }
 
 function SuccessCheck({
   state,
   label,
+  size = "md",
   className,
   ...props
 }: SuccessCheckProps) {
   const prefersReducedMotion = useReducedMotion()
+  const sizeClass = sizeClasses[size]
   const stateTone =
     state === "success"
-      ? "border-code-accent/25 bg-code-accent-soft text-code-accent"
+      ? "border-code-accent/20 bg-code-accent-soft text-code-accent shadow-[0_4px_14px_-10px_color-mix(in_srgb,var(--code-accent)_42%,transparent)]"
       : state === "error"
         ? "border-code-danger/20 bg-code-danger/5 text-code-danger"
-        : "border-code-line bg-code-surface text-code-muted"
+        : "border-code-line/75 bg-code-surface text-code-muted"
 
   return (
     <span
       {...props}
       className={cn(
-        "inline-flex size-7 shrink-0 items-center justify-center rounded-full border transition-colors motion-reduce:transition-none",
+        "relative isolate inline-grid shrink-0 place-items-center rounded-full border transition-[background-color,border-color,color,box-shadow] duration-200 motion-reduce:transition-none",
+        sizeClass.root,
         stateTone,
         className
       )}
@@ -48,55 +60,88 @@ function SuccessCheck({
       role="status"
     >
       <span className="sr-only">{label ?? stateLabels[state]}</span>
+      <AnimatePresence initial={false}>
+        {state === "success" && !prefersReducedMotion ? (
+          <motion.span
+            key="success-halo"
+            animate={{ opacity: 0, scale: 1.34 }}
+            className="pointer-events-none absolute inset-[-3px] rounded-full border border-code-accent/25"
+            initial={{ opacity: 0.55, scale: 0.82 }}
+            transition={{
+              duration: 0.42,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          />
+        ) : null}
+      </AnimatePresence>
       <AnimatePresence initial={false} mode="wait">
         <motion.span
           key={state}
           animate={{ opacity: 1, scale: 1, y: 0 }}
+          className="relative z-10 grid place-items-center"
           exit={
             prefersReducedMotion
               ? undefined
-              : { opacity: 0, scale: 0.92, y: -1 }
+              : { opacity: 0, scale: 0.82, y: -1 }
           }
           initial={
-            prefersReducedMotion ? false : { opacity: 0, scale: 0.76, y: 2 }
+            prefersReducedMotion ? false : { opacity: 0, scale: 0.72, y: 2 }
           }
           transition={{
-            duration: prefersReducedMotion ? 0 : 0.18,
+            duration: prefersReducedMotion ? 0 : 0.24,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
           {state === "success" ? (
             <motion.svg
               aria-hidden="true"
-              className="size-4"
+              className={sizeClass.icon}
               fill="none"
               viewBox="0 0 24 24"
             >
+              <motion.circle
+                animate={{ pathLength: 1 }}
+                cx="12"
+                cy="12"
+                initial={prefersReducedMotion ? false : { pathLength: 0 }}
+                r="9.25"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                transition={{
+                  duration: prefersReducedMotion ? 0 : 0.2,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              />
               <motion.path
                 animate={{ pathLength: 1 }}
-                d="m5 12 4 4L19 6"
+                d="m8 12.25 2.55 2.55 5.45-5.7"
                 initial={prefersReducedMotion ? false : { pathLength: 0 }}
                 stroke="currentColor"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2.25}
+                strokeWidth="1.9"
                 transition={{
-                  duration: prefersReducedMotion ? 0 : 0.24,
+                  delay: prefersReducedMotion ? 0 : 0.08,
+                  duration: prefersReducedMotion ? 0 : 0.18,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               />
             </motion.svg>
           ) : state === "error" ? (
-            <CircleX aria-hidden="true" className="size-4" strokeWidth={2} />
+            <CircleX
+              aria-hidden="true"
+              className={sizeClass.icon}
+              strokeWidth={1.8}
+            />
           ) : (
             <LoaderCircle
               aria-hidden="true"
               className={cn(
-                "size-4",
+                sizeClass.icon,
                 !prefersReducedMotion &&
                   "animate-spin motion-reduce:animate-none"
               )}
-              strokeWidth={2}
+              strokeWidth={1.8}
             />
           )}
         </motion.span>

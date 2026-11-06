@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Check } from "lucide-react"
+import { TextMorph } from "torph/react"
 import { Button } from "@/components/ui/button"
 import { ChangeHighlight } from "@/components/ui/change-highlight"
 import { ConfettiBurst } from "@/components/ui/confetti-burst"
@@ -31,8 +32,8 @@ const snippets: Record<string, string> = {
   "success-check": [
     'import { SuccessCheck } from "@/components/ui/success-check"',
     "",
+    '<SuccessCheck state="success" size="lg" label="Upload complete" />',
     '<SuccessCheck state="loading" label="Uploading files" />',
-    '<SuccessCheck state="success" label="Upload complete" />',
     '<SuccessCheck state="error" label="Upload failed" />',
   ].join("\n"),
   "change-highlight": [
@@ -91,27 +92,91 @@ const statusSequence: SuccessCheckState[] = ["loading", "success", "error"]
 
 function SuccessCheckSpecimen() {
   const [state, setState] = useState<SuccessCheckState>("loading")
-  const stateCopy: Record<SuccessCheckState, { label: string; text: string }> =
-    {
-      loading: { label: "Uploading files", text: "Uploading files" },
-      success: { label: "Upload complete", text: "Upload complete" },
-      error: { label: "Upload failed", text: "Upload needs attention" },
-    }
-
-  const advanceState = () => {
-    const currentIndex = statusSequence.indexOf(state)
-    setState(statusSequence[(currentIndex + 1) % statusSequence.length])
+  const stateCopy: Record<
+    SuccessCheckState,
+    { label: string; title: string; description: string; control: string }
+  > = {
+    loading: {
+      label: "Uploading files",
+      title: "Uploading files",
+      description: "Preparing three files to share.",
+      control: "Loading",
+    },
+    success: {
+      label: "Upload complete",
+      title: "Upload complete",
+      description: "Three files are ready to share.",
+      control: "Complete",
+    },
+    error: {
+      label: "Upload failed",
+      title: "Upload needs attention",
+      description: "One file type is not supported.",
+      control: "Error",
+    },
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-code-line bg-code-surface p-4">
-      <SuccessCheck label={stateCopy[state].label} state={state} />
-      <p className="min-w-40 flex-1 text-sm text-code-ink">
-        {stateCopy[state].text}
-      </p>
-      <Button onClick={advanceState} size="sm" variant="outline">
-        Next state
-      </Button>
+    <div className="space-y-3">
+      <div className="flex min-w-0 items-center gap-4 rounded-xl border border-code-line bg-code-surface p-5">
+        <SuccessCheck label={stateCopy[state].label} size="lg" state={state} />
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-code-ink">
+            <TextMorph
+              as="span"
+              duration={220}
+              key={state}
+              respectReducedMotion
+            >
+              {stateCopy[state].title}
+            </TextMorph>
+          </p>
+          <p className="mt-1 text-xs leading-5 text-code-muted">
+            {stateCopy[state].description}
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div
+          aria-label="Preview a status"
+          className="flex items-center gap-1.5"
+          role="group"
+        >
+          {statusSequence.map((nextState) => (
+            <Button
+              key={nextState}
+              aria-pressed={state === nextState}
+              onClick={() => setState(nextState)}
+              size="sm"
+              variant={state === nextState ? "secondary" : "ghost"}
+            >
+              {stateCopy[nextState].control}
+            </Button>
+          ))}
+        </div>
+        <div
+          aria-label="Success check sizes"
+          className="flex items-center gap-3 rounded-lg border border-code-line/70 bg-code-surface px-3 py-2"
+          role="group"
+        >
+          <span className="text-xs text-code-muted">Sizes</span>
+          <SuccessCheck
+            label="Small complete state"
+            size="sm"
+            state="success"
+          />
+          <SuccessCheck
+            label="Medium complete state"
+            size="md"
+            state="success"
+          />
+          <SuccessCheck
+            label="Large complete state"
+            size="lg"
+            state="success"
+          />
+        </div>
+      </div>
     </div>
   )
 }
