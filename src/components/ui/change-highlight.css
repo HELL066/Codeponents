@@ -1,0 +1,26 @@
+.code-change-highlight--active {
+  animation: code-change-highlight var(--code-change-highlight-duration, 820ms)
+    ease-out both;
+}
+
+@keyframes code-change-highlight {
+  0% {
+    background-color: var(--code-accent-soft);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--code-accent) 14%, transparent),
+      0 0 0 3px color-mix(in srgb, var(--code-accent) 6%, transparent);
+  }
+
+  100% {
+    background-color: transparent;
+    box-shadow:
+      0 0 0 0 transparent,
+      0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-change-highlight--active {
+    animation: none;
+  }
+}

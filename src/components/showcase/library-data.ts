@@ -117,7 +117,15 @@ export const libraryGroups: LibraryGroup[] = [
     ],
   },
   { name: "Developer tools", ids: ["code-block"] },
-  { name: "Motion", ids: ["shader-canvas"] },
+  {
+    name: "Motion",
+    ids: [
+      "confetti-burst",
+      "success-check",
+      "change-highlight",
+      "shader-canvas",
+    ],
+  },
 ]
 
 const definitions = [
@@ -483,6 +491,24 @@ const definitions = [
     "Toast",
     "Confirm a change without interrupting.",
     "toast notification status success",
+  ],
+  [
+    "confetti-burst",
+    "Confetti burst",
+    "Mark a meaningful completion with a brief, local celebration.",
+    "confetti celebration success completion milestone animation",
+  ],
+  [
+    "success-check",
+    "Success check",
+    "Move between loading, success, and error states.",
+    "success check status loading error transition feedback",
+  ],
+  [
+    "change-highlight",
+    "Change highlight",
+    "Briefly call attention to content that just changed.",
+    "change highlight update pulse row value animation",
   ],
   [
     "avatar",

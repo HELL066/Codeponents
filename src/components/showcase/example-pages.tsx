@@ -1,10 +1,21 @@
-import { lazy, Suspense, useMemo, useState, type RefObject } from "react"
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from "react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { Bell, CalendarDays, LayoutDashboard, Users } from "lucide-react"
+import { TextMorph } from "torph/react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { BottomNavigation } from "@/components/ui/bottom-navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChangeHighlight } from "@/components/ui/change-highlight"
+import { ConfettiBurst } from "@/components/ui/confetti-burst"
 import {
   EventsCalendar,
   type EventCalendarEvent,
@@ -13,6 +24,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { MetricCard } from "@/components/ui/metric-card"
 import { Progress } from "@/components/ui/progress"
+import {
+  SuccessCheck,
+  type SuccessCheckState,
+} from "@/components/ui/success-check"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/toast"
 import "./example-pages.css"
@@ -228,6 +243,58 @@ function OverviewScreen({
   events: EventCalendarEvent[]
   onOpenEvents: () => void
 }) {
+  const [completedMilestones, setCompletedMilestones] = useState(24)
+  const [completionState, setCompletionState] =
+    useState<Extract<SuccessCheckState, "loading" | "success">>("success")
+  const [completionRevision, setCompletionRevision] = useState(0)
+  const completionTimeoutRef = useRef<number | null>(null)
+  const isPlanComplete = completedMilestones === 25
+  const progressValue = Math.round((completedMilestones / 25) * 100)
+  const completionCopy =
+    completionState === "loading"
+      ? {
+          label: "Completing onboarding",
+          title: "Saving final review",
+          description: "Updating the project plan.",
+        }
+      : isPlanComplete
+        ? {
+            label: "Onboarding complete",
+            title: "Onboarding complete",
+            description: "All 25 milestones are done.",
+          }
+        : {
+            label: "Progress saved",
+            title: "Final review is ready",
+            description: "Complete it to finish onboarding.",
+          }
+
+  useEffect(() => {
+    return () => {
+      if (completionTimeoutRef.current !== null) {
+        window.clearTimeout(completionTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const completeFinalMilestone = () => {
+    if (
+      completionTimeoutRef.current !== null ||
+      isPlanComplete ||
+      completionState === "loading"
+    ) {
+      return
+    }
+
+    setCompletionState("loading")
+    completionTimeoutRef.current = window.setTimeout(() => {
+      completionTimeoutRef.current = null
+      setCompletedMilestones(25)
+      setCompletionState("success")
+      setCompletionRevision((revision) => revision + 1)
+    }, 520)
+  }
+
   const todayLabel = new Intl.DateTimeFormat(undefined, {
     weekday: "long",
     month: "long",
@@ -254,14 +321,20 @@ function OverviewScreen({
               <CardTitle>Member onboarding</CardTitle>
               <p>Quarterly plan</p>
             </div>
-            <strong>72%</strong>
+            <strong>{progressValue}%</strong>
           </CardHeader>
           <CardContent className="example-pages__project-content">
-            <Progress aria-label="Member onboarding progress" value={72} />
-            <div className="example-pages__project-summary">
-              <span>18 of 25 milestones</span>
-              <span>7 left</span>
-            </div>
+            <Progress
+              aria-label="Member onboarding progress"
+              value={progressValue}
+            />
+            <ChangeHighlight
+              className="example-pages__project-summary"
+              triggerKey={completionRevision}
+            >
+              <span>{completedMilestones} of 25 milestones</span>
+              <span>{25 - completedMilestones} left</span>
+            </ChangeHighlight>
             <div className="example-pages__milestones">
               <div>
                 <span>Planning</span>
@@ -269,12 +342,53 @@ function OverviewScreen({
               </div>
               <div>
                 <span>Research</span>
-                <strong>In progress</strong>
+                <strong>Complete</strong>
               </div>
               <div>
-                <span>Welcome session</span>
-                <strong>Next</strong>
+                <span>Final review</span>
+                <strong>{isPlanComplete ? "Complete" : "Next"}</strong>
               </div>
+            </div>
+            <div className="example-pages__project-completion">
+              <div className="relative grid size-10 shrink-0 place-items-center">
+                <SuccessCheck
+                  label={completionCopy.label}
+                  size="md"
+                  state={completionState}
+                />
+                <ConfettiBurst
+                  particleCount={14}
+                  triggerKey={completionRevision}
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-code-ink">
+                  <TextMorph
+                    as="span"
+                    duration={220}
+                    key={completionCopy.title}
+                    respectReducedMotion
+                  >
+                    {completionCopy.title}
+                  </TextMorph>
+                </p>
+                <p className="mt-0.5 text-[11px] leading-4 text-code-muted">
+                  {completionCopy.description}
+                </p>
+              </div>
+              <Button
+                className="example-pages__complete-button"
+                disabled={isPlanComplete || completionState === "loading"}
+                onClick={completeFinalMilestone}
+                size="sm"
+                variant={isPlanComplete ? "secondary" : "outline"}
+              >
+                {isPlanComplete
+                  ? "Plan complete"
+                  : completionState === "loading"
+                    ? "Saving…"
+                    : "Complete final milestone"}
+              </Button>
             </div>
           </CardContent>
         </Card>
