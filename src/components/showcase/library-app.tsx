@@ -73,7 +73,8 @@ function SearchCommandItem({
   reduceMotion,
   value,
   ...props
-}: ComponentProps<typeof CommandItem> & {
+}: Omit<ComponentProps<typeof MotionCommandItem>, "children"> & {
+  children: ComponentProps<typeof CommandItem>["children"]
   commandValue: string
   reduceMotion: boolean
 }) {

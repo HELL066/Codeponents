@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.14.0"
+  },
   "scripts": {
     "prepare:registry": "node scripts/prepare-registry.mjs",
     "registry:build": "npm run prepare:registry && shadcn build registry.json --output public/r/v1",
@@ -11,8 +14,11 @@
     "prebuild": "npm run registry:build",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -33,7 +39,6 @@
     "react-dom": "^19.3.1",
     "react-resizable-panels": "^4.18.0",
     "recharts": "^3.10.1",
-    "shadcn": "^4.23.0",
     "shiki": "^4.6.0",
     "skullet": "^0.0.3",
     "sonner": "^2.0.8",
@@ -44,6 +49,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^10",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -52,10 +61,13 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17",
+    "jsdom": "^31.0.0",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "shadcn": "^4.23.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8",
-    "vite": "^8"
+    "vite": "^8",
+    "vitest": "^5.1.0"
   }
 }
