@@ -251,7 +251,7 @@ function TimeZonePicker({
 
   const resolvedOptions = React.useMemo(() => {
     if (!isOpen) return []
-    const source =
+    const source: TimeZoneOption[] =
       options !== undefined
         ? [...options]
         : DEFAULT_TIME_ZONES.map((timeZone) => ({ value: timeZone }))
