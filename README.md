@@ -34,11 +34,13 @@ Change `button` in the install command to the component name you want. The galle
 ## Run locally
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-Use `npm run build` to create a production build and `npm run lint` to check the code.
+Run `npm run check` before opening a pull request. It runs lint, type checks,
+component tests, and a production build. See [Contributing](./CONTRIBUTING.md)
+for the pull request workflow.
 
 ## Project files
 
