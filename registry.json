@@ -72,7 +72,7 @@
       "name": "toggle",
       "type": "registry:ui",
       "title": "Toggle",
-      "description": "A single on or off choice",
+      "description": "A tactile button with a distinct pressed state",
       "registryDependencies": [
         "./codeponents-base.json"
       ],

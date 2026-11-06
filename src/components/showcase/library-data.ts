@@ -153,8 +153,8 @@ const definitions = [
   [
     "toggle",
     "Toggle",
-    "A single on or off choice.",
-    "toggle pressed state button",
+    "A tactile button with a distinct pressed state.",
+    "toggle pressed state button tactile on off",
   ],
   [
     "toggle-group",
