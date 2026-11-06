@@ -10,6 +10,9 @@ import { cn } from "@/lib/utils"
 import "./confetti-burst.css"
 
 type ConfettiParticleStyle = CSSProperties & {
+  "--code-confetti-arc-rotation": string
+  "--code-confetti-arc-x": string
+  "--code-confetti-arc-y": string
   "--code-confetti-color": string
   "--code-confetti-delay": string
   "--code-confetti-duration": string
@@ -26,16 +29,10 @@ type ConfettiParticleStyle = CSSProperties & {
 type ConfettiBurstStyle = CSSProperties & {
   "--code-confetti-origin-x": string
   "--code-confetti-origin-y": string
-  "--code-confetti-pop-duration": string
-  "--code-confetti-ring-color": string
-  "--code-confetti-ring-delay": string
-  "--code-confetti-ring-second-color": string
-  "--code-confetti-spark-color": string
-  "--code-confetti-spark-delay": string
 }
 
-type ConfettiParticleShape = "dot" | "diamond" | "ribbon" | "spark"
-type ConfettiBurstPattern = "radial" | "fountain" | "sweep"
+type ConfettiParticleShape = "dot" | "paper" | "ribbon"
+type ConfettiBurstPattern = "left" | "right" | "crown"
 
 type ConfettiParticle = {
   key: string
@@ -71,66 +68,63 @@ function createConfettiBurst(
   particleCount: number,
   duration: number
 ): ConfettiBurstFrame {
-  const pattern = randomItem<ConfettiBurstPattern>([
-    "radial",
-    "fountain",
-    "sweep",
-  ])
-  const sweepDirection = Math.random() < 0.5 ? -1 : 1
+  const pattern = randomItem<ConfettiBurstPattern>(["left", "right", "crown"])
+  const direction =
+    pattern === "left"
+      ? -1
+      : pattern === "right"
+        ? 1
+        : Math.random() < 0.5
+          ? -1
+          : 1
   const originX =
-    pattern === "sweep"
-      ? sweepDirection < 0
-        ? randomBetween(28, 42)
-        : randomBetween(58, 72)
-      : randomBetween(28, 72)
+    pattern === "left"
+      ? randomBetween(28, 42)
+      : pattern === "right"
+        ? randomBetween(58, 72)
+        : randomBetween(36, 64)
   const originY =
-    pattern === "radial" ? randomBetween(28, 72) : randomBetween(50, 74)
-  const phase = randomBetween(0, Math.PI * 2)
-  const primaryColor = randomItem(confettiColors)
-  const primaryColorIndex = confettiColors.indexOf(primaryColor)
-  const secondaryColor =
-    confettiColors[(primaryColorIndex + 2) % confettiColors.length]
-  const sparkColor =
-    confettiColors[(primaryColorIndex + 1) % confettiColors.length]
+    pattern === "crown" ? randomBetween(38, 54) : randomBetween(52, 70)
+  const centerAngle =
+    pattern === "left" ? -2.15 : pattern === "right" ? -0.99 : -Math.PI / 2
+  const fanWidth = pattern === "crown" ? 2.25 : 1.8
+  const style: ConfettiBurstStyle = {
+    "--code-confetti-origin-x": String(Math.round(originX)) + "%",
+    "--code-confetti-origin-y": String(Math.round(originY)) + "%",
+  }
 
   const particles = Array.from({ length: particleCount }, (_, index) => {
-    const progress = (index + 0.5 + randomBetween(-0.28, 0.28)) / particleCount
-    const jitter = randomBetween(-0.2, 0.2)
+    const progress = (index + randomBetween(0.16, 0.84)) / particleCount
     const angle =
-      pattern === "fountain"
-        ? -Math.PI / 2 + (progress - 0.5) * 2.45 + jitter
-        : pattern === "sweep"
-          ? (sweepDirection < 0 ? -2.75 : -0.38) +
-            (progress - 0.5) * 1.55 +
-            jitter
-          : phase + progress * Math.PI * 2 + jitter
-    const distance = randomBetween(38, 78)
-    const lift =
-      pattern === "radial" ? randomBetween(0, 8) : randomBetween(8, 22)
-    const x = Math.round(Math.cos(angle) * distance)
-    const y = Math.round(Math.sin(angle) * distance - lift)
-    const midX = Math.round(x * 0.44)
-    const midY = Math.round(y * 0.44 - randomBetween(7, 14))
-    const spin = randomBetween(150, 500) * (Math.random() < 0.5 ? -1 : 1)
+      centerAngle + (progress - 0.5) * fanWidth + randomBetween(-0.16, 0.16)
+    const liftDistance = randomBetween(28, 54)
+    const liftX = Math.cos(angle) * liftDistance
+    const liftY = Math.sin(angle) * liftDistance
+    const curl = direction * randomBetween(12, 34) + randomBetween(-8, 8)
+    const midX = Math.round(liftX * 0.42)
+    const midY = Math.round(liftY * 0.42 - randomBetween(5, 11))
+    const arcX = Math.round(liftX * 1.08 + curl * 0.42)
+    const arcY = Math.round(liftY * 1.08 - randomBetween(9, 19))
+    const x = Math.round(liftX * 1.48 + curl)
+    const y = Math.round(liftY * 0.62 + randomBetween(26, 58))
+    const spin = randomBetween(180, 540) * (Math.random() < 0.5 ? -1 : 1)
     const size = randomBetween(4, 7)
     const shape: ConfettiParticleShape =
-      index % 5 === 0
-        ? "spark"
-        : index % 4 === 0
-          ? "ribbon"
-          : index % 3 === 0
-            ? "diamond"
-            : "dot"
-    const width = shape === "ribbon" ? size * 0.7 : size
-    const height = shape === "ribbon" ? size * 1.9 : size
-    const safeDuration = Math.round(duration * randomBetween(0.76, 1))
+      index % 5 === 0 ? "ribbon" : index % 3 === 0 ? "paper" : "dot"
+    const width = shape === "ribbon" ? size * 0.62 : size
+    const height =
+      shape === "ribbon" ? size * 2.1 : shape === "paper" ? size * 1.25 : size
+    const particleDuration = Math.round(duration * randomBetween(0.78, 1))
 
-    const style: ConfettiParticleStyle = {
+    const particleStyle: ConfettiParticleStyle = {
+      "--code-confetti-arc-rotation": String(Math.round(spin * 0.66)) + "deg",
+      "--code-confetti-arc-x": String(arcX) + "px",
+      "--code-confetti-arc-y": String(arcY) + "px",
       "--code-confetti-color": randomItem(confettiColors),
-      "--code-confetti-delay": String(Math.round(randomBetween(0, 96))) + "ms",
-      "--code-confetti-duration": String(safeDuration) + "ms",
+      "--code-confetti-delay": String(Math.round(randomBetween(0, 88))) + "ms",
+      "--code-confetti-duration": String(particleDuration) + "ms",
       "--code-confetti-height": String(Math.round(height)) + "px",
-      "--code-confetti-mid-rotation": String(Math.round(spin * 0.42)) + "deg",
+      "--code-confetti-mid-rotation": String(Math.round(spin * 0.28)) + "deg",
       "--code-confetti-mid-x": String(midX) + "px",
       "--code-confetti-mid-y": String(midY) + "px",
       "--code-confetti-rotation": String(Math.round(spin)) + "deg",
@@ -142,23 +136,9 @@ function createConfettiBurst(
     return {
       key: String(id) + "-" + String(index),
       shape,
-      style,
+      style: particleStyle,
     }
   })
-
-  const style: ConfettiBurstStyle = {
-    "--code-confetti-origin-x": String(Math.round(originX)) + "%",
-    "--code-confetti-origin-y": String(Math.round(originY)) + "%",
-    "--code-confetti-pop-duration":
-      String(Math.round(Math.min(duration * 0.72, 560))) + "ms",
-    "--code-confetti-ring-color": primaryColor,
-    "--code-confetti-ring-delay":
-      String(Math.round(randomBetween(40, 84))) + "ms",
-    "--code-confetti-ring-second-color": secondaryColor,
-    "--code-confetti-spark-color": sparkColor,
-    "--code-confetti-spark-delay":
-      String(Math.round(randomBetween(0, 18))) + "ms",
-  }
 
   return { id, pattern, style, particles }
 }
@@ -167,9 +147,9 @@ export interface ConfettiBurstProps extends Omit<
   ComponentProps<"span">,
   "children"
 > {
-  /** Changing this value fires a randomized burst inside a positioned container. */
+  /** Changing this value fires a randomized confetti flourish. */
   triggerKey: number | string | null
-  /** Number of particles in the burst. Clamped between 4 and 32. */
+  /** Number of pieces in the burst. Clamped between 4 and 32. */
   particleCount?: number
   /** Particle travel time in milliseconds. Clamped below one second. */
   duration?: number
@@ -213,7 +193,7 @@ function ConfettiBurst({
 
     const timeout = window.setTimeout(() => {
       setBurst((current) => (current?.id === burst.id ? null : current))
-    }, safeDuration + 130)
+    }, safeDuration + 120)
 
     return () => window.clearTimeout(timeout)
   }, [burst, safeDuration])
@@ -232,9 +212,6 @@ function ConfettiBurst({
       key={burst.id}
       style={mergedStyle}
     >
-      <span className="code-confetti-burst__ring" />
-      <span className="code-confetti-burst__ring code-confetti-burst__ring--second" />
-      <span className="code-confetti-burst__spark" />
       {burst.particles.map(({ key, shape, style: particleStyle }) => (
         <span
           key={key}
