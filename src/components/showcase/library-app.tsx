@@ -296,8 +296,9 @@ function SearchBox({
     <label className="library__search">
       <Search aria-hidden="true" size={16} />
       <span className="sr-only">Search components</span>
-      <input
+      <Input
         ref={inputRef}
+        className="h-auto w-full min-w-0 rounded-none border-0 bg-transparent px-0 text-xs text-white shadow-none hover:border-0 focus-visible:border-0 focus-visible:ring-0"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder="Search components"
@@ -671,8 +672,12 @@ function ComponentShowcase() {
         )
       ).filter((element) => element.getClientRects().length > 0)
 
+    const getSidebarFocusTarget = () =>
+      dialog.querySelector<HTMLElement>(".library__sidebar-close") ??
+      getFocusableItems()[0]
+
     const focusInitialItem = () => {
-      const target = searchRef.current ?? getFocusableItems()[0]
+      const target = getSidebarFocusTarget()
       target?.focus()
     }
 
@@ -707,7 +712,7 @@ function ComponentShowcase() {
 
     const handleFocusIn = (event: FocusEvent) => {
       if (event.target instanceof Node && !dialog.contains(event.target)) {
-        ;(searchRef.current ?? getFocusableItems()[0])?.focus()
+        getSidebarFocusTarget()?.focus()
       }
     }
 
