@@ -395,7 +395,7 @@ function TimeZonePicker({
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-1rem)] min-w-[min(18rem,calc(100vw-2rem))] bg-code-surface-raised p-1 dark:ring-1 dark:ring-code-line/55"
+          className="w-[min(var(--radix-popover-trigger-width),20rem)] max-w-[calc(100vw-1rem)] min-w-[min(18rem,calc(100vw-2rem))] bg-code-surface-raised p-1 dark:ring-1 dark:ring-code-line/55"
           sideOffset={6}
         >
           <Command>
@@ -430,18 +430,15 @@ function TimeZonePicker({
                           {option.label}
                         </span>
                       </span>
+                      {selectedValue === option.value ? (
+                        <Check
+                          aria-hidden="true"
+                          className="size-4 shrink-0 text-code-accent"
+                        />
+                      ) : null}
                       <span className="shrink-0 text-xs leading-4 text-code-muted tabular-nums">
                         {option.offset}
                       </span>
-                      <Check
-                        aria-hidden="true"
-                        className={cn(
-                          "size-4 shrink-0 text-code-accent transition-opacity duration-150 motion-reduce:transition-none",
-                          selectedValue === option.value
-                            ? "opacity-100"
-                            : "opacity-0"
-                        )}
-                      />
                     </CommandItem>
                   ))}
                 </CommandGroup>
