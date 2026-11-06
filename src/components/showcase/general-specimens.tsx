@@ -1075,7 +1075,7 @@ function GeneralSpecimen({
 
     case "date-time-picker":
       return (
-        <div className="w-full max-w-xl space-y-3">
+        <div className="w-full max-w-2xl space-y-3">
           <DateTimePicker
             aria-label="Meeting date and time"
             locale="en-PH"
