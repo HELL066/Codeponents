@@ -357,7 +357,7 @@ function OverviewScreen({
                   state={completionState}
                 />
                 <ConfettiBurst
-                  particleCount={12}
+                  particleCount={20}
                   triggerKey={completionRevision}
                 />
               </div>
