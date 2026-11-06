@@ -952,7 +952,7 @@ function GeneralSpecimen({
 
     case "time-zone-picker":
       return (
-        <div className="w-full max-w-sm space-y-1.5">
+        <div className="w-full max-w-xs space-y-1.5">
           <label
             className="block text-sm font-medium text-code-ink"
             htmlFor="general-time-zone"
