@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { Check } from "lucide-react"
 import { TextMorph } from "torph/react"
 import { Button } from "@/components/ui/button"
 import { ChangeHighlight } from "@/components/ui/change-highlight"
@@ -15,16 +14,20 @@ const snippets: Record<string, string> = {
     'import { useState } from "react"',
     'import { Button } from "@/components/ui/button"',
     'import { ConfettiBurst } from "@/components/ui/confetti-burst"',
+    'import { SuccessCheck } from "@/components/ui/success-check"',
     "",
     "function UploadComplete() {",
     "  const [burst, setBurst] = useState(0)",
     "",
     "  return (",
-    '    <div className="relative inline-flex">',
+    '    <div className="space-y-3">',
+    '      <div className="relative grid size-10 place-items-center">',
+    '        <SuccessCheck state="success" label="Upload complete" />',
+    "        <ConfettiBurst triggerKey={burst} />",
+    "      </div>",
     "      <Button onClick={() => setBurst((value) => value + 1)}>",
-    "        Celebrate completion",
+    "        Celebrate upload",
     "      </Button>",
-    "      <ConfettiBurst triggerKey={burst} />",
     "    </div>",
     "  )",
     "}",
@@ -68,9 +71,9 @@ function ConfettiBurstSpecimen() {
   const [burst, setBurst] = useState(0)
 
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-code-line bg-code-surface p-4">
-      <div className="relative grid size-11 shrink-0 place-items-center rounded-full bg-code-accent-soft text-code-accent">
-        <Check aria-hidden="true" className="size-5" strokeWidth={2} />
+    <div className="mx-auto flex w-full max-w-md flex-wrap items-center gap-4 rounded-xl border border-code-line bg-code-surface p-4">
+      <div className="relative grid size-10 shrink-0 place-items-center">
+        <SuccessCheck label="File uploaded" size="md" state="success" />
         <ConfettiBurst triggerKey={burst} />
       </div>
       <div className="min-w-32 flex-1">
@@ -185,9 +188,10 @@ function ChangeHighlightSpecimen() {
   const [completed, setCompleted] = useState(4)
 
   return (
-    <div className="max-w-sm space-y-3">
-      <ChangeHighlight className="rounded-xl" triggerKey={completed}>
+    <div className="mx-auto grid w-full max-w-xs justify-items-center gap-3">
+      <ChangeHighlight className="w-full rounded-xl" triggerKey={completed}>
         <MetricCard
+          className="w-full justify-items-center text-center"
           change={completed === 4 ? "Baseline" : "+1"}
           comparison="today"
           label="Completed tasks"

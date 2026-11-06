@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react"
-import { CircleX, LoaderCircle } from "lucide-react"
+import { LoaderCircle, X } from "lucide-react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { cn } from "@/lib/utils"
 
@@ -41,16 +41,16 @@ function SuccessCheck({
   const sizeClass = sizeClasses[size]
   const stateTone =
     state === "success"
-      ? "border-code-accent/20 bg-code-accent-soft text-code-accent shadow-[0_4px_14px_-10px_color-mix(in_srgb,var(--code-accent)_42%,transparent)]"
+      ? "border-code-accent/40 text-code-accent"
       : state === "error"
-        ? "border-code-danger/20 bg-code-danger/5 text-code-danger"
-        : "border-code-line/75 bg-code-surface text-code-muted"
+        ? "border-code-danger/40 text-code-danger"
+        : "border-transparent text-code-muted"
 
   return (
     <span
       {...props}
       className={cn(
-        "relative isolate inline-grid shrink-0 place-items-center rounded-full border transition-[background-color,border-color,color,box-shadow] duration-200 motion-reduce:transition-none",
+        "relative isolate inline-grid shrink-0 place-items-center rounded-full border bg-transparent transition-[border-color,color,box-shadow] duration-200 motion-reduce:transition-none",
         sizeClass.root,
         stateTone,
         className
@@ -99,27 +99,14 @@ function SuccessCheck({
               fill="none"
               viewBox="0 0 24 24"
             >
-              <motion.circle
-                animate={{ pathLength: 1 }}
-                cx="12"
-                cy="12"
-                initial={prefersReducedMotion ? false : { pathLength: 0 }}
-                r="9.25"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                transition={{
-                  duration: prefersReducedMotion ? 0 : 0.2,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              />
               <motion.path
                 animate={{ pathLength: 1 }}
-                d="m8 12.25 2.55 2.55 5.45-5.7"
+                d="m5 12 4 4L19 6"
                 initial={prefersReducedMotion ? false : { pathLength: 0 }}
                 stroke="currentColor"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth="1.9"
+                strokeWidth="2.1"
                 transition={{
                   delay: prefersReducedMotion ? 0 : 0.08,
                   duration: prefersReducedMotion ? 0 : 0.18,
@@ -128,11 +115,7 @@ function SuccessCheck({
               />
             </motion.svg>
           ) : state === "error" ? (
-            <CircleX
-              aria-hidden="true"
-              className={sizeClass.icon}
-              strokeWidth={1.8}
-            />
+            <X aria-hidden="true" className={sizeClass.icon} strokeWidth={2} />
           ) : (
             <LoaderCircle
               aria-hidden="true"
