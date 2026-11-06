@@ -1,5 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from "react"
-import { AnimatePresence, motion, useReducedMotion } from "motion/react"
+import { useEffect, useId, useRef, useState, type ReactNode } from "react"
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useReducedMotion,
+} from "motion/react"
 import { TextMorph } from "torph/react"
 import {
   ArrowUpRight,
@@ -213,6 +218,14 @@ const previewItems = [
     recency: 2,
   },
 ]
+
+const sortOptions = [
+  { value: "recent", label: "Recently updated" },
+  { value: "name", label: "Name" },
+  { value: "status", label: "Status" },
+] as const
+
+const MotionTableRow = motion.create(TableRow)
 
 const libraryItems: TreeViewItem[] = [
   {
@@ -481,6 +494,7 @@ function GeneralSpecimen({
     "week" | "month" | "quarter"
   >("month")
   const prefersReducedMotion = useReducedMotion()
+  const sortAnimationId = useId()
 
   const bottomNavigationItems: BottomNavigationItem[] = [
     { value: "overview", label: "Overview" },
@@ -788,44 +802,126 @@ function GeneralSpecimen({
           return first.status.localeCompare(second.status)
         return first.recency - second.recency
       })
+      const sortLabel =
+        sortOptions.find((option) => option.value === sortOrder)?.label ??
+        "Recently updated"
+
       return (
         <fieldset className="w-full max-w-md">
           <legend className="mb-3 text-sm font-medium text-code-ink">
             Sort items
           </legend>
-          <RadioGroup
-            value={sortOrder}
-            onValueChange={setSortOrder}
-            aria-label="Sort items"
-          >
-            {[
-              ["recent", "Recently updated"],
-              ["name", "Name"],
-              ["status", "Status"],
-            ].map(([value, label]) => (
-              <label
-                key={value}
-                htmlFor={`general-order-${value}`}
-                className="flex cursor-pointer items-center gap-3 py-1.5 text-sm text-code-ink"
-              >
-                <RadioGroupItem id={`general-order-${value}`} value={value} />
-                {label}
-              </label>
-            ))}
-          </RadioGroup>
-          <ul aria-label="Items" className="mt-4 grid gap-3">
-            {orderedItems.map((item) => (
-              <li
-                className="flex items-center justify-between gap-4 text-sm"
-                key={item.name}
-              >
-                <span className="font-medium text-code-ink">{item.name}</span>
-                <span className="text-xs text-code-muted">
-                  {sortOrder === "status" ? item.status : item.updated}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <LayoutGroup id={sortAnimationId}>
+            <RadioGroup
+              value={sortOrder}
+              onValueChange={setSortOrder}
+              aria-label="Sort items"
+              className="gap-1"
+            >
+              {sortOptions.map(({ value, label }) => {
+                const selected = sortOrder === value
+
+                return (
+                  <label
+                    key={value}
+                    htmlFor={`general-order-${value}`}
+                    className={cn(
+                      "relative isolate flex min-h-10 cursor-pointer items-center gap-3 rounded-lg px-3 py-1.5 text-sm text-code-muted transition-colors duration-150 ease-out has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-code-ring motion-reduce:transition-none",
+                      selected && "text-code-accent"
+                    )}
+                  >
+                    {selected ? (
+                      <motion.span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 z-0 rounded-lg bg-code-accent/8 ring-1 ring-inset ring-code-accent/20"
+                        layoutId={`${sortAnimationId}-selected`}
+                        transition={
+                          prefersReducedMotion
+                            ? { duration: 0 }
+                            : { type: "spring", duration: 0.3, bounce: 0 }
+                        }
+                      />
+                    ) : null}
+                    <RadioGroupItem
+                      id={`general-order-${value}`}
+                      value={value}
+                      className="relative z-10 focus-visible:ring-0"
+                    />
+                    <span className="relative z-10 font-medium">{label}</span>
+                  </label>
+                )
+              })}
+            </RadioGroup>
+            <div className="mt-4 w-full max-w-md">
+              <Table aria-label="Sorted items">
+                <TableCaption>
+                  Sorted by{" "}
+                  <TextMorph
+                    as="span"
+                    className="inline-block min-w-[7.5rem] font-medium text-code-ink"
+                    duration={220}
+                    respectReducedMotion
+                  >
+                    {sortLabel}
+                  </TextMorph>
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead scope="col" className="w-[58%]">
+                      Item
+                    </TableHead>
+                    <TableHead scope="col" className="text-right">
+                      <TextMorph as="span" duration={220} respectReducedMotion>
+                        {sortOrder === "status" ? "Status" : "Updated"}
+                      </TextMorph>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orderedItems.map((item) => (
+                    <MotionTableRow
+                      key={item.name}
+                      layout={prefersReducedMotion ? false : "position"}
+                      transition={
+                        prefersReducedMotion
+                          ? { duration: 0 }
+                          : { type: "spring", duration: 0.3, bounce: 0 }
+                      }
+                      className="hover:bg-code-canvas/45"
+                    >
+                      <TableCell className="font-medium">
+                        {item.name}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {sortOrder === "status" ? (
+                          <Badge
+                            appearance="tinted"
+                            className="rounded-full"
+                            tone={
+                              item.status === "In progress"
+                                ? "info"
+                                : "neutral"
+                            }
+                          >
+                            {item.status}
+                          </Badge>
+                        ) : (
+                          <TextMorph
+                            as="span"
+                            className="text-xs text-code-muted"
+                            duration={220}
+                            respectReducedMotion
+                          >
+                            {item.updated}
+                          </TextMorph>
+                        )}
+                      </TableCell>
+                    </MotionTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </LayoutGroup>
           <span className="sr-only" role="status" aria-live="polite">
             Sorted by{" "}
             {sortOrder === "recent"
