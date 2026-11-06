@@ -56,7 +56,8 @@ function createConfettiBurst(
     const y = Math.round(Math.sin(angle) * distance - randomBetween(1, 5))
     const spin = randomBetween(100, 250) * (Math.random() < 0.5 ? -1 : 1)
     const size = randomBetween(3.5, 5.5)
-    const shape = Math.random() < 0.28 ? "dot" : "paper"
+    const shape: ConfettiParticle["shape"] =
+      Math.random() < 0.28 ? "dot" : "paper"
     const particleDuration = Math.round(duration * randomBetween(0.86, 1))
     const style: ConfettiParticleStyle = {
       "--code-confetti-color":
