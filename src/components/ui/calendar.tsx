@@ -357,7 +357,7 @@ function Calendar({
           id={titleId}
           aria-live="polite"
           aria-atomic="true"
-          className="[font-family:var(--font-heading)] text-base font-normal text-code-ink select-none"
+          className="[font-family:var(--font-heading)] text-code-compact leading-tight font-normal text-code-ink select-none"
         >
           <TextMorph
             as="span"

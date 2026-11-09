@@ -168,7 +168,7 @@
   margin: 0;
   color: var(--library-ink);
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: var(--library-type-section, clamp(1.5rem, 2.2vw, 1.75rem));
+  font-size: var(--library-type-section, clamp(1.625rem, 2.2vw, 1.875rem));
   font-weight: 400;
   letter-spacing: -0.015em;
   line-height: 1.1;
@@ -205,7 +205,7 @@
 .example-pages__project-header [data-slot="card-title"] {
   margin: 0;
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: var(--library-type-group, 1.25rem);
+  font-size: var(--library-type-group, 1.5rem);
   font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 1.12;
@@ -329,7 +329,7 @@
   margin: 0;
   color: var(--library-ink);
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: var(--library-type-group, 1.25rem);
+  font-size: var(--library-type-group, 1.5rem);
   font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 1.12;
@@ -413,7 +413,7 @@
 
 .example-pages__activity-chart [data-slot="card-title"] {
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: var(--library-type-group, 1.25rem);
+  font-size: var(--library-type-group, 1.5rem);
   font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 1.12;
