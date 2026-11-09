@@ -121,7 +121,7 @@ export function ComponentInstallDialog({
           <div className="grid gap-5 border-t border-code-line/50 pt-5 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-5">
             <InstallStep
               copyLabel="registry command"
-              detail="Add Codeponents to your shadcn registry list once."
+              detail="Add Codeponents to your shadcn registry once."
               title="Connect the registry"
               value={registryCommand}
             />

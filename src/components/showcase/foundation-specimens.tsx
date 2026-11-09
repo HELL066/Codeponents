@@ -31,10 +31,10 @@ export function FoundationSpecimen({ entryId }: { entryId: string }) {
     return (
       <div className="foundation-type">
         <h2>Project overview</h2>
-        <p>Recent work and updates, gathered in one clear view</p>
+        <p>Recent work and team updates</p>
         <div className="foundation-type__section">
           <h3>Recent activity</h3>
-          <p>Interface copy stays readable and easy to scan</p>
+          <p>Use a consistent type scale for headings and interface text</p>
         </div>
         <span>Unna 400 · Source Sans 3 400–700</span>
       </div>

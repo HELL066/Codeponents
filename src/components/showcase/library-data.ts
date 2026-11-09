@@ -132,19 +132,19 @@ const definitions = [
   [
     "colors",
     "Color tokens",
-    "A standard set of colors",
+    "Color tokens for text, surfaces, and actions",
     "color theme palette semantic tokens light dark",
   ],
   [
     "type",
     "Typography",
-    "A clear type scale for every screen.",
+    "Type styles for headings, body text, and interface labels.",
     "type font typography heading body scale",
   ],
   [
     "layout",
     "Spacing and layout",
-    "A standard spacing kit across the interface",
+    "Spacing tokens for consistent layouts",
     "spacing layout grid gap container responsive",
   ],
   [
@@ -162,7 +162,7 @@ const definitions = [
   [
     "toggle",
     "Toggle",
-    "A tactile button with a distinct pressed state.",
+    "A button with on and off states.",
     "toggle pressed state button tactile on off",
   ],
   [
@@ -174,7 +174,7 @@ const definitions = [
   [
     "copy-button",
     "Copy button",
-    "Copy a link with clear feedback.",
+    "Copy a value and show whether it worked.",
     "copy clipboard copied link feedback",
   ],
   [
@@ -198,7 +198,7 @@ const definitions = [
   [
     "input",
     "Input",
-    "A focused field for short text.",
+    "Enter a short value in a single-line field.",
     "input text field search email",
   ],
   [
@@ -210,13 +210,13 @@ const definitions = [
   [
     "input-group",
     "Input group",
-    "A field with a useful prefix or suffix.",
+    "Pair a field with a prefix, suffix, or action.",
     "input group prefix suffix search URL",
   ],
   [
     "number-field",
     "Number field",
-    "Edit a value in measured steps.",
+    "Change a number with increment and decrement controls.",
     "number field increment decrement quantity",
   ],
   [
@@ -228,7 +228,7 @@ const definitions = [
   [
     "native-select",
     "Native select",
-    "A compact choice with browser behavior.",
+    "A dropdown that uses the browser's native menu.",
     "select native dropdown options",
   ],
   [
@@ -270,25 +270,25 @@ const definitions = [
   [
     "event-list-item",
     "Event list item",
-    "Scan an event at a glance",
+    "Display event timing and details in one row",
     "event row agenda time date details location participants",
   ],
   [
     "events-calendar",
     "Events calendar",
-    "Explore events by month or agenda.",
+    "View events by month or agenda.",
     "events calendar agenda schedule event time location month",
   ],
   [
     "activity-feed",
     "Activity feed",
-    "Scan recent changes in one place",
+    "Show recent changes as a timeline",
     "activity feed timeline updates notifications history",
   ],
   [
     "list-toolbar",
     "List toolbar",
-    "Search, filter, and act on a list",
+    "Search, filter, and sort list items",
     "list toolbar search filter sort bulk selection actions",
   ],
   [
@@ -312,7 +312,7 @@ const definitions = [
   [
     "time-zone-picker",
     "Time zone picker",
-    "Search and choose an IANA time zone with its UTC offset.",
+    "Find and choose an IANA time zone, then check its UTC offset.",
     "timezone time zone world city region utc offset daylight saving scheduling",
   ],
   [
@@ -342,7 +342,7 @@ const definitions = [
   [
     "sidebar",
     "Sidebar",
-    "Group navigation beside the page.",
+    "Place navigation beside the page content.",
     "sidebar app shell navigation menu active",
   ],
   [
@@ -397,7 +397,7 @@ const definitions = [
   [
     "command",
     "Command menu",
-    "Search actions from the keyboard.",
+    "Search and select actions in a command menu.",
     "command menu search keyboard shortcut",
   ],
   [
@@ -415,7 +415,7 @@ const definitions = [
   [
     "popover",
     "Popover",
-    "A small task anchored to its trigger.",
+    "Show a small panel next to a control.",
     "popover anchored panel filters",
   ],
   [
@@ -433,7 +433,7 @@ const definitions = [
   [
     "dialog",
     "Dialog",
-    "Focus a brief task in the current view.",
+    "Open a dialog for a focused task.",
     "dialog modal form details",
   ],
   [
@@ -445,7 +445,7 @@ const definitions = [
   [
     "sheet",
     "Sheet",
-    "Open a side panel for focused work.",
+    "Open a side panel beside the current view.",
     "sheet side panel drawer",
   ],
   [
@@ -454,17 +454,17 @@ const definitions = [
     "Open a bottom panel on small screens.",
     "drawer mobile bottom panel",
   ],
-  ["badge", "Badge", "Make status easy to scan.", "badge status category tag"],
+  ["badge", "Badge", "Label a status or category.", "badge status category tag"],
   [
     "alert",
     "Alert",
-    "Keep a useful message in the page flow.",
+    "Show a message in the page flow.",
     "alert message warning success error",
   ],
   [
     "progress",
     "Progress bar",
-    "Show how far a task has moved.",
+    "Show progress toward completion.",
     "progress bar completion status",
   ],
   [
@@ -483,7 +483,7 @@ const definitions = [
   [
     "empty-state",
     "Empty state",
-    "Give an empty view a next step.",
+    "Explain an empty view and offer a next step.",
     "empty state no results zero data",
   ],
   [
@@ -495,13 +495,13 @@ const definitions = [
   [
     "confetti-burst",
     "Confetti burst",
-    "Mark a meaningful completion with a brief, local celebration.",
+    "Celebrate a completed task with a short confetti burst.",
     "confetti celebration success completion milestone animation",
   ],
   [
     "success-check",
     "Success check",
-    "Move between loading, success, and error states.",
+    "Show a task's loading, success, and error states.",
     "success check status loading error transition feedback",
   ],
   [
@@ -519,25 +519,25 @@ const definitions = [
   [
     "card",
     "Card",
-    "Group information with a clear focus.",
+    "Group related content and actions in one surface.",
     "card surface content section",
   ],
   [
     "item",
     "Item",
-    "Arrange content and actions in a flexible row.",
+    "Place related content and actions in a row.",
     "item list row content action people resource notification",
   ],
   [
     "metric-card",
     "Metric card",
-    "Show one value with context at a glance",
+    "Pair a value with its change or comparison",
     "metric card dashboard statistic comparison value",
   ],
   [
     "table",
     "Table",
-    "Read structured rows and columns.",
+    "Display data in rows and columns.",
     "table data rows columns responsive",
   ],
   [
@@ -555,25 +555,25 @@ const definitions = [
   [
     "separator",
     "Separator",
-    "Create a quiet break between groups.",
+    "Separate sections with a divider.",
     "separator divider horizontal vertical",
   ],
   [
     "resizable",
     "Resizable panels",
-    "Adjust the space between two views.",
+    "Resize adjacent panels.",
     "resizable panels splitter split view layout",
   ],
   [
     "aspect-ratio",
     "Aspect ratio",
-    "Keep media at its intended shape.",
+    "Keep media within a fixed aspect ratio.",
     "aspect ratio image media",
   ],
   [
     "scroll-area",
     "Scroll area",
-    "Keep long content in a bounded view.",
+    "Scroll through content inside a fixed area.",
     "scroll area overflow list",
   ],
   [
@@ -585,13 +585,13 @@ const definitions = [
   [
     "kbd",
     "Keyboard shortcut",
-    "Show a key or shortcut clearly.",
+    "Display a keyboard key or shortcut.",
     "kbd keyboard shortcut keycap",
   ],
   [
     "code-block",
     "Code block",
-    "Present source with clear, copyable formatting.",
+    "Show code with syntax highlighting and a copy button.",
     "code block syntax snippet source copy lines",
   ],
   [
