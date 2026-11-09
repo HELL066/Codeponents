@@ -8,7 +8,7 @@ import {
   Search,
   X,
 } from "lucide-react"
-import { motion, useReducedMotion } from "motion/react"
+import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { TextMorph } from "torph/react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -100,11 +100,17 @@ function DataTable<Row>({
   const [sort, setSort] = React.useState<SortState | null>(null)
   const [query, setQuery] = React.useState("")
   const [page, setPage] = React.useState(1)
-  const [animateNewRows, setAnimateNewRows] = React.useState(false)
   const [selectedKeys, setSelectedKeys] = React.useState<readonly React.Key[]>(
     []
   )
   const reduceMotion = useReducedMotion()
+  const rowTransition = reduceMotion
+    ? { duration: 0 }
+    : {
+        layout: { type: "spring" as const, duration: 0.3, bounce: 0 },
+        y: { duration: 0.22, ease: "easeOut" as const },
+      }
+  const rowInitial = reduceMotion ? false : { y: 4 }
   const tableId = React.useId()
   const searchId = React.useId()
   const pageLimit =
@@ -157,7 +163,6 @@ function DataTable<Row>({
 
   const toggleSort = (column: DataTableColumn<Row>) => {
     if (!column.sortValue) return
-    setAnimateNewRows(true)
     setSort((current) => ({
       id: column.id,
       direction:
@@ -220,12 +225,10 @@ function DataTable<Row>({
                 if (event.key !== "Escape" || !query) return
                 event.preventDefault()
                 event.stopPropagation()
-                setAnimateNewRows(true)
                 setQuery("")
                 setPage(1)
               }}
               onChange={(event) => {
-                setAnimateNewRows(true)
                 setQuery(event.currentTarget.value)
                 setPage(1)
               }}
@@ -239,7 +242,6 @@ function DataTable<Row>({
                 aria-label="Clear search"
                 className="absolute top-0 right-0"
                 onClick={() => {
-                  setAnimateNewRows(true)
                   setQuery("")
                   setPage(1)
                 }}
@@ -319,13 +321,58 @@ function DataTable<Row>({
                       type="button"
                     >
                       {column.header}
-                      <SortIcon
+                      <span
                         aria-hidden="true"
-                        className={cn(
-                          "size-3.5 transition-colors group-hover/table-sort:text-code-accent group-focus-visible/table-sort:text-code-accent motion-reduce:transition-none",
-                          activeSort ? "text-code-accent" : "text-code-muted"
-                        )}
-                      />
+                        className="inline-flex size-3.5 shrink-0"
+                      >
+                        <AnimatePresence initial={false} mode="wait">
+                          <motion.span
+                            animate={{
+                              opacity: 1,
+                              scale: 1,
+                              filter: "blur(0px)",
+                            }}
+                            className="inline-flex size-3.5 items-center justify-center"
+                            exit={
+                              reduceMotion
+                                ? { opacity: 0 }
+                                : {
+                                    opacity: 0,
+                                    scale: 0.25,
+                                    filter: "blur(4px)",
+                                  }
+                            }
+                            initial={
+                              reduceMotion
+                                ? false
+                                : {
+                                    opacity: 0,
+                                    scale: 0.25,
+                                    filter: "blur(4px)",
+                                  }
+                            }
+                            key={activeSort ?? "unsorted"}
+                            transition={
+                              reduceMotion
+                                ? { duration: 0 }
+                                : {
+                                    type: "spring",
+                                    duration: 0.3,
+                                    bounce: 0,
+                                  }
+                            }
+                          >
+                            <SortIcon
+                              className={cn(
+                                "size-3.5 transition-colors group-hover/table-sort:text-code-accent group-focus-visible/table-sort:text-code-accent motion-reduce:transition-none",
+                                activeSort
+                                  ? "text-code-accent"
+                                  : "text-code-muted"
+                              )}
+                            />
+                          </motion.span>
+                        </AnimatePresence>
+                      </span>
                     </button>
                   ) : (
                     column.header
@@ -336,65 +383,67 @@ function DataTable<Row>({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {visibleRows.length ? (
-            visibleRows.map((row) => {
-              const key = rowKey(row)
-              const isSelected = selectedKeySet.has(key)
-              return (
-                <motion.tr
-                  animate={{ opacity: 1, y: 0 }}
-                  className="transition-colors duration-150 ease-out hover:bg-code-quiet/35 data-[selected=true]:bg-code-accent-soft/35 motion-reduce:transition-none"
-                  data-selected={isSelected || undefined}
-                  data-slot="table-row"
-                  initial={
-                    reduceMotion || !animateNewRows
-                      ? false
-                      : { opacity: 0, y: 1 }
-                  }
-                  key={key}
-                  transition={{
-                    duration: reduceMotion ? 0 : 0.12,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  {selectable ? (
-                    <TableCell className="w-10 px-1">
-                      <label className="inline-flex size-10 cursor-pointer items-center justify-center">
-                        <Checkbox
-                          aria-label={`Select ${getRowLabel?.(row) ?? String(key)}`}
-                          checked={isSelected}
-                          onCheckedChange={(checked) =>
-                            toggleRowSelection(row, checked === true)
-                          }
-                        />
-                      </label>
-                    </TableCell>
-                  ) : null}
-                  {columns.map((column) => (
-                    <TableCell
-                      className={
-                        column.align === "end" ? "text-right" : undefined
-                      }
-                      key={column.id}
-                    >
-                      {column.cell(row)}
-                    </TableCell>
-                  ))}
-                </motion.tr>
-              )
-            })
-          ) : (
-            <TableRow>
-              <TableCell
-                className="h-24 text-center text-code-muted"
-                colSpan={columns.length + (selectable ? 1 : 0)}
+          <AnimatePresence initial={false}>
+            {visibleRows.length ? (
+              visibleRows.map((row) => {
+                const key = rowKey(row)
+                const isSelected = selectedKeySet.has(key)
+                return (
+                  <motion.tr
+                    animate={{ y: 0 }}
+                    className="transition-colors duration-150 ease-out hover:bg-code-quiet/35 data-[selected=true]:bg-code-accent-soft/35 motion-reduce:transition-none"
+                    data-selected={isSelected || undefined}
+                    data-slot="table-row"
+                    initial={rowInitial}
+                    key={key}
+                    layout={reduceMotion ? false : "position"}
+                    transition={rowTransition}
+                  >
+                    {selectable ? (
+                      <TableCell className="w-10 px-1">
+                        <label className="inline-flex size-10 cursor-pointer items-center justify-center">
+                          <Checkbox
+                            aria-label={`Select ${getRowLabel?.(row) ?? String(key)}`}
+                            checked={isSelected}
+                            onCheckedChange={(checked) =>
+                              toggleRowSelection(row, checked === true)
+                            }
+                          />
+                        </label>
+                      </TableCell>
+                    ) : null}
+                    {columns.map((column) => (
+                      <TableCell
+                        className={
+                          column.align === "end" ? "text-right" : undefined
+                        }
+                        key={column.id}
+                      >
+                        {column.cell(row)}
+                      </TableCell>
+                    ))}
+                  </motion.tr>
+                )
+              })
+            ) : (
+              <motion.tr
+                animate={{ y: 0 }}
+                initial={rowInitial}
+                key="empty-state"
+                layout={reduceMotion ? false : "position"}
+                transition={rowTransition}
               >
-                <span role="status">
-                  {query.trim() ? "No matching rows" : emptyMessage}
-                </span>
-              </TableCell>
-            </TableRow>
-          )}
+                <TableCell
+                  className="h-24 text-center text-code-muted"
+                  colSpan={columns.length + (selectable ? 1 : 0)}
+                >
+                  <span role="status">
+                    {query.trim() ? "No matching rows" : emptyMessage}
+                  </span>
+                </TableCell>
+              </motion.tr>
+            )}
+          </AnimatePresence>
         </TableBody>
       </Table>
       {selectable || pageLimit ? (
@@ -446,7 +495,6 @@ function DataTable<Row>({
                 aria-label="Previous page"
                 disabled={currentPage <= 1}
                 onClick={() => {
-                  setAnimateNewRows(true)
                   setPage(currentPage - 1)
                 }}
                 size="icon-lg"
@@ -460,7 +508,6 @@ function DataTable<Row>({
                 aria-label="Next page"
                 disabled={currentPage >= pageCount}
                 onClick={() => {
-                  setAnimateNewRows(true)
                   setPage(currentPage + 1)
                 }}
                 size="icon-lg"

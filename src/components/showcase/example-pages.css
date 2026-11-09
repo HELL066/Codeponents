@@ -273,6 +273,11 @@
   border-top: 1px solid var(--library-line);
 }
 
+.example-pages__complete-button {
+  min-width: 10.75rem;
+  min-height: 40px;
+}
+
 .example-pages__overview-aside {
   display: grid;
   min-width: 0;
@@ -550,7 +555,15 @@
 
   .example-pages__project-completion > button {
     grid-column: 2;
-    justify-self: start;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    height: auto;
+    padding: 8px 10px;
+    line-height: 1.25;
+    text-wrap: balance;
+    white-space: normal;
   }
 }
 

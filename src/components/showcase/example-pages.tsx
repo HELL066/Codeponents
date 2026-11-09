@@ -380,14 +380,14 @@ function OverviewScreen({
                 className="example-pages__complete-button"
                 disabled={isPlanComplete || completionState === "loading"}
                 onClick={completeFinalMilestone}
-                size="sm"
+                size="default"
                 variant={isPlanComplete ? "secondary" : "outline"}
               >
                 {isPlanComplete
                   ? "Plan complete"
                   : completionState === "loading"
                     ? "Saving…"
-                    : "Complete final milestone"}
+                    : "Complete milestone"}
               </Button>
             </div>
           </CardContent>
