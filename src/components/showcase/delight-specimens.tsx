@@ -124,7 +124,7 @@ function SuccessCheckSpecimen() {
       <div className="flex min-w-0 items-center gap-4 rounded-xl border border-code-line bg-code-surface p-5">
         <SuccessCheck label={stateCopy[state].label} size="lg" state={state} />
         <div className="min-w-0">
-          <p className="text-sm font-medium text-code-ink">
+          <p className="text-code-body font-medium text-code-ink">
             <TextMorph
               as="span"
               duration={220}
@@ -134,7 +134,7 @@ function SuccessCheckSpecimen() {
               {stateCopy[state].title}
             </TextMorph>
           </p>
-          <p className="mt-1 text-xs leading-5 text-code-muted">
+          <p className="mt-1 text-code-ui leading-5 text-code-muted">
             {stateCopy[state].description}
           </p>
         </div>

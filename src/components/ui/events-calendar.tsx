@@ -357,7 +357,7 @@ function EventsCalendar({
         <div className="flex min-w-0 items-baseline gap-3">
           <MonthHeading
             id={titleId}
-            className="[font-family:var(--font-heading)] text-lg leading-tight font-normal text-code-ink @sm:text-xl @xl:text-2xl"
+            className="[font-family:var(--font-heading)] text-code-compact leading-tight font-normal text-code-ink @sm:text-code-group @xl:text-code-section"
           >
             <TextMorph
               as="span"

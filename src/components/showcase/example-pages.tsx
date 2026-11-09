@@ -121,7 +121,7 @@ export function ExamplePagesPage({
           <h1 ref={headingRef} tabIndex={-1}>
             Examples
           </h1>
-          <p>Complete screens, in context.</p>
+          <p>See the components in a sample workspace.</p>
         </div>
       </header>
 

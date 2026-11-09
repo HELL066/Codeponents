@@ -14,15 +14,12 @@
     --code-type-display,
     clamp(2.75rem, 4.4vw, 3.5rem)
   );
-  --library-type-page: var(
-    --code-type-page,
-    clamp(2rem, 3.2vw, 2.75rem)
-  );
+  --library-type-page: var(--code-type-page, clamp(2rem, 3.2vw, 2.75rem));
   --library-type-section: var(
     --code-type-section,
-    clamp(1.5rem, 2.2vw, 1.75rem)
+    clamp(1.625rem, 2.2vw, 1.875rem)
   );
-  --library-type-group: var(--code-type-group, 1.25rem);
+  --library-type-group: var(--code-type-group, 1.5rem);
   --library-type-body: var(--code-type-body, 1rem);
   --library-type-ui: var(--code-type-ui, 0.875rem);
   --library-type-meta: var(--code-type-meta, 0.75rem);
@@ -2382,7 +2379,7 @@
 }
 
 .library__no-results h1 {
-  font-size: 34px;
+  font-size: var(--library-type-page);
 }
 
 .library__no-results p {

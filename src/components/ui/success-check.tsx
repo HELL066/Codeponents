@@ -50,7 +50,7 @@ function SuccessCheck({
     <span
       {...props}
       className={cn(
-        "relative isolate inline-grid shrink-0 place-items-center rounded-full border bg-transparent transition-[border-color,color,box-shadow] duration-200 motion-reduce:transition-none",
+        "relative isolate inline-grid align-middle shrink-0 place-items-center rounded-full border bg-transparent transition-[border-color,color,box-shadow] duration-200 motion-reduce:transition-none",
         sizeClass.root,
         stateTone,
         className
@@ -101,7 +101,7 @@ function SuccessCheck({
             >
               <motion.path
                 animate={{ pathLength: 1 }}
-                d="m5 12 4 4L19 6"
+                d="m5 13 4 4L19 7"
                 initial={prefersReducedMotion ? false : { pathLength: 0 }}
                 stroke="currentColor"
                 strokeLinecap="round"

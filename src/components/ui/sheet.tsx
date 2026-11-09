@@ -89,7 +89,7 @@ function SheetTitle({
     <DialogPrimitive.Title
       data-slot="sheet-title"
       className={cn(
-        "pr-10 [font-family:var(--font-heading)] text-lg leading-6 font-normal text-balance",
+        "pr-10 [font-family:var(--font-heading)] text-code-compact leading-6 font-normal text-balance",
         className
       )}
       {...props}
