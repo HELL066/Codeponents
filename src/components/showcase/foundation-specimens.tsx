@@ -66,9 +66,9 @@ export function getFoundationSnippet(entryId: string) {
     return `:root {
   --font-sans: "Source Sans 3 Variable", sans-serif;
   --font-heading: "Unna", Georgia, serif;
-  --code-type-display: 3rem;
-  --code-type-page: 2.375rem;
-  --code-type-section: 1.875rem;
+  --code-type-display: clamp(2.75rem, 4.4vw, 3.5rem);
+  --code-type-page: clamp(2rem, 3.2vw, 2.75rem);
+  --code-type-section: clamp(1.625rem, 2.2vw, 1.875rem);
   --code-type-group: 1.5rem;
   --code-type-compact: 1.25rem;
   --code-type-body: 1rem;

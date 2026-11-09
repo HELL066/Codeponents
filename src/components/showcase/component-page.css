@@ -14,7 +14,7 @@
   margin: 0;
   color: var(--library-accent);
   font-family: var(--font-heading, "Unna", Georgia, serif);
-  font-size: var(--library-type-page, 2.375rem);
+  font-size: var(--library-type-page, clamp(2rem, 3.2vw, 2.75rem));
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.08;
