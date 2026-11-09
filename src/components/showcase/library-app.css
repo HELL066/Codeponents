@@ -10,19 +10,10 @@
   );
   --library-accent: var(--code-accent, #0c315c);
   --library-soft: var(--code-accent-soft, #d7dfe9);
-  --library-type-display: var(
-    --code-type-display,
-    clamp(2.75rem, 4.4vw, 3.5rem)
-  );
-  --library-type-page: var(
-    --code-type-page,
-    clamp(2rem, 3.2vw, 2.75rem)
-  );
-  --library-type-section: var(
-    --code-type-section,
-    clamp(1.5rem, 2.2vw, 1.75rem)
-  );
-  --library-type-group: var(--code-type-group, 1.25rem);
+  --library-type-display: var(--code-type-display, 3rem);
+  --library-type-page: var(--code-type-page, 2.375rem);
+  --library-type-section: var(--code-type-section, 1.875rem);
+  --library-type-group: var(--code-type-group, 1.5rem);
   --library-type-body: var(--code-type-body, 1rem);
   --library-type-ui: var(--code-type-ui, 0.875rem);
   --library-type-meta: var(--code-type-meta, 0.75rem);
@@ -2382,7 +2373,7 @@
 }
 
 .library__no-results h1 {
-  font-size: 34px;
+  font-size: var(--library-type-page);
 }
 
 .library__no-results p {

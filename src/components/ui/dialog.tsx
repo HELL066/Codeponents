@@ -92,7 +92,7 @@ function DialogTitle({
     <DialogPrimitive.Title
       data-slot="dialog-title"
       className={cn(
-        "pr-10 [font-family:var(--font-heading)] text-lg leading-6 font-normal tracking-[-0.01em] text-balance",
+        "pr-10 [font-family:var(--font-heading)] text-code-compact leading-6 font-normal tracking-[-0.01em] text-balance",
         className
       )}
       {...props}

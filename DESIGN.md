@@ -17,6 +17,7 @@ Use the current portal's verified palette and typography as the starting point:
 | `--code-ring`   | `#4986ac` | Visible keyboard focus               |
 
 - Use Source Sans 3 for interface text and Unna for large headings. Keep Unna out of labels and controls.
+- Keep Unna heading roles on a consistent roughly 1.25 scale: compact 20px, group 24px, section 30px, page 38px, and display 48px. Use Source Sans 3 at 16px for body text, 14px for UI, and 12px for metadata.
 - Use the approved falcon at `public/code-falcon-white.png` on compatible dark surfaces. Do not recreate, redraw, recolor, or approximate the mark.
 - Keep semantic tokens in `src/components/ui/codeponents-theme.css`; `src/tokens.css` composes it for the gallery. Components should consume tokens instead of introducing local brand colors.
 - The dark theme may adjust contrast while keeping the navy and blue identity recognizable.

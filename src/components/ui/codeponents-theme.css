@@ -45,10 +45,11 @@
   --radius: 0.75rem;
   --font-source-sans: "Source Sans 3 Variable", "Source Sans 3", sans-serif;
   --font-unna: "Unna", Georgia, serif;
-  --code-type-display: clamp(2.75rem, 4.4vw, 3.5rem);
-  --code-type-page: clamp(2rem, 3.2vw, 2.75rem);
-  --code-type-section: clamp(1.5rem, 2.2vw, 1.75rem);
-  --code-type-group: 1.25rem;
+  --code-type-display: 3rem;
+  --code-type-page: 2.375rem;
+  --code-type-section: 1.875rem;
+  --code-type-group: 1.5rem;
+  --code-type-compact: 1.25rem;
   --code-type-body: 1rem;
   --code-type-ui: 0.875rem;
   --code-type-meta: 0.75rem;
@@ -82,6 +83,7 @@
   --text-code-page: var(--code-type-page);
   --text-code-section: var(--code-type-section);
   --text-code-group: var(--code-type-group);
+  --text-code-compact: var(--code-type-compact);
   --text-code-body: var(--code-type-body);
   --text-code-ui: var(--code-type-ui);
   --text-code-meta: var(--code-type-meta);
