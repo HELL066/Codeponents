@@ -1,60 +1,85 @@
 # Codeponents
 
-Codeponents is a reusable component library made for the Ateneo CODE organization (Ateneo Consultants for Organization Development and Empowerment). It gives CODE projects a shared set of interface components.
+Codeponents is a reusable React component library for Ateneo CODE (Ateneo Consultants for Organization Development and Empowerment). Browse the gallery, preview component behavior, and install source files into your own app. The installed files stay editable in your project.
 
-The gallery shows each component in fictional workspace examples. The components are general purpose and can be edited after installation.
+[Open the component gallery](https://codeponents.pages.dev) · [Read the registry guide](./CODEPONENTS_REGISTRY.md) · [Connect the MCP server](https://codeponents.pages.dev/mcp)
 
-## Included
+## Components
 
-- A searchable gallery with interactive previews
-- Reusable React components with responsive and keyboard-friendly states
-- CODE color tokens, Source Sans 3 for interface text, and Unna for headings
-- A versioned shadcn registry that copies source files into your project
-- Motion and Torph transitions, Skullet loading patterns, and an optional shader canvas
+The library covers common interface needs, including actions, forms, navigation, dialogs, calendars, date and time controls, data displays, charts, feedback, and layout. Gallery examples use fictional workspace content. Component APIs are general purpose.
+
+The project targets WCAG 2.2 AA. Its interaction standards cover keyboard support, visible focus, responsive layouts, and reduced-motion handling where relevant. See [DESIGN.md](./DESIGN.md) for the interface standards and theme tokens.
 
 ## Install a component
 
-Codeponents works with React, Tailwind CSS 4, and the shadcn CLI. Add the registry to your project once, then install the components you need:
+Use a React and TypeScript app with Tailwind CSS 4 and the shadcn CLI. If the app does not have a `components.json` file yet, initialize shadcn in the app directory with `npx shadcn@latest init`.
+
+Add the Codeponents registry once, then install the components you need:
 
 ```sh
 npx shadcn@latest registry add @codeponents=https://codeponents.pages.dev/r/v1/{name}.json
 npx shadcn@latest add @codeponents/button
 ```
 
-The registry installs each component's source and its listed dependencies. The files stay in your project, ready for you to edit.
+Run `npx shadcn@latest list @codeponents` to see the available registry items. Replace `button` with the component name you want. The gallery's **Add components** flow builds the install command. Open the Usage tab to see a code example.
 
-Add the theme import to your global stylesheet:
+The CLI copies component source into your app and installs the npm dependencies declared by each registry item. Components can include the shared Codeponents foundation, which provides the theme stylesheet, class utility, and reduced-motion hook.
+
+Load Tailwind CSS in your global stylesheet before the Codeponents theme. If Tailwind is not already imported there, add `@import "tailwindcss";` before this line:
 
 ```css
 @import "@/components/ui/codeponents-theme.css";
 ```
 
-Change `button` in the install command to the component name you want. The gallery's **Add components** flow builds the command for you. For local setup and registry details, see [Codeponents registry](./CODEPONENTS_REGISTRY.md).
+The import alias depends on your `components.json` setup. See [CODEPONENTS_REGISTRY.md](./CODEPONENTS_REGISTRY.md) for local registry use and versioning details.
 
-## Run locally
+## MCP server
+
+An MCP-compatible assistant can connect to the remote HTTP server at `https://codeponents.pages.dev/mcp`. It supports component search with `list_components`, component details with `get_component`, setup instructions with `get_installation_guide`, and design guidance with `get_design_guidance`. The Codeponents setup skill is also available through the server. It provides public component metadata and setup guidance; it has no application data tools.
+
+## Run the gallery locally
+
+Use Node.js 22.14 or newer and npm. Install dependencies and start the development server:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Run `npm run check` before opening a pull request. It runs lint, type checks,
-component tests, and a production build. See [Contributing](./CONTRIBUTING.md)
-for the pull request workflow.
+The `predev` script builds the shadcn registry in `public/r/v1` before Vite starts. The registry output is generated and is not committed.
 
-## Project files
+## Project commands
 
-- `src/components/ui/` contains the reusable React components.
-- `src/components/ui/index.ts` exports the components from one place.
-- `src/components/ui/codeponents-theme.css` defines the shared colors and fonts.
-- `src/components/showcase/` contains the searchable gallery and examples.
+| Command | Purpose |
+| --- | --- |
+| `npm run check` | Run formatting checks, ESLint, TypeScript checks, Vitest, and a production build. |
+| `npm test` | Run the component tests once. |
+| `npm run test:watch` | Run Vitest in watch mode while developing. |
+| `npm run format` | Format TypeScript and TSX files. |
+| `npm run format:check` | Check TypeScript and TSX formatting. |
+| `npm run registry:build` | Generate the shadcn registry files in `public/r/v1`. |
+| `npm run build` | Build the registry and production site. |
+| `npm run preview` | Preview the most recent production build locally. |
+
+GitHub Actions runs lint, type checking, component tests, build, and dependency review on pull requests. The required check is named `verify`. Pushes to `main` deploy the built site to Cloudflare Pages after verification. CodeQL and Dependabot are enabled for repository security and dependency updates. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the pull request process.
+
+## Repository layout
+
+- `src/components/ui/` contains the reusable React components and shared theme.
+- `src/components/showcase/` contains the searchable gallery, previews, and usage examples.
 - `src/hooks/` contains shared interaction hooks.
-- `src/tokens.css` and `src/index.css` style the gallery.
+- `registry.json` and `scripts/prepare-registry.mjs` define and prepare registry metadata.
+- `functions/` contains the Cloudflare Pages MCP endpoint.
+- `skills/codeponents/SKILL.md` contains the assistant setup and component-use guide.
 
-The current CODE interface uses navy `#06192f`, blue `#0c315c`, canvas `#f5f5f6`, muted text `#3d5266`, and focus ring `#4986ac`. The official falcon asset is at `public/code-falcon-white.png`.
+Additional project references:
 
-See [THIRD_PARTY.md](./THIRD_PARTY.md) for component dependencies and fallback behavior. [DESIGN.md](./DESIGN.md) documents the type, color, motion, and accessibility choices.
+- [Registry setup and release path](./CODEPONENTS_REGISTRY.md)
+- [Design system and accessibility standards](./DESIGN.md)
+- [Third-party dependencies and fallbacks](./THIRD_PARTY.md)
+- [Product scope](./PRODUCT.md)
+- [Contributing guide](./CONTRIBUTING.md)
 
-## MCP
+## License
 
-Connect an assistant to `https://codeponents.pages.dev/mcp` to search components, get install commands, and load the Codeponents setup skill.
+This repository does not currently include a license file. Contact the Ateneo CODE maintainers for reuse and redistribution terms.
