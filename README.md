@@ -1,5 +1,7 @@
 # Codeponents
 
+![Codeponents — Ateneo CODE component library](./public/codeponents-banner.png)
+
 Codeponents is a reusable React component library for Ateneo CODE (Ateneo Consultants for Organization Development and Empowerment). Browse the gallery, preview component behavior, and install source files into your own app. The installed files stay editable in your project.
 
 [Open the component gallery](https://codeponents.pages.dev) · [Read the registry guide](./CODEPONENTS_REGISTRY.md) · [Connect the MCP server](https://codeponents.pages.dev/mcp)
