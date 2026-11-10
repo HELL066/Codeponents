@@ -6,11 +6,15 @@ export interface ColorPickerSwatch {
   label?: string
 }
 
-export interface ColorPickerProps
-  extends Omit<
-    React.ComponentProps<"div">,
-    "aria-label" | "aria-labelledby" | "defaultValue" | "onChange" | "role" | "value"
-  > {
+export interface ColorPickerProps extends Omit<
+  React.ComponentProps<"div">,
+  | "aria-label"
+  | "aria-labelledby"
+  | "defaultValue"
+  | "onChange"
+  | "role"
+  | "value"
+> {
   /** Name announced for the color picker when no visible label is provided. */
   ariaLabel: string
   /** Optional visible label for the picker. */
@@ -69,7 +73,9 @@ function ColorPicker({
   const controlled = value !== undefined
   const initialColor = normalizeHex(defaultValue) ?? DEFAULT_COLOR
   const [uncontrolledColor, setUncontrolledColor] = React.useState(initialColor)
-  const color = controlled ? normalizeHex(value) ?? DEFAULT_COLOR : uncontrolledColor
+  const color = controlled
+    ? (normalizeHex(value) ?? DEFAULT_COLOR)
+    : uncontrolledColor
   const [draftState, setDraftState] = React.useState({ color, value: color })
   const draft = draftState.color === color ? draftState.value : color
   const [touched, setTouched] = React.useState(false)
@@ -78,11 +84,13 @@ function ColorPicker({
   const currentColor = draftColor ?? color
   const showHexError = touched && !draftColor
   const isInvalid = invalid || Boolean(error) || showHexError
-  const errorMessage = error ?? (showHexError ? "Enter a valid hex color." : undefined)
+  const errorMessage =
+    error ?? (showHexError ? "Enter a valid hex color." : undefined)
   const accessibleName = label?.trim() || ariaLabel
   const descriptionId = description ? `${id}-description` : undefined
   const errorId = errorMessage ? `${id}-error` : undefined
-  const describedBy = [descriptionId, errorId].filter(Boolean).join(" ") || undefined
+  const describedBy =
+    [descriptionId, errorId].filter(Boolean).join(" ") || undefined
 
   const commitColor = (nextValue: string) => {
     const normalized = normalizeHex(nextValue)
@@ -136,7 +144,8 @@ function ColorPicker({
           className={cn(
             "relative grid size-10 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-lg border border-code-line/55 bg-code-surface transition-[border-color,box-shadow,opacity] duration-150 hover:border-code-muted/60 has-[:focus-visible]:border-code-accent has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-code-accent/20 motion-reduce:transition-none",
             disabled && "cursor-not-allowed opacity-55",
-            isInvalid && "border-code-danger has-[:focus-visible]:ring-code-danger/15",
+            isInvalid &&
+              "border-code-danger has-[:focus-visible]:ring-code-danger/15"
           )}
         >
           <input
@@ -150,7 +159,7 @@ function ColorPicker({
           />
           <span
             aria-hidden="true"
-            className="absolute inset-1 rounded-md border border-black/10 transition-[background-color,transform] duration-150 peer-active:scale-[0.97] peer-focus-visible:ring-2 peer-focus-visible:ring-code-accent/50 dark:border-white/15 motion-reduce:transition-none"
+            className="absolute inset-1 rounded-md border border-black/10 transition-[background-color,transform] duration-150 peer-focus-visible:ring-2 peer-focus-visible:ring-code-accent/50 peer-active:scale-[0.97] motion-reduce:transition-none dark:border-white/15"
             style={{ backgroundColor: currentColor }}
           />
         </label>
@@ -163,8 +172,8 @@ function ColorPicker({
           autoCapitalize="characters"
           autoComplete="off"
           className={cn(
-            "h-10 w-32 min-w-0 rounded-lg border border-code-line/55 bg-code-surface px-3 font-mono text-sm uppercase tracking-normal text-code-ink outline-none transition-[border-color,box-shadow,background-color] placeholder:font-sans placeholder:normal-case placeholder:text-code-muted/75 hover:border-code-muted/55 focus-visible:border-code-accent focus-visible:ring-3 focus-visible:ring-code-accent/20 disabled:cursor-not-allowed disabled:bg-code-quiet disabled:text-code-muted aria-invalid:border-code-danger aria-invalid:focus-visible:ring-code-danger/15 motion-reduce:transition-none",
-            !label && "sm:w-36",
+            "h-10 w-32 min-w-0 rounded-lg border border-code-line/55 bg-code-surface px-3 font-mono text-sm tracking-normal text-code-ink uppercase transition-[border-color,box-shadow,background-color] outline-none placeholder:font-sans placeholder:text-code-muted/75 placeholder:normal-case hover:border-code-muted/55 focus-visible:border-code-accent focus-visible:ring-3 focus-visible:ring-code-accent/20 disabled:cursor-not-allowed disabled:bg-code-quiet disabled:text-code-muted aria-invalid:border-code-danger aria-invalid:focus-visible:ring-code-danger/15 motion-reduce:transition-none",
+            !label && "sm:w-36"
           )}
           disabled={disabled}
           inputMode="text"
@@ -195,7 +204,7 @@ function ColorPicker({
                 aria-label={`Use ${swatch.label ?? swatch.value}`}
                 aria-pressed={currentColor === swatch.value}
                 className={cn(
-                  "grid size-10 shrink-0 place-items-center rounded-lg outline-none transition-[background-color,transform] duration-150 hover:bg-code-quiet/70 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-code-accent/40 disabled:cursor-not-allowed disabled:opacity-45 motion-reduce:transition-none",
+                  "grid size-10 shrink-0 place-items-center rounded-lg transition-[background-color,transform] duration-150 outline-none hover:bg-code-quiet/70 focus-visible:ring-2 focus-visible:ring-code-accent/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 motion-reduce:transition-none",
                   currentColor === swatch.value && "bg-code-accent-soft/50"
                 )}
                 disabled={disabled}
@@ -205,7 +214,7 @@ function ColorPicker({
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "size-7 rounded-md border border-black/10 transition-[box-shadow] duration-150 dark:border-white/15 motion-reduce:transition-none",
+                    "size-7 rounded-md border border-black/10 transition-[box-shadow] duration-150 motion-reduce:transition-none dark:border-white/15",
                     currentColor === swatch.value &&
                       "ring-2 ring-code-accent ring-offset-2 ring-offset-code-surface"
                   )}
@@ -223,7 +232,11 @@ function ColorPicker({
         </p>
       ) : null}
       {errorMessage ? (
-        <p className="text-xs leading-5 text-code-danger" id={errorId} role="alert">
+        <p
+          className="text-xs leading-5 text-code-danger"
+          id={errorId}
+          role="alert"
+        >
           {errorMessage}
         </p>
       ) : null}

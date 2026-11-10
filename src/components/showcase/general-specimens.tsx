@@ -833,7 +833,7 @@ function GeneralSpecimen({
                     {selected ? (
                       <motion.span
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 z-0 rounded-lg bg-code-accent/8 ring-1 ring-inset ring-code-accent/20"
+                        className="pointer-events-none absolute inset-0 z-0 rounded-lg bg-code-accent/8 ring-1 ring-code-accent/20 ring-inset"
                         layoutId={`${sortAnimationId}-selected`}
                         transition={
                           prefersReducedMotion
@@ -889,18 +889,14 @@ function GeneralSpecimen({
                       }
                       className="hover:bg-code-canvas/45"
                     >
-                      <TableCell className="font-medium">
-                        {item.name}
-                      </TableCell>
+                      <TableCell className="font-medium">{item.name}</TableCell>
                       <TableCell className="text-right">
                         {sortOrder === "status" ? (
                           <Badge
                             appearance="tinted"
                             className="rounded-full"
                             tone={
-                              item.status === "In progress"
-                                ? "info"
-                                : "neutral"
+                              item.status === "In progress" ? "info" : "neutral"
                             }
                           >
                             {item.status}
@@ -1422,7 +1418,7 @@ function GeneralSpecimen({
                         }
                       />
                       <Label
-                        className="min-h-10 flex-1 cursor-pointer font-normal leading-normal"
+                        className="min-h-10 flex-1 cursor-pointer leading-normal font-normal"
                         htmlFor="general-popover-active"
                       >
                         Active only
@@ -1437,7 +1433,7 @@ function GeneralSpecimen({
                         }
                       />
                       <Label
-                        className="min-h-10 flex-1 cursor-pointer font-normal leading-normal"
+                        className="min-h-10 flex-1 cursor-pointer leading-normal font-normal"
                         htmlFor="general-popover-archived"
                       >
                         Include archived items

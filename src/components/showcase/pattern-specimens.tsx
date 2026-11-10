@@ -58,9 +58,24 @@ type Resource = {
 }
 
 const initialResources: Resource[] = [
-  { id: "onboarding", name: "New member guide", kind: "Guide", updated: "2 hr ago" },
-  { id: "event-checklist", name: "Event checklist", kind: "Template", updated: "Yesterday" },
-  { id: "workspace-notes", name: "Workspace notes", kind: "Guide", updated: "Nov 2" },
+  {
+    id: "onboarding",
+    name: "New member guide",
+    kind: "Guide",
+    updated: "2 hr ago",
+  },
+  {
+    id: "event-checklist",
+    name: "Event checklist",
+    kind: "Template",
+    updated: "Yesterday",
+  },
+  {
+    id: "workspace-notes",
+    name: "Workspace notes",
+    kind: "Guide",
+    updated: "Nov 2",
+  },
 ]
 
 function ActivityFeedSpecimen() {
@@ -133,13 +148,18 @@ function ListToolbarSpecimen() {
       const matchesSearch = resource.name
         .toLocaleLowerCase()
         .includes(search.trim().toLocaleLowerCase())
-      return matchesSearch && (kind === "all" || resource.kind.toLowerCase() === kind)
+      return (
+        matchesSearch &&
+        (kind === "all" || resource.kind.toLowerCase() === kind)
+      )
     })
 
     return [...matching].sort((first, second) => {
       if (sort === "name") return first.name.localeCompare(second.name)
-      return initialResources.findIndex((item) => item.id === first.id) -
+      return (
+        initialResources.findIndex((item) => item.id === first.id) -
         initialResources.findIndex((item) => item.id === second.id)
+      )
     })
   }, [kind, resources, search, sort])
 
@@ -175,7 +195,8 @@ function ListToolbarSpecimen() {
 
   const toggleResource = (id: string, checked: boolean | "indeterminate") => {
     setSelectedIds((current) => {
-      if (checked === true) return current.includes(id) ? current : [...current, id]
+      if (checked === true)
+        return current.includes(id) ? current : [...current, id]
       return current.filter((selectedId) => selectedId !== id)
     })
   }
@@ -189,7 +210,9 @@ function ListToolbarSpecimen() {
           </Button>
         }
         activeFilters={
-          kind !== "all" ? <>Type: {kind === "guide" ? "Guide" : "Template"}</> : undefined
+          kind !== "all" ? (
+            <>Type: {kind === "guide" ? "Guide" : "Template"}</>
+          ) : undefined
         }
         aria-label="Resource list controls"
         filters={
@@ -245,7 +268,9 @@ function ListToolbarSpecimen() {
               <Checkbox
                 aria-label={`Select ${resource.name}`}
                 checked={selectedIds.includes(resource.id)}
-                onCheckedChange={(checked) => toggleResource(resource.id, checked)}
+                onCheckedChange={(checked) =>
+                  toggleResource(resource.id, checked)
+                }
               />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-code-ink">
@@ -258,7 +283,9 @@ function ListToolbarSpecimen() {
             </li>
           ))
         ) : (
-          <li className="py-5 text-sm text-code-muted">No matching resources</li>
+          <li className="py-5 text-sm text-code-muted">
+            No matching resources
+          </li>
         )}
       </ul>
     </div>

@@ -330,7 +330,7 @@ function EventsCalendar({
                   }).format(event.start)}
                 </span>
                 <span
-                  className="block min-w-0 overflow-hidden whitespace-nowrap text-xs leading-4 text-code-ink"
+                  className="block min-w-0 overflow-hidden text-xs leading-4 whitespace-nowrap text-code-ink"
                   style={fadeTextAtEndStyle}
                 >
                   {eventSummary}
@@ -461,8 +461,7 @@ function EventsCalendar({
       <div
         className={cn(
           "mt-4 grid min-w-0 gap-4 @sm:mt-5 @xl:gap-5",
-          view !== "day" &&
-            "@2xl:grid-cols-[minmax(0,1fr)_15rem] @2xl:gap-4"
+          view !== "day" && "@2xl:grid-cols-[minmax(0,1fr)_15rem] @2xl:gap-4"
         )}
       >
         <div className="min-w-0">
@@ -574,7 +573,7 @@ function EventsCalendar({
                                                 : eventTime(event)}
                                             </span>
                                             <span
-                                              className="block min-w-0 overflow-hidden whitespace-nowrap text-xs leading-4 font-normal text-code-ink/90"
+                                              className="block min-w-0 overflow-hidden text-xs leading-4 font-normal whitespace-nowrap text-code-ink/90"
                                               style={fadeTextAtEndStyle}
                                             >
                                               {event.title}

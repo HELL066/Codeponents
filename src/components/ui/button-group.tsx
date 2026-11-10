@@ -23,8 +23,8 @@ function ButtonGroup({
       className={cn(
         "inline-flex w-fit items-center",
         orientation === "horizontal"
-          ? "[&>*]:rounded-none [&>*:first-child]:rounded-l-lg [&>*:last-child]:rounded-r-lg [&>*+*]:-ml-px [&>*:focus-visible]:z-10"
-          : "flex-col [&>*]:w-full [&>*]:rounded-none [&>*:first-child]:rounded-t-lg [&>*:last-child]:rounded-b-lg [&>*+*]:-mt-px [&>*:focus-visible]:z-10",
+          ? "[&>*]:rounded-none [&>*+*]:-ml-px [&>*:first-child]:rounded-l-lg [&>*:focus-visible]:z-10 [&>*:last-child]:rounded-r-lg"
+          : "flex-col [&>*]:w-full [&>*]:rounded-none [&>*+*]:-mt-px [&>*:first-child]:rounded-t-lg [&>*:focus-visible]:z-10 [&>*:last-child]:rounded-b-lg",
         className
       )}
       {...props}

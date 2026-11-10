@@ -297,9 +297,7 @@ function EventCarouselDemo() {
                   <time className="leading-5" dateTime={event.dateTime}>
                     {event.date}
                   </time>
-                  <span className="text-xs leading-4">
-                    {event.duration}
-                  </span>
+                  <span className="text-xs leading-4">{event.duration}</span>
                 </div>
               </CardContent>
             </Card>

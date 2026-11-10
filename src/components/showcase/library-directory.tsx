@@ -75,7 +75,9 @@ export function LibraryDirectory({
                   animate={{ opacity: 1, y: 0 }}
                   aria-labelledby={headingId}
                   className="library-component-directory__group"
-                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
+                  exit={
+                    prefersReducedMotion ? undefined : { opacity: 0, y: -4 }
+                  }
                   initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
                   key={group.name}
                   layout={!prefersReducedMotion}

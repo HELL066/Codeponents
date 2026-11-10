@@ -3,8 +3,10 @@ import { DatePicker } from "@/components/ui/date-picker"
 import { TimePicker } from "@/components/ui/time-picker"
 import { cn } from "@/lib/utils"
 
-export interface DateTimePickerProps
-  extends Omit<React.ComponentProps<"div">, "onChange" | "defaultValue"> {
+export interface DateTimePickerProps extends Omit<
+  React.ComponentProps<"div">,
+  "onChange" | "defaultValue"
+> {
   /** A local date and time. Pass null to clear a controlled picker. */
   value?: Date | null
   /** Initial local date and time for an uncontrolled picker. */
@@ -50,7 +52,7 @@ function combineLocal(date: Date, time: string, previous?: Date) {
     hours ?? 0,
     minutes ?? 0,
     previous?.getSeconds() ?? 0,
-    previous?.getMilliseconds() ?? 0,
+    previous?.getMilliseconds() ?? 0
   )
 }
 
@@ -72,8 +74,10 @@ function DateTimePicker({
   ...divProps
 }: DateTimePickerProps) {
   const controlled = value !== undefined
-  const [uncontrolledValue, setUncontrolledValue] = React.useState<Date | undefined>(
-    () => defaultValue instanceof Date ? new Date(defaultValue.getTime()) : undefined,
+  const [uncontrolledValue, setUncontrolledValue] = React.useState<
+    Date | undefined
+  >(() =>
+    defaultValue instanceof Date ? new Date(defaultValue.getTime()) : undefined
   )
   const [draftDate, setDraftDate] = React.useState<string>()
   const [draftTime, setDraftTime] = React.useState("")
@@ -81,7 +85,7 @@ function DateTimePicker({
   const [timeError, setTimeError] = React.useState(false)
   const timeTriggerRef = React.useRef<HTMLButtonElement>(null)
   const dateTriggerId = React.useId()
-  const selectedValue = controlled ? value ?? undefined : uncontrolledValue
+  const selectedValue = controlled ? (value ?? undefined) : uncontrolledValue
   const selectedDate = selectedValue ?? parseDateKey(draftDate)
   const selectedTime = selectedValue ? timeValue(selectedValue) : draftTime
   const canClear = Boolean(selectedValue || draftDate || draftTime)
@@ -140,7 +144,7 @@ function DateTimePicker({
       data-slot="date-time-picker"
       className={cn(
         "grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(7.25rem,0.7fr)_3.25rem] sm:items-center",
-        className,
+        className
       )}
     >
       <DatePicker
@@ -181,8 +185,8 @@ function DateTimePicker({
         aria-hidden={!canClear || undefined}
         tabIndex={canClear ? undefined : -1}
         className={cn(
-          "col-start-1 inline-flex h-10 w-[3.25rem] justify-self-end items-center justify-center rounded-md text-xs text-code-muted transition-colors hover:text-code-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-code-accent/30 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none sm:col-auto",
-          !canClear && "invisible",
+          "col-start-1 inline-flex h-10 w-[3.25rem] items-center justify-center justify-self-end rounded-md text-xs text-code-muted transition-colors hover:text-code-ink focus-visible:ring-2 focus-visible:ring-code-accent/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none sm:col-auto",
+          !canClear && "invisible"
         )}
       >
         Clear
@@ -200,7 +204,9 @@ function DateTimePicker({
             setTimeError(true)
             if (selectedDate) {
               setTimeOpen(true)
-              window.requestAnimationFrame(() => timeTriggerRef.current?.focus())
+              window.requestAnimationFrame(() =>
+                timeTriggerRef.current?.focus()
+              )
             } else {
               document.getElementById(dateTriggerId)?.focus()
             }
@@ -212,7 +218,11 @@ function DateTimePicker({
         />
       ) : null}
       {timeError ? (
-        <span className="col-span-full text-xs text-code-danger" id={timeErrorId} role="alert">
+        <span
+          className="col-span-full text-xs text-code-danger"
+          id={timeErrorId}
+          role="alert"
+        >
           {selectedDate ? "Choose a time" : "Choose a date"}
         </span>
       ) : null}

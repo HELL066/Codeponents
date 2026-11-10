@@ -21,20 +21,27 @@ const badgeVariants = cva(
     compoundVariants: [
       { appearance: "tinted", tone: "neutral", className: "bg-code-quiet" },
       { appearance: "tinted", tone: "info", className: "bg-code-accent/10" },
-      { appearance: "tinted", tone: "positive", className: "bg-code-positive/10" },
-      { appearance: "tinted", tone: "warning", className: "bg-code-warning/10" },
+      {
+        appearance: "tinted",
+        tone: "positive",
+        className: "bg-code-positive/10",
+      },
+      {
+        appearance: "tinted",
+        tone: "warning",
+        className: "bg-code-warning/10",
+      },
       { appearance: "tinted", tone: "danger", className: "bg-code-danger/10" },
     ],
     defaultVariants: {
       tone: "neutral",
       appearance: "tinted",
     },
-  },
+  }
 )
 
 export interface BadgeProps
-  extends React.ComponentProps<"span">,
-    VariantProps<typeof badgeVariants> {}
+  extends React.ComponentProps<"span">, VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, tone, appearance, ...props }: BadgeProps) {
   return (
