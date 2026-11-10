@@ -7,7 +7,7 @@ function Sidebar({ className, ...props }: ComponentProps<"aside">) {
       data-slot="sidebar"
       className={cn(
         "flex h-full min-h-0 w-64 shrink-0 flex-col bg-code-hero text-white",
-        className,
+        className
       )}
       {...props}
     />
@@ -84,7 +84,7 @@ function SidebarMenuButton({
       data-slot="sidebar-menu-button"
       className={cn(
         "flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm text-white/80 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white data-[active=true]:bg-white/10 data-[active=true]:font-medium data-[active=true]:text-white motion-reduce:transition-none",
-        className,
+        className
       )}
       {...props}
     />

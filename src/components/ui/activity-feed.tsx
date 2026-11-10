@@ -1,10 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export interface ActivityFeedActor {
   name: string
@@ -23,8 +19,10 @@ export interface ActivityFeedEntry {
   action?: React.ReactNode
 }
 
-export interface ActivityFeedProps
-  extends Omit<React.ComponentProps<"section">, "title"> {
+export interface ActivityFeedProps extends Omit<
+  React.ComponentProps<"section">,
+  "title"
+> {
   items: ActivityFeedEntry[]
   title?: React.ReactNode
   action?: React.ReactNode
@@ -41,22 +39,18 @@ function getInitials(name: string) {
     .toLocaleUpperCase()
 }
 
-function ActivityFeedContent({
-  item,
-}: {
-  item: ActivityFeedEntry
-}) {
+function ActivityFeedContent({ item }: { item: ActivityFeedEntry }) {
   const content = (
     <>
       <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-xs leading-4 text-code-muted">
         {item.actor && <span className="font-medium">{item.actor.name}</span>}
         <time dateTime={item.dateTime}>{item.timestamp}</time>
       </div>
-      <div className="mt-1 text-sm leading-5 font-medium text-code-ink text-pretty">
+      <div className="mt-1 text-sm leading-5 font-medium text-pretty text-code-ink">
         {item.title}
       </div>
       {item.description && (
-        <div className="mt-0.5 text-sm leading-5 text-code-muted text-pretty">
+        <div className="mt-0.5 text-sm leading-5 text-pretty text-code-muted">
           {item.description}
         </div>
       )}
@@ -67,7 +61,7 @@ function ActivityFeedContent({
     return (
       <a
         href={item.href}
-        className="group min-w-0 rounded-md outline-none transition-colors hover:bg-code-quiet/35 focus-visible:ring-2 focus-visible:ring-code-ring focus-visible:ring-offset-2 focus-visible:ring-offset-code-surface motion-reduce:transition-none"
+        className="group min-w-0 rounded-md transition-colors outline-none hover:bg-code-quiet/35 focus-visible:ring-2 focus-visible:ring-code-ring focus-visible:ring-offset-2 focus-visible:ring-offset-code-surface motion-reduce:transition-none"
       >
         <span className="block min-h-10 px-2 py-1.5">{content}</span>
       </a>
@@ -100,7 +94,7 @@ function ActivityFeed({
       <header className="flex min-w-0 items-center justify-between gap-4">
         <h3
           id={headingId}
-          className="min-w-0 text-base leading-6 font-semibold text-code-ink text-balance"
+          className="min-w-0 text-base leading-6 font-semibold text-balance text-code-ink"
         >
           {title}
         </h3>

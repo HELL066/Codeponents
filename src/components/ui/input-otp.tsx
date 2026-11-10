@@ -7,11 +7,7 @@ export type InputOTPProps = React.ComponentProps<typeof OTPInput> & {
   "aria-label": string
 }
 
-function InputOTP({
-  className,
-  containerClassName,
-  ...props
-}: InputOTPProps) {
+function InputOTP({ className, containerClassName, ...props }: InputOTPProps) {
   return (
     <OTPInput
       data-slot="input-otp"
@@ -25,10 +21,7 @@ function InputOTP({
   )
 }
 
-function InputOTPGroup({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="input-otp-group"
@@ -55,7 +48,7 @@ function InputOTPSlot({
       data-slot="input-otp-slot"
       data-active={isActive || undefined}
       className={cn(
-        "relative grid size-11 place-items-center border-y border-r border-code-line bg-code-surface text-base font-medium tabular-nums text-code-ink first:rounded-l-md first:border-l last:rounded-r-md",
+        "relative grid size-11 place-items-center border-y border-r border-code-line bg-code-surface text-base font-medium text-code-ink tabular-nums first:rounded-l-md first:border-l last:rounded-r-md",
         isActive && "z-10 border-code-accent ring-2 ring-code-accent/25",
         className
       )}

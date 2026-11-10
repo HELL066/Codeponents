@@ -30,10 +30,7 @@ function PaginationContent({
   )
 }
 
-function PaginationItem({
-  className,
-  ...props
-}: React.ComponentProps<"li">) {
+function PaginationItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="pagination-item"
@@ -119,10 +116,11 @@ function PaginationPrevious({
     )
   }
 
-  const { disabled = false, type = "button", ...buttonProps } = props as Extract<
-    PaginationControlProps,
-    { href?: undefined }
-  >
+  const {
+    disabled = false,
+    type = "button",
+    ...buttonProps
+  } = props as Extract<PaginationControlProps, { href?: undefined }>
   return (
     <button
       data-slot="pagination-previous"
@@ -177,10 +175,11 @@ function PaginationNext({
     )
   }
 
-  const { disabled = false, type = "button", ...buttonProps } = props as Extract<
-    PaginationControlProps,
-    { href?: undefined }
-  >
+  const {
+    disabled = false,
+    type = "button",
+    ...buttonProps
+  } = props as Extract<PaginationControlProps, { href?: undefined }>
   return (
     <button
       data-slot="pagination-next"
@@ -204,7 +203,10 @@ function PaginationEllipsis({
   return (
     <span
       data-slot="pagination-ellipsis"
-      className={cn("inline-flex size-9 items-center justify-center text-code-muted", className)}
+      className={cn(
+        "inline-flex size-9 items-center justify-center text-code-muted",
+        className
+      )}
       {...props}
     >
       <MoreHorizontal aria-hidden="true" className="size-4" />

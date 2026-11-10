@@ -454,7 +454,12 @@ const definitions = [
     "Open a bottom panel on small screens.",
     "drawer mobile bottom panel",
   ],
-  ["badge", "Badge", "Label a status or category.", "badge status category tag"],
+  [
+    "badge",
+    "Badge",
+    "Label a status or category.",
+    "badge status category tag",
+  ],
   [
     "alert",
     "Alert",

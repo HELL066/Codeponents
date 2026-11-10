@@ -67,7 +67,7 @@ function ListToolbar({
     >
       <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         {search ? (
-          <div className="relative w-full min-w-0 sm:w-auto sm:min-w-52 sm:max-w-80 sm:flex-1">
+          <div className="relative w-full min-w-0 sm:w-auto sm:max-w-80 sm:min-w-52 sm:flex-1">
             <label className="sr-only" htmlFor={searchId}>
               {search.label ?? "Search list"}
             </label>
@@ -80,7 +80,9 @@ function ListToolbar({
               className="pl-9"
               disabled={search.disabled}
               id={searchId}
-              onChange={(event) => search.onValueChange(event.currentTarget.value)}
+              onChange={(event) =>
+                search.onValueChange(event.currentTarget.value)
+              }
               placeholder={search.placeholder ?? "Search"}
               role="searchbox"
               type="search"

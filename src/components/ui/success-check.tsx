@@ -50,7 +50,7 @@ function SuccessCheck({
     <span
       {...props}
       className={cn(
-        "relative isolate inline-grid align-middle shrink-0 place-items-center rounded-full border bg-transparent transition-[border-color,color,box-shadow] duration-200 motion-reduce:transition-none",
+        "relative isolate inline-grid shrink-0 place-items-center rounded-full border bg-transparent align-middle transition-[border-color,color,box-shadow] duration-200 motion-reduce:transition-none",
         sizeClass.root,
         stateTone,
         className

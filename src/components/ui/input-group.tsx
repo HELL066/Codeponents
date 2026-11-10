@@ -36,7 +36,7 @@ function InputGroupInput({
       data-slot="input-group-input"
       type={type}
       className={cn(
-        "h-10 min-w-0 flex-1 basis-0 rounded-none border-0 bg-transparent px-3 text-sm text-code-ink shadow-none outline-none placeholder:text-code-muted/75 focus-visible:outline-none! focus-visible:ring-0 disabled:cursor-not-allowed disabled:text-code-muted",
+        "h-10 min-w-0 flex-1 basis-0 rounded-none border-0 bg-transparent px-3 text-sm text-code-ink shadow-none outline-none placeholder:text-code-muted/75 focus-visible:ring-0 focus-visible:outline-none! disabled:cursor-not-allowed disabled:text-code-muted",
         className
       )}
       {...props}

@@ -17,10 +17,7 @@ function Breadcrumb({
   )
 }
 
-function BreadcrumbList({
-  className,
-  ...props
-}: React.ComponentProps<"ol">) {
+function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
   return (
     <ol
       data-slot="breadcrumb-list"
@@ -33,10 +30,7 @@ function BreadcrumbList({
   )
 }
 
-function BreadcrumbItem({
-  className,
-  ...props
-}: React.ComponentProps<"li">) {
+function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="breadcrumb-item"
@@ -46,10 +40,7 @@ function BreadcrumbItem({
   )
 }
 
-function BreadcrumbLink({
-  className,
-  ...props
-}: React.ComponentProps<"a">) {
+function BreadcrumbLink({ className, ...props }: React.ComponentProps<"a">) {
   return (
     <a
       data-slot="breadcrumb-link"
@@ -62,10 +53,7 @@ function BreadcrumbLink({
   )
 }
 
-function BreadcrumbPage({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       aria-current="page"
@@ -101,7 +89,10 @@ function BreadcrumbEllipsis({
     <span
       aria-hidden="true"
       data-slot="breadcrumb-ellipsis"
-      className={cn("grid size-5 place-items-center text-code-muted", className)}
+      className={cn(
+        "grid size-5 place-items-center text-code-muted",
+        className
+      )}
       {...props}
     >
       <MoreHorizontal className="size-4" />

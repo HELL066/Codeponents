@@ -159,7 +159,7 @@ function DatePicker({
             collisionPadding={8}
             sideOffset={6}
             aria-label={ariaLabel ? `${ariaLabel} calendar` : "Choose a date"}
-            className="z-50 max-h-[min(var(--radix-popover-content-available-height),calc(100dvh-1rem))] max-w-[calc(100vw-1rem)] overflow-y-auto overscroll-contain origin-[var(--radix-popover-content-transform-origin)] outline-none data-[state=closed]:animate-out data-[state=closed]:duration-100 data-[state=closed]:fade-out-0 data-[state=closed]:[--tw-exit-scale:0.99] data-[state=closed]:slide-out-to-top-1 data-[state=open]:animate-in data-[state=open]:duration-180 data-[state=open]:fade-in-0 data-[state=open]:[--tw-enter-scale:0.99] data-[state=open]:slide-in-from-top-1 motion-reduce:animate-none"
+            className="z-50 max-h-[min(var(--radix-popover-content-available-height),calc(100dvh-1rem))] max-w-[calc(100vw-1rem)] origin-[var(--radix-popover-content-transform-origin)] overflow-y-auto overscroll-contain outline-none data-[state=closed]:animate-out data-[state=closed]:duration-100 data-[state=closed]:fade-out-0 data-[state=closed]:[--tw-exit-scale:0.99] data-[state=closed]:slide-out-to-top-1 data-[state=open]:animate-in data-[state=open]:duration-180 data-[state=open]:fade-in-0 data-[state=open]:[--tw-enter-scale:0.99] data-[state=open]:slide-in-from-top-1 motion-reduce:animate-none"
           >
             <Calendar
               selected={selectedDate ?? null}

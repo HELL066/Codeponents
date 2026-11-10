@@ -72,7 +72,7 @@
       "name": "toggle",
       "type": "registry:ui",
       "title": "Toggle",
-      "description": "A tactile button with a distinct pressed state",
+      "description": "A button with on and off states",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -110,7 +110,7 @@
       "name": "copy-button",
       "type": "registry:ui",
       "title": "Copy button",
-      "description": "Copy a link with clear feedback",
+      "description": "Copy a value and show whether it worked",
       "registryDependencies": [
         "./codeponents-base.json",
         "./button.json"
@@ -185,7 +185,7 @@
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
-      "description": "A focused field for short text",
+      "description": "Enter a short value in a single-line field",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -219,7 +219,7 @@
       "name": "input-group",
       "type": "registry:ui",
       "title": "Input group",
-      "description": "A field with a useful prefix or suffix",
+      "description": "Pair a field with a prefix, suffix, or action",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -236,7 +236,7 @@
       "name": "number-field",
       "type": "registry:ui",
       "title": "Number field",
-      "description": "Edit a value in measured steps",
+      "description": "Change a number with increment and decrement controls",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -276,7 +276,7 @@
       "name": "native-select",
       "type": "registry:ui",
       "title": "Native select",
-      "description": "A compact choice with browser behavior",
+      "description": "A dropdown that uses the browser's native menu",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -417,7 +417,7 @@
       "name": "event-list-item",
       "type": "registry:ui",
       "title": "Event list item",
-      "description": "Scan an event at a glance",
+      "description": "Display event timing and details in one row",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -434,7 +434,7 @@
       "name": "events-calendar",
       "type": "registry:ui",
       "title": "Events calendar",
-      "description": "Explore events by month or agenda",
+      "description": "View events by month or agenda",
       "registryDependencies": [
         "./codeponents-base.json",
         "./button.json",
@@ -457,7 +457,7 @@
       "name": "activity-feed",
       "type": "registry:ui",
       "title": "Activity feed",
-      "description": "Scan recent changes in one place",
+      "description": "Show recent changes as a timeline",
       "registryDependencies": [
         "./codeponents-base.json",
         "./avatar.json"
@@ -475,7 +475,7 @@
       "name": "list-toolbar",
       "type": "registry:ui",
       "title": "List toolbar",
-      "description": "Search, filter, and act on a list",
+      "description": "Search, filter, and sort list items",
       "registryDependencies": [
         "./codeponents-base.json",
         "./button.json",
@@ -568,7 +568,7 @@
       "name": "time-zone-picker",
       "type": "registry:ui",
       "title": "Time zone picker",
-      "description": "Search and choose an IANA time zone with its UTC offset",
+      "description": "Find and choose an IANA time zone, then check its UTC offset",
       "registryDependencies": [
         "./codeponents-base.json",
         "./command.json",
@@ -676,7 +676,7 @@
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Sidebar",
-      "description": "Group navigation beside the page",
+      "description": "Place navigation beside the page content",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -878,7 +878,7 @@
       "name": "command",
       "type": "registry:ui",
       "title": "Command menu",
-      "description": "Search actions from the keyboard",
+      "description": "Search and select actions in a command menu",
       "registryDependencies": [
         "./codeponents-base.json",
         "./dialog.json"
@@ -939,7 +939,7 @@
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
-      "description": "A small task anchored to its trigger",
+      "description": "Show a small panel next to a control",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -996,7 +996,7 @@
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
-      "description": "Focus a brief task in the current view",
+      "description": "Open a dialog for a focused task",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1035,7 +1035,7 @@
       "name": "sheet",
       "type": "registry:ui",
       "title": "Sheet",
-      "description": "Open a side panel for focused work",
+      "description": "Open a side panel beside the current view",
       "registryDependencies": [
         "./codeponents-base.json",
         "./dialog.json"
@@ -1076,7 +1076,7 @@
       "name": "badge",
       "type": "registry:ui",
       "title": "Badge",
-      "description": "Make status easy to scan",
+      "description": "Label a status or category",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1095,7 +1095,7 @@
       "name": "alert",
       "type": "registry:ui",
       "title": "Alert",
-      "description": "Keep a useful message in the page flow",
+      "description": "Show a message in the page flow",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1114,7 +1114,7 @@
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress bar",
-      "description": "Show how far a task has moved",
+      "description": "Show progress toward completion",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1193,7 +1193,7 @@
       "name": "empty-state",
       "type": "registry:ui",
       "title": "Empty state",
-      "description": "Give an empty view a next step",
+      "description": "Explain an empty view and offer a next step",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1229,7 +1229,7 @@
       "name": "confetti-burst",
       "type": "registry:ui",
       "title": "Confetti burst",
-      "description": "Mark a meaningful completion with a brief, local celebration",
+      "description": "Celebrate a completed task with a short confetti burst",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1251,7 +1251,7 @@
       "name": "success-check",
       "type": "registry:ui",
       "title": "Success check",
-      "description": "Move between loading, success, and error states",
+      "description": "Show a task's loading, success, and error states",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1312,7 +1312,7 @@
       "name": "card",
       "type": "registry:ui",
       "title": "Card",
-      "description": "Group information with a clear focus",
+      "description": "Group related content and actions in one surface",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1329,7 +1329,7 @@
       "name": "item",
       "type": "registry:ui",
       "title": "Item",
-      "description": "Arrange content and actions in a flexible row",
+      "description": "Place related content and actions in a row",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1349,7 +1349,7 @@
       "name": "metric-card",
       "type": "registry:ui",
       "title": "Metric card",
-      "description": "Show one value with context at a glance",
+      "description": "Pair a value with its change or comparison",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1368,7 +1368,7 @@
       "name": "table",
       "type": "registry:ui",
       "title": "Table",
-      "description": "Read structured rows and columns",
+      "description": "Display data in rows and columns",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1429,7 +1429,7 @@
       "name": "separator",
       "type": "registry:ui",
       "title": "Separator",
-      "description": "Create a quiet break between groups",
+      "description": "Separate sections with a divider",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1448,7 +1448,7 @@
       "name": "resizable",
       "type": "registry:ui",
       "title": "Resizable panels",
-      "description": "Adjust the space between two views",
+      "description": "Resize adjacent panels",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1467,7 +1467,7 @@
       "name": "aspect-ratio",
       "type": "registry:ui",
       "title": "Aspect ratio",
-      "description": "Keep media at its intended shape",
+      "description": "Keep media within a fixed aspect ratio",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1484,7 +1484,7 @@
       "name": "scroll-area",
       "type": "registry:ui",
       "title": "Scroll area",
-      "description": "Keep long content in a bounded view",
+      "description": "Scroll through content inside a fixed area",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1524,7 +1524,7 @@
       "name": "kbd",
       "type": "registry:ui",
       "title": "Keyboard shortcut",
-      "description": "Show a key or shortcut clearly",
+      "description": "Display a keyboard key or shortcut",
       "registryDependencies": [
         "./codeponents-base.json"
       ],
@@ -1541,7 +1541,7 @@
       "name": "code-block",
       "type": "registry:ui",
       "title": "Code block",
-      "description": "Present source with clear, copyable formatting",
+      "description": "Show code with syntax highlighting and a copy button",
       "registryDependencies": [
         "./codeponents-base.json",
         "./copy-button.json"

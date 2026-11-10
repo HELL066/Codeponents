@@ -97,7 +97,12 @@ function EventListItem({
 
       {category || location || organizer || attendeeLabel ? (
         <span className="col-start-2 min-w-0 truncate text-xs leading-4 text-code-muted">
-          {[category, location, organizer ? `Hosted by ${organizer}` : undefined, attendeeLabel]
+          {[
+            category,
+            location,
+            organizer ? `Hosted by ${organizer}` : undefined,
+            attendeeLabel,
+          ]
             .filter(Boolean)
             .join(" · ")}
         </span>
