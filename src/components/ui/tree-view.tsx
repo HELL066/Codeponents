@@ -1,5 +1,11 @@
 import * as React from "react"
 import { ChevronRight } from "lucide-react"
+import {
+  AnimatePresence,
+  motion,
+  useIsPresent,
+  useReducedMotion,
+} from "motion/react"
 import { cn } from "@/lib/utils"
 
 export interface TreeViewItem {
@@ -67,6 +73,45 @@ function flattenVisibleItems(
   })
 }
 
+type TreeViewChildrenGroupProps = React.PropsWithChildren<{
+  reduceMotion: boolean
+}>
+
+const TreeViewChildrenGroup = React.forwardRef<
+  HTMLDivElement,
+  TreeViewChildrenGroupProps
+>(function TreeViewChildrenGroup({ children, reduceMotion }, ref) {
+  const isPresent = useIsPresent()
+
+  return (
+    <motion.div
+      ref={ref}
+      aria-hidden={!isPresent || undefined}
+      className="grid gap-0.5 pl-5"
+      exit={{
+        opacity: 0,
+        y: reduceMotion ? 0 : -3,
+        transition: {
+          duration: reduceMotion ? 0 : 0.14,
+          ease: [0.16, 1, 0.3, 1],
+        },
+      }}
+      animate={{ opacity: 1, y: 0 }}
+      inert={!isPresent}
+      initial={reduceMotion ? false : { opacity: 0, y: -4 }}
+      role="group"
+      transition={{
+        duration: reduceMotion ? 0 : 0.2,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+    >
+      {children}
+    </motion.div>
+  )
+})
+
+TreeViewChildrenGroup.displayName = "TreeViewChildrenGroup"
+
 function TreeView({
   items,
   value,
@@ -79,6 +124,8 @@ function TreeView({
   ...props
 }: TreeViewProps) {
   const treeId = React.useId()
+  const prefersReducedMotion = useReducedMotion()
+  const reduceMotion = prefersReducedMotion ?? false
   const itemRefs = React.useRef(new Map<string, HTMLDivElement>())
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue)
   const [uncontrolledExpandedIds, setUncontrolledExpandedIds] = React.useState<
@@ -249,7 +296,13 @@ function TreeView({
         const node: FlatTreeItem = { item, parentId, level }
 
         return (
-          <div
+          <motion.div
+            layout={reduceMotion ? false : "position"}
+            transition={{
+              layout: reduceMotion
+                ? { duration: 0 }
+                : { type: "spring", duration: 0.28, bounce: 0 },
+            }}
             className="grid min-w-0 gap-0.5 rounded-md outline-none [&:focus-visible>.tree-view__row]:ring-2 [&:focus-visible>.tree-view__row]:ring-code-accent/45 [&:focus-visible>.tree-view__row]:ring-inset"
             key={item.id}
             ref={(element) => {
@@ -307,15 +360,19 @@ function TreeView({
                 ) : null}
               </span>
             </div>
-            {hasChildren && isExpanded ? (
-              <div
-                className="grid animate-in gap-0.5 pl-5 duration-150 fade-in slide-in-from-top-1 motion-reduce:animate-none"
-                role="group"
-              >
-                {renderItems(item.children!, level + 1, item.id)}
-              </div>
+            {hasChildren ? (
+              <AnimatePresence initial={false} mode="popLayout">
+                {isExpanded ? (
+                  <TreeViewChildrenGroup
+                    key="children"
+                    reduceMotion={reduceMotion}
+                  >
+                    {renderItems(item.children!, level + 1, item.id)}
+                  </TreeViewChildrenGroup>
+                ) : null}
+              </AnimatePresence>
             ) : null}
-          </div>
+          </motion.div>
         )
       })}
     </>

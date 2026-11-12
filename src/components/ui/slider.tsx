@@ -96,7 +96,7 @@ function Slider({
                 : undefined)
           }
           className={cn(
-            "group/slider-thumb relative grid size-11 shrink-0 cursor-grab place-items-center rounded-full bg-transparent outline-none active:cursor-grabbing disabled:pointer-events-none data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed",
+            "group/slider-thumb relative grid size-[18px] shrink-0 cursor-grab place-items-center rounded-full bg-transparent outline-none before:absolute before:top-1/2 before:left-1/2 before:size-11 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:content-[''] active:cursor-grabbing disabled:pointer-events-none data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed",
             isDragging
               ? "transition-none"
               : "transition-[left,top] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
