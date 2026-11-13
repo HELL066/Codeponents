@@ -96,6 +96,7 @@
         "./codeponents-base.json"
       ],
       "dependencies": [
+        "motion@^14.9.1",
         "radix-ui@^1.8.1"
       ],
       "files": [
@@ -363,6 +364,7 @@
         "./codeponents-base.json"
       ],
       "dependencies": [
+        "motion@^14.9.1",
         "radix-ui@^1.8.1"
       ],
       "files": [
@@ -370,6 +372,26 @@
           "path": "src/components/ui/switch.tsx",
           "type": "registry:ui",
           "target": "@ui/switch.tsx"
+        }
+      ]
+    },
+    {
+      "name": "theme-switch",
+      "type": "registry:ui",
+      "title": "Theme switch",
+      "description": "Switch between two values with custom icons",
+      "registryDependencies": [
+        "./codeponents-base.json",
+        "./switch.json"
+      ],
+      "dependencies": [
+        "radix-ui@^1.8.1"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/theme-switch.tsx",
+          "type": "registry:ui",
+          "target": "@ui/theme-switch.tsx"
         }
       ]
     },
