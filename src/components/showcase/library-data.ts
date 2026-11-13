@@ -34,6 +34,7 @@ export const libraryGroups: LibraryGroup[] = [
       "checkbox",
       "radio-group",
       "switch",
+      "theme-switch",
       "slider",
       "calendar",
       "date-picker",
@@ -254,6 +255,12 @@ const definitions = [
     "Switch",
     "Change a setting immediately.",
     "switch toggle preference setting",
+  ],
+  [
+    "theme-switch",
+    "Theme switch",
+    "Switch between two values with custom icons.",
+    "theme switch appearance light dark icon two-state",
   ],
   [
     "slider",

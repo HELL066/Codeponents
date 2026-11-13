@@ -11,7 +11,13 @@ import {
   ChevronsUpDown,
   CircleHelp,
   Info,
+  LayoutGrid,
+  List,
+  Moon,
   MoreHorizontal,
+  Sun,
+  Volume2,
+  VolumeX,
 } from "lucide-react"
 import { Alert } from "@/components/ui/alert"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -116,6 +122,10 @@ import {
 import { Skeleton, SkeletonReveal } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
+import {
+  ThemeSwitch,
+  type ThemeSwitchTheme,
+} from "@/components/ui/theme-switch"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { toast } from "@/components/ui/toast"
 import {
@@ -151,6 +161,7 @@ const generalEntryIds = [
   "checkbox",
   "radio-group",
   "switch",
+  "theme-switch",
   "calendar",
   "date-picker",
   "date-range-picker",
@@ -218,6 +229,45 @@ const previewItems = [
     recency: 2,
   },
 ]
+
+const appearanceThemes = [
+  {
+    value: "light",
+    label: "Light",
+    icon: <Sun aria-hidden="true" className="size-3" />,
+  },
+  {
+    value: "dark",
+    label: "Dark",
+    icon: <Moon aria-hidden="true" className="size-3" />,
+  },
+] as const satisfies readonly [ThemeSwitchTheme, ThemeSwitchTheme]
+
+const layoutThemes = [
+  {
+    value: "grid",
+    label: "Grid",
+    icon: <LayoutGrid aria-hidden="true" className="size-3" />,
+  },
+  {
+    value: "list",
+    label: "List",
+    icon: <List aria-hidden="true" className="size-3" />,
+  },
+] as const satisfies readonly [ThemeSwitchTheme, ThemeSwitchTheme]
+
+const soundThemes = [
+  {
+    value: "muted",
+    label: "Muted",
+    icon: <VolumeX aria-hidden="true" className="size-3" />,
+  },
+  {
+    value: "sound",
+    label: "Sound",
+    icon: <Volume2 aria-hidden="true" className="size-3" />,
+  },
+] as const satisfies readonly [ThemeSwitchTheme, ThemeSwitchTheme]
 
 const sortOptions = [
   { value: "recent", label: "Recently updated" },
@@ -340,7 +390,43 @@ const snippets: Record<GeneralEntryId, string> = {
   select: `import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"\n\n<Select defaultValue="active">\n  <SelectTrigger aria-label="Status"><SelectValue /></SelectTrigger>\n  <SelectContent>\n    <SelectItem value="draft">Draft</SelectItem>\n    <SelectItem value="active">In progress</SelectItem>\n    <SelectItem value="complete">Complete</SelectItem>\n  </SelectContent>\n</Select>`,
   checkbox: `import { Checkbox } from "@/components/ui/checkbox"\n\n<label htmlFor="include-archived">\n  <Checkbox id="include-archived" /> Include archived items\n</label>`,
   "radio-group": `import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"\n\n<RadioGroup defaultValue="recent" aria-label="Item order">\n  <label><RadioGroupItem value="recent" /> Recently updated</label>\n  <label><RadioGroupItem value="name" /> Name</label>\n</RadioGroup>`,
-  switch: `import { Switch } from "@/components/ui/switch"\n\n<label htmlFor="current-items">Show current items only</label>\n<Switch id="current-items" />`,
+  switch: [
+    'import { useState } from "react"',
+    'import { Switch } from "@/components/ui/switch"',
+    "",
+    "const [activeOnly, setActiveOnly] = useState(false)",
+    "",
+    '<label htmlFor="active-only">Current items only</label>',
+    '<Switch id="active-only" checked={activeOnly} onCheckedChange={setActiveOnly} />',
+  ].join("\n"),
+  "theme-switch": [
+    'import { useState } from "react"',
+    'import { LayoutGrid, List, Moon, Sun, Volume2, VolumeX } from "lucide-react"',
+    'import { ThemeSwitch, type ThemeSwitchTheme } from "@/components/ui/theme-switch"',
+    "",
+    "const appearanceThemes = [",
+    '  { value: "light", label: "Light", icon: <Sun /> },',
+    '  { value: "dark", label: "Dark", icon: <Moon /> },',
+    "] satisfies readonly [ThemeSwitchTheme, ThemeSwitchTheme]",
+    "",
+    "const layoutThemes = [",
+    '  { value: "grid", label: "Grid", icon: <LayoutGrid /> },',
+    '  { value: "list", label: "List", icon: <List /> },',
+    "] satisfies readonly [ThemeSwitchTheme, ThemeSwitchTheme]",
+    "",
+    "const soundThemes = [",
+    '  { value: "muted", label: "Muted", icon: <VolumeX /> },',
+    '  { value: "sound", label: "Sound", icon: <Volume2 /> },',
+    "] satisfies readonly [ThemeSwitchTheme, ThemeSwitchTheme]",
+    "",
+    'const [appearance, setAppearance] = useState("light")',
+    'const [layout, setLayout] = useState("grid")',
+    'const [sound, setSound] = useState("muted")',
+    "",
+    '<ThemeSwitch aria-label="Appearance" themes={appearanceThemes} value={appearance} onValueChange={setAppearance} />',
+    '<ThemeSwitch aria-label="Layout" themes={layoutThemes} value={layout} onValueChange={setLayout} />',
+    '<ThemeSwitch aria-label="Sound" themes={soundThemes} value={sound} onValueChange={setSound} />',
+  ].join("\n"),
   calendar: `import { Calendar } from "@/components/ui/calendar"\n\n<Calendar\n  selected={selectedDate ?? null}\n  onSelect={setSelectedDate}\n  locale="en-PH"\n/>`,
   "events-calendar": `import { EventsCalendar, type EventCalendarEvent } from "@/components/ui/events-calendar"\n\nconst events: EventCalendarEvent[] = [\n  { id: "planning", title: "Planning sync", start: new Date(2026, 10, 6, 9, 30), category: "Team", location: "Meeting room" },\n  { id: "workshop", title: "Workshop prep", start: new Date(2026, 10, 9, 13), category: "Workshop", location: "Studio 2", tone: "positive" },\n]\n\n<EventsCalendar events={events} locale="en-PH" />`,
   "bottom-navigation": `import { useState } from "react"\nimport { BottomNavigation, type BottomNavigationItem } from "@/components/ui/bottom-navigation"\n\nconst sections: BottomNavigationItem[] = [\n  { value: "overview", label: "Overview" },\n  { value: "events", label: "Events" },\n  { value: "profile", label: "Profile" },\n]\n\nconst [view, setView] = useState("overview")\n\n<BottomNavigation\n  items={sections}\n  label="Workspace pages"\n  value={view}\n  onValueChange={setView}\n/>`,
@@ -432,6 +518,9 @@ function GeneralSpecimen({
   const [includeArchived, setIncludeArchived] = useState(true)
   const [sortOrder, setSortOrder] = useState("recent")
   const [activeOnly, setActiveOnly] = useState(false)
+  const [appearance, setAppearance] = useState("light")
+  const [layout, setLayout] = useState("grid")
+  const [sound, setSound] = useState("muted")
   const [calendarDate, setCalendarDate] = useState<Date | undefined>(
     () => new Date()
   )
@@ -936,39 +1025,129 @@ function GeneralSpecimen({
       )
       return (
         <div className="grid w-full max-w-md gap-5">
-          <div className="flex items-center justify-between gap-5">
-            <label
-              htmlFor="general-active-only"
-              className="text-sm font-medium text-code-ink"
+          <div className="grid gap-4">
+            <div className="flex items-center justify-between gap-5">
+              <label
+                htmlFor="general-active-only"
+                className="text-sm font-medium text-code-ink"
+              >
+                Current items only
+              </label>
+              <Switch
+                id="general-active-only"
+                checked={activeOnly}
+                onCheckedChange={setActiveOnly}
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-4 text-xs text-code-muted">
+            <span>Items</span>
+            <p
+              aria-atomic="true"
+              aria-live="polite"
+              className="tabular-nums"
+              role="status"
             >
-              Current items only
-            </label>
-            <Switch
-              id="general-active-only"
-              checked={activeOnly}
-              onCheckedChange={setActiveOnly}
-            />
+              <TextMorph as="span" duration={220} numbers respectReducedMotion>
+                {visibleItems.length}
+              </TextMorph>{" "}
+              {visibleItems.length === 1 ? "item" : "items"} visible
+            </p>
           </div>
           <ul aria-label="Items" className="grid gap-3">
-            {visibleItems.map((item) => (
-              <li
-                className="flex items-center justify-between gap-4 text-sm"
-                key={item.name}
-              >
-                <span className="font-medium text-code-ink">{item.name}</span>
-                <span className="text-xs text-code-muted">
-                  {item.archived ? "Archived" : "Active"}
-                </span>
-              </li>
-            ))}
+            <AnimatePresence initial={false} mode="popLayout">
+              {visibleItems.map((item) => (
+                <motion.li
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center justify-between gap-4 text-sm"
+                  exit={
+                    prefersReducedMotion ? undefined : { opacity: 0, y: -3 }
+                  }
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 3 }}
+                  key={item.name}
+                  layout={prefersReducedMotion ? false : "position"}
+                  transition={{
+                    duration: prefersReducedMotion ? 0 : 0.2,
+                    ease: "easeOut",
+                  }}
+                >
+                  <span className="font-medium text-code-ink">{item.name}</span>
+                  <span className="text-xs text-code-muted">
+                    {item.archived ? "Archived" : "Active"}
+                  </span>
+                </motion.li>
+              ))}
+            </AnimatePresence>
           </ul>
-          <span className="sr-only" role="status" aria-live="polite">
-            {visibleItems.length} {visibleItems.length === 1 ? "item" : "items"}{" "}
-            shown
-          </span>
         </div>
       )
     }
+
+    case "theme-switch":
+      return (
+        <div className="grid w-full max-w-md divide-y divide-code-line/70">
+          <div className="flex items-center justify-between gap-4 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-code-ink">Appearance</p>
+              <p
+                aria-live="polite"
+                className="text-xs text-code-muted"
+                role="status"
+              >
+                <TextMorph as="span" duration={220} respectReducedMotion>
+                  {appearance === "dark" ? "Dark mode" : "Light mode"}
+                </TextMorph>
+              </p>
+            </div>
+            <ThemeSwitch
+              aria-label="Appearance"
+              themes={appearanceThemes}
+              value={appearance}
+              onValueChange={setAppearance}
+            />
+          </div>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-code-ink">Layout</p>
+              <p
+                aria-live="polite"
+                className="text-xs text-code-muted"
+                role="status"
+              >
+                <TextMorph as="span" duration={220} respectReducedMotion>
+                  {layout === "list" ? "List view" : "Grid view"}
+                </TextMorph>
+              </p>
+            </div>
+            <ThemeSwitch
+              aria-label="Layout"
+              themes={layoutThemes}
+              value={layout}
+              onValueChange={setLayout}
+            />
+          </div>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-code-ink">Sound</p>
+              <p
+                aria-live="polite"
+                className="text-xs text-code-muted"
+                role="status"
+              >
+                <TextMorph as="span" duration={220} respectReducedMotion>
+                  {sound === "sound" ? "Sound on" : "Muted"}
+                </TextMorph>
+              </p>
+            </div>
+            <ThemeSwitch
+              aria-label="Sound"
+              themes={soundThemes}
+              value={sound}
+              onValueChange={setSound}
+            />
+          </div>
+        </div>
+      )
 
     case "calendar":
       return (

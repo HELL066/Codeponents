@@ -1,6 +1,7 @@
 import { lazy, useEffect, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { TextMorph } from "torph/react"
+import { Bold, Italic, Underline } from "lucide-react"
 import { CopyButton } from "@/components/ui/copy-button"
 import {
   Field,
@@ -435,7 +436,23 @@ const categoryOptions = [
 ]
 
 const snippets: Partial<Record<AdvancedId, string>> = {
-  toggle: `import { Toggle } from "@/components/ui/toggle"\n\n<Toggle pressed={enabled} onPressedChange={setEnabled}>\n  Email updates\n</Toggle>`,
+  toggle: [
+    'import { useState } from "react"',
+    'import { Bold } from "lucide-react"',
+    'import { Toggle } from "@/components/ui/toggle"',
+    "",
+    "const [bold, setBold] = useState(false)",
+    "",
+    "<Toggle",
+    '  aria-label="Bold"',
+    '  title="Bold"',
+    '  className="size-11 p-0"',
+    "  pressed={bold}",
+    "  onPressedChange={setBold}",
+    ">",
+    '  <Bold aria-hidden="true" />',
+    "</Toggle>",
+  ].join("\n"),
   "toggle-group": `import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"\n\n<ToggleGroup type="single" value={view} onValueChange={setView}>\n  <ToggleGroupItem value="month">Month</ToggleGroupItem>\n  <ToggleGroupItem value="list">List</ToggleGroupItem>\n</ToggleGroup>`,
   "copy-button": `import { CopyButton } from "@/components/ui/copy-button"\n\n<CopyButton value={shortLink} label="Copy link" />`,
   field: `import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"\n\n<Field>\n  <FieldLabel htmlFor="item-title">Item title</FieldLabel>\n  <Input id="item-title" />\n  <FieldDescription>Shown in the list.</FieldDescription>\n</Field>`,
@@ -475,7 +492,11 @@ export function AdvancedSpecimen({
   entryId: string
   onNavigate?: Navigate
 }) {
-  const [enabled, setEnabled] = useState(true)
+  const [formatting, setFormatting] = useState({
+    bold: true,
+    italic: false,
+    underline: false,
+  })
   const [view, setView] = useState("month")
   const [category, setCategory] = useState<string | null>("design")
   const [reminder, setReminder] = useState([30])
@@ -499,44 +520,116 @@ export function AdvancedSpecimen({
   }
 
   switch (entryId as AdvancedId) {
-    case "toggle":
+    case "toggle": {
+      const activeFormats = [
+        formatting.bold ? "Bold" : null,
+        formatting.italic ? "Italic" : null,
+        formatting.underline ? "Underline" : null,
+      ]
+        .filter(Boolean)
+        .join(" + ")
+      const formatStatus = activeFormats || "Plain text"
+
       return (
-        <div className="w-full max-w-lg space-y-4">
-          <Toggle pressed={enabled} onPressedChange={setEnabled}>
-            Email updates
-          </Toggle>
+        <div className="w-full max-w-md overflow-hidden rounded-xl border border-code-line bg-code-surface">
+          <div
+            aria-label="Text formatting"
+            className="flex items-center gap-1 border-b border-code-line p-2"
+            role="group"
+          >
+            <Toggle
+              aria-label="Bold"
+              className="size-11 border-transparent bg-transparent p-0 text-code-muted shadow-none hover:bg-code-surface"
+              pressed={formatting.bold}
+              title="Bold"
+              onPressedChange={(bold) =>
+                setFormatting((current) => ({ ...current, bold }))
+              }
+            >
+              <Bold aria-hidden="true" />
+            </Toggle>
+            <Toggle
+              aria-label="Italic"
+              className="size-11 border-transparent bg-transparent p-0 text-code-muted shadow-none hover:bg-code-surface"
+              pressed={formatting.italic}
+              title="Italic"
+              onPressedChange={(italic) =>
+                setFormatting((current) => ({ ...current, italic }))
+              }
+            >
+              <Italic aria-hidden="true" />
+            </Toggle>
+            <Toggle
+              aria-label="Underline"
+              className="size-11 border-transparent bg-transparent p-0 text-code-muted shadow-none hover:bg-code-surface"
+              pressed={formatting.underline}
+              title="Underline"
+              onPressedChange={(underline) =>
+                setFormatting((current) => ({ ...current, underline }))
+              }
+            >
+              <Underline aria-hidden="true" />
+            </Toggle>
+          </div>
           <p
+            className={[
+              "min-h-14 px-4 pt-4 pb-2 text-lg leading-7 text-code-ink transition-[font-weight,font-style,text-decoration-color] duration-150 motion-reduce:transition-none",
+              formatting.bold ? "font-bold" : "",
+              formatting.italic ? "italic" : "",
+              formatting.underline
+                ? "underline decoration-code-accent/60 underline-offset-4"
+                : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            A thoughtful interface makes everyday work feel lighter.
+          </p>
+          <p
+            aria-atomic="true"
             aria-live="polite"
-            className="text-sm text-code-muted"
+            className="flex min-h-8 items-center px-4 pb-3 text-xs text-code-muted"
             role="status"
           >
-            <span className="sr-only">
-              Email updates {enabled ? "on" : "off"}
-            </span>
-            <span
-              aria-hidden="true"
-              className="inline-grid w-10 place-items-center tabular-nums"
+            <span className="sr-only">Current formatting: </span>
+            <TextMorph
+              as="span"
+              className="font-medium text-code-ink"
+              duration={220}
+              respectReducedMotion
             >
-              <TextMorph as="span" duration={220} respectReducedMotion>
-                {enabled ? "On" : "Off"}
-              </TextMorph>
-            </span>
+              {formatStatus}
+            </TextMorph>
           </p>
         </div>
       )
+    }
     case "toggle-group":
       return (
         <div className="space-y-3">
           <p className="text-sm font-medium text-code-ink">Calendar view</p>
           <ToggleGroup
             aria-label="Calendar view"
+            className="w-full max-w-sm"
             type="single"
             value={view}
             onValueChange={(next) => next && setView(next)}
           >
-            <ToggleGroupItem value="month">Month</ToggleGroupItem>
-            <ToggleGroupItem value="list">List</ToggleGroupItem>
+            <ToggleGroupItem className="min-w-0 flex-1" value="month">
+              Month
+            </ToggleGroupItem>
+            <ToggleGroupItem className="min-w-0 flex-1" value="list">
+              List
+            </ToggleGroupItem>
           </ToggleGroup>
+          <p aria-hidden="true" className="text-xs text-code-muted">
+            <span className="inline-grid w-24 place-items-start">
+              <TextMorph as="span" duration={220} respectReducedMotion>
+                {view === "month" ? "Month view" : "List view"}
+              </TextMorph>
+            </span>
+            selected
+          </p>
           <p className="sr-only" aria-live="polite">
             {view} view selected
           </p>
