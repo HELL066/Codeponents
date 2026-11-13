@@ -478,7 +478,7 @@ export function AdvancedSpecimen({
   const [enabled, setEnabled] = useState(true)
   const [view, setView] = useState("month")
   const [category, setCategory] = useState<string | null>("design")
-  const [reminder, setReminder] = useState([20])
+  const [reminder, setReminder] = useState([30])
   const [code, setCode] = useState("248")
   const [moreOpen, setMoreOpen] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
