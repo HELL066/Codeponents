@@ -1177,12 +1177,14 @@ function GeneralSpecimen({
           events={scheduleEvents}
           locale="en-PH"
           defaultMonth={scheduleWeekStart}
-          defaultSelectedDate={new Date(
-            scheduleWeekStart.getFullYear(),
-            scheduleWeekStart.getMonth(),
-            scheduleWeekStart.getDate() + 1,
-            12
-          )}
+          defaultSelectedDate={
+            new Date(
+              scheduleWeekStart.getFullYear(),
+              scheduleWeekStart.getMonth(),
+              scheduleWeekStart.getDate() + 1,
+              12
+            )
+          }
           defaultView="month"
           weekStartsOn={1}
           onEventChange={(nextEvent) =>
