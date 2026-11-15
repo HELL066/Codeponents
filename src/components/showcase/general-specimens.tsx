@@ -296,86 +296,87 @@ const libraryItems: TreeViewItem[] = [
   { id: "archive", label: "Archive" },
 ]
 
-const eventsCalendarToday = new Date()
-const eventsCalendarDemoEvents: EventCalendarEvent[] = [
+const scheduleWeekStart = (() => {
+  const today = new Date()
+  return new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - ((today.getDay() + 6) % 7),
+    12
+  )
+})()
+
+const scheduleDemoEvents: EventCalendarEvent[] = [
   {
-    id: "planning-sync",
-    title: "Planning sync",
+    id: "research-sync",
+    title: "Research sync",
     start: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      3,
+      scheduleWeekStart.getFullYear(),
+      scheduleWeekStart.getMonth(),
+      scheduleWeekStart.getDate() + 1,
       9,
       30
     ),
     end: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      3,
+      scheduleWeekStart.getFullYear(),
+      scheduleWeekStart.getMonth(),
+      scheduleWeekStart.getDate() + 1,
       10,
       30
     ),
-    category: "Team",
-    location: "Meeting room",
+    category: "Planning",
+    location: "Studio 2",
     tone: "accent",
   },
   {
-    id: "workshop-prep",
-    title: "Workshop prep",
+    id: "prototype-review",
+    title: "Prototype review",
     start: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      9,
+      scheduleWeekStart.getFullYear(),
+      scheduleWeekStart.getMonth(),
+      scheduleWeekStart.getDate() + 2,
       13
     ),
     end: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      9,
+      scheduleWeekStart.getFullYear(),
+      scheduleWeekStart.getMonth(),
+      scheduleWeekStart.getDate() + 2,
       14,
       30
     ),
-    category: "Workshop",
-    location: "Studio 2",
+    category: "Design",
+    location: "Meeting room",
     tone: "positive",
   },
   {
-    id: "research-review",
-    title: "Research review",
+    id: "interview-debrief",
+    title: "Interview debrief",
     start: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      16,
-      10
-    ),
-    end: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      16,
+      scheduleWeekStart.getFullYear(),
+      scheduleWeekStart.getMonth(),
+      scheduleWeekStart.getDate() + 3,
       11
     ),
-    category: "Review",
+    end: new Date(
+      scheduleWeekStart.getFullYear(),
+      scheduleWeekStart.getMonth(),
+      scheduleWeekStart.getDate() + 3,
+      12
+    ),
+    category: "Research",
     location: "Online",
     tone: "warning",
   },
   {
-    id: "club-gathering",
-    title: "Club gathering",
+    id: "weekly-notes",
+    title: "Weekly notes",
     start: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      23,
-      18
+      scheduleWeekStart.getFullYear(),
+      scheduleWeekStart.getMonth(),
+      scheduleWeekStart.getDate() + 4,
+      12
     ),
-    end: new Date(
-      eventsCalendarToday.getFullYear(),
-      eventsCalendarToday.getMonth(),
-      23,
-      19,
-      30
-    ),
-    category: "Social",
-    location: "Atrium",
+    allDay: true,
     tone: "neutral",
   },
 ]
@@ -428,7 +429,7 @@ const snippets: Record<GeneralEntryId, string> = {
     '<ThemeSwitch aria-label="Sound" themes={soundThemes} value={sound} onValueChange={setSound} />',
   ].join("\n"),
   calendar: `import { Calendar } from "@/components/ui/calendar"\n\n<Calendar\n  selected={selectedDate ?? null}\n  onSelect={setSelectedDate}\n  locale="en-PH"\n/>`,
-  "events-calendar": `import { EventsCalendar, type EventCalendarEvent } from "@/components/ui/events-calendar"\n\nconst events: EventCalendarEvent[] = [\n  { id: "planning", title: "Planning sync", start: new Date(2026, 10, 6, 9, 30), category: "Team", location: "Meeting room" },\n  { id: "workshop", title: "Workshop prep", start: new Date(2026, 10, 9, 13), category: "Workshop", location: "Studio 2", tone: "positive" },\n]\n\n<EventsCalendar events={events} locale="en-PH" />`,
+  "events-calendar": `import { useState } from "react"\nimport { EventsCalendar, type EventCalendarEvent } from "@/components/ui/events-calendar"\n\nconst [events, setEvents] = useState<EventCalendarEvent[]>(initialEvents)\n\n<EventsCalendar\n  events={events}\n  defaultView="month"\n  defaultSelectedDate={new Date()}\n  locale="en-PH"\n  weekStartsOn={1}\n  onEventChange={(nextEvent) =>\n    setEvents((current) =>\n      current.map((event) => event.id === nextEvent.id ? nextEvent : event)\n    )\n  }\n/>`,
   "bottom-navigation": `import { useState } from "react"\nimport { BottomNavigation, type BottomNavigationItem } from "@/components/ui/bottom-navigation"\n\nconst sections: BottomNavigationItem[] = [\n  { value: "overview", label: "Overview" },\n  { value: "events", label: "Events" },\n  { value: "profile", label: "Profile" },\n]\n\nconst [view, setView] = useState("overview")\n\n<BottomNavigation\n  items={sections}\n  label="Workspace pages"\n  value={view}\n  onValueChange={setView}\n/>`,
   "date-picker": `import { DatePicker } from "@/components/ui/date-picker"\n\n<DatePicker\n  aria-label="Due date"\n  value={date}\n  onValueChange={setDate}\n/>`,
   "date-range-picker": `import { useState } from "react"\nimport { DateRangePicker, type DateRangeValue } from "@/components/ui/date-range-picker"\n\nconst [range, setRange] = useState<DateRangeValue>({})\n\n<DateRangePicker value={range} onValueChange={setRange} />`,
@@ -576,6 +577,7 @@ function GeneralSpecimen({
     "tinted"
   )
   const [progressValue, setProgressValue] = useState(60)
+  const [scheduleEvents, setScheduleEvents] = useState(scheduleDemoEvents)
   const [showSkeleton, setShowSkeleton] = useState(true)
   const [showEmptyState, setShowEmptyState] = useState(true)
   const [sortAscending, setSortAscending] = useState(true)
@@ -1172,10 +1174,24 @@ function GeneralSpecimen({
       return (
         <EventsCalendar
           className="events-calendar-specimen"
-          events={eventsCalendarDemoEvents}
+          events={scheduleEvents}
           locale="en-PH"
-          defaultMonth={eventsCalendarToday}
-          defaultSelectedDate={eventsCalendarDemoEvents[1]!.start}
+          defaultMonth={scheduleWeekStart}
+          defaultSelectedDate={new Date(
+            scheduleWeekStart.getFullYear(),
+            scheduleWeekStart.getMonth(),
+            scheduleWeekStart.getDate() + 1,
+            12
+          )}
+          defaultView="month"
+          weekStartsOn={1}
+          onEventChange={(nextEvent) =>
+            setScheduleEvents((current) =>
+              current.map((event) =>
+                event.id === nextEvent.id ? nextEvent : event
+              )
+            )
+          }
         />
       )
 
