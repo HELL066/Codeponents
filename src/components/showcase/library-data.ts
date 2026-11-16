@@ -283,8 +283,8 @@ const definitions = [
   [
     "events-calendar",
     "Events calendar",
-    "View events by month or agenda.",
-    "events calendar agenda schedule event time location month",
+    "Browse events by month, week, day, or agenda.",
+    "events calendar agenda schedule event time location month week drag move",
   ],
   [
     "activity-feed",
