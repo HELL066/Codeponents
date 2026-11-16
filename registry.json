@@ -456,7 +456,7 @@
       "name": "events-calendar",
       "type": "registry:ui",
       "title": "Events calendar",
-      "description": "View events by month or agenda",
+      "description": "Browse events by month, week, day, or agenda",
       "registryDependencies": [
         "./codeponents-base.json",
         "./button.json",
