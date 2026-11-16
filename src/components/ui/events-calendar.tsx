@@ -1,13 +1,18 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { AnimatePresence, motion, useReducedMotion } from "motion/react"
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useReducedMotion,
+} from "motion/react"
 import { TextMorph } from "torph/react"
 import { Button } from "@/components/ui/button"
 import { EventListItem } from "@/components/ui/event-list-item"
 import { cn } from "@/lib/utils"
 
 export type EventCalendarTone = "accent" | "positive" | "warning" | "neutral"
-export type EventCalendarView = "month" | "day" | "agenda"
+export type EventCalendarView = "month" | "week" | "day" | "agenda"
 
 export interface EventCalendarEvent {
   id: string
@@ -31,13 +36,18 @@ export interface EventsCalendarProps {
   defaultMonth?: Date
   onMonthChange?: (month: Date) => void
   locale?: string
-  /** Start in the month grid or event list. */
+  /** Initial calendar view. */
   defaultView?: EventCalendarView
   /** Heading level for the month title when the calendar is composed in a page. */
   headingLevel?: 2 | 3 | 4
   /** Day on which the week begins; 0 is Sunday and 1 is Monday. */
   weekStartsOn?: number
   onEventSelect?: (event: EventCalendarEvent) => void
+  /** Called after a timed event is dragged or moved with the arrow keys in week view. */
+  onEventChange?: (
+    nextEvent: EventCalendarEvent,
+    previousEvent: EventCalendarEvent
+  ) => void
   onCreateEvent?: (date: Date) => void
   className?: string
 }
@@ -58,6 +68,11 @@ function addDays(date: Date, amount: number) {
   const next = atNoon(date)
   next.setDate(next.getDate() + amount)
   return next
+}
+
+function startOfWeek(date: Date, weekStartsOn: number) {
+  const offset = (date.getDay() - weekStartsOn + 7) % 7
+  return addDays(date, -offset)
 }
 
 function monthStart(date: Date) {
@@ -95,6 +110,7 @@ function EventsCalendar({
   headingLevel = 2,
   weekStartsOn = 0,
   onEventSelect,
+  onEventChange,
   onCreateEvent,
   className,
 }: EventsCalendarProps) {
@@ -118,6 +134,12 @@ function EventsCalendar({
   const normalizedWeekStart = Number.isFinite(weekStartsOn)
     ? ((Math.trunc(weekStartsOn) % 7) + 7) % 7
     : 0
+  const weekStartDate = startOfWeek(activeDate ?? today, normalizedWeekStart)
+  const weekDates = React.useMemo(
+    () =>
+      Array.from({ length: 7 }, (_, index) => addDays(weekStartDate, index)),
+    [weekStartDate]
+  )
 
   const dates = React.useMemo(() => {
     const firstDay = monthStart(displayedMonth)
@@ -243,6 +265,18 @@ function EventsCalendar({
   }
 
   const changePeriod = (amount: number) => {
+    if (view === "week") {
+      const nextDate = addDays(activeDate ?? today, amount * 7)
+      if (
+        nextDate.getMonth() !== displayedMonth.getMonth() ||
+        nextDate.getFullYear() !== displayedMonth.getFullYear()
+      ) {
+        changeMonth(monthStart(nextDate), false)
+      }
+      selectDate(nextDate)
+      return
+    }
+
     if (view !== "day") {
       changeMonth(addMonths(displayedMonth, amount))
       return
@@ -292,10 +326,44 @@ function EventsCalendar({
   const monthLabel = monthFormatter.format(displayedMonth)
   const dayViewDate = activeDate ?? today
   const dayViewEvents = eventsByDate.get(dateKey(dayViewDate)) ?? []
+  const weekEndDate = weekDates[weekDates.length - 1]!
+  const weekStartBoundary = new Date(
+    weekDates[0]!.getFullYear(),
+    weekDates[0]!.getMonth(),
+    weekDates[0]!.getDate()
+  )
+  const weekEndBoundary = new Date(
+    weekStartBoundary.getFullYear(),
+    weekStartBoundary.getMonth(),
+    weekStartBoundary.getDate() + 7
+  )
+  const weekLabel = new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).formatRange(
+    weekStartBoundary,
+    new Date(
+      weekEndDate.getFullYear(),
+      weekEndDate.getMonth(),
+      weekEndDate.getDate()
+    )
+  )
+  const weekEvents = events.filter(
+    (event) => event.start >= weekStartBoundary && event.start < weekEndBoundary
+  )
   const headerLabel =
-    view === "day" ? dayHeadingFormatter.format(dayViewDate) : monthLabel
+    view === "day"
+      ? dayHeadingFormatter.format(dayViewDate)
+      : view === "week"
+        ? weekLabel
+        : monthLabel
   const headerEventCount =
-    view === "day" ? dayViewEvents.length : eventsInMonth.length
+    view === "day"
+      ? dayViewEvents.length
+      : view === "week"
+        ? weekEvents.length
+        : eventsInMonth.length
   const MonthHeading =
     headingLevel === 4 ? "h4" : headingLevel === 3 ? "h3" : "h2"
   const activeDateLabel = activeDate
@@ -390,6 +458,7 @@ function EventsCalendar({
             {(
               [
                 { value: "month", label: "Month" },
+                { value: "week", label: "Week" },
                 { value: "day", label: "Day" },
                 { value: "agenda", label: "Agenda" },
               ] as const
@@ -399,7 +468,10 @@ function EventsCalendar({
                 type="button"
                 aria-pressed={view === option.value}
                 onClick={() => {
-                  if (option.value === "day" && !activeDate) {
+                  if (
+                    (option.value === "day" || option.value === "week") &&
+                    !activeDate
+                  ) {
                     selectDate(today)
                   }
                   setView(option.value)
@@ -417,7 +489,7 @@ function EventsCalendar({
 
           <div className="flex shrink-0 items-center gap-1">
             <Button
-              aria-label={`Previous ${view === "day" ? "day" : "month"}`}
+              aria-label={`Previous ${view === "day" ? "day" : view === "week" ? "week" : "month"}`}
               onClick={() => changePeriod(-1)}
               size="icon-sm"
               type="button"
@@ -435,7 +507,7 @@ function EventsCalendar({
               Today
             </Button>
             <Button
-              aria-label={`Next ${view === "day" ? "day" : "month"}`}
+              aria-label={`Next ${view === "day" ? "day" : view === "week" ? "week" : "month"}`}
               onClick={() => changePeriod(1)}
               size="icon-sm"
               type="button"
@@ -461,7 +533,9 @@ function EventsCalendar({
       <div
         className={cn(
           "mt-4 grid min-w-0 gap-4 @sm:mt-5 @xl:gap-5",
-          view !== "day" && "@2xl:grid-cols-[minmax(0,1fr)_15rem] @2xl:gap-4"
+          view !== "day" &&
+            view !== "week" &&
+            "@2xl:grid-cols-[minmax(0,1fr)_15rem] @2xl:gap-4"
         )}
       >
         <div className="min-w-0">
@@ -618,6 +692,32 @@ function EventsCalendar({
                     </tbody>
                   </table>
                 </motion.div>
+              ) : view === "week" ? (
+                <motion.div
+                  key={`week-${dateKey(weekDates[0]!)}`}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={
+                    prefersReducedMotion ? undefined : { opacity: 0, x: -8 }
+                  }
+                  initial={prefersReducedMotion ? false : { opacity: 0, x: 8 }}
+                  transition={
+                    prefersReducedMotion
+                      ? { duration: 0 }
+                      : { duration: 0.18, ease: [0.22, 1, 0.36, 1] }
+                  }
+                >
+                  <WeekTimeline
+                    dates={weekDates}
+                    events={events}
+                    formatEventRange={eventTimeRange}
+                    formatEventTime={eventTime}
+                    locale={locale}
+                    onDateSelect={selectDate}
+                    onEventChange={onEventChange}
+                    onEventSelect={handleEventSelect}
+                    selectedDate={activeDate ?? today}
+                  />
+                </motion.div>
               ) : view === "day" ? (
                 <motion.div
                   key="day"
@@ -689,7 +789,7 @@ function EventsCalendar({
           aria-labelledby={`${agendaId}-day`}
           className={cn(
             "min-w-0 flex-col @2xl:min-h-64 @2xl:border-l @2xl:border-code-line/35 @2xl:pl-4",
-            view === "day" ? "hidden" : "hidden @2xl:flex"
+            view === "day" || view === "week" ? "hidden" : "hidden @2xl:flex"
           )}
         >
           <div className="flex shrink-0 items-start justify-between gap-3">
@@ -763,6 +863,7 @@ interface PositionedEvent {
   endMinute: number
   column: number
   columnCount: number
+  overlapsDay: boolean
 }
 
 const HOURS_PER_DAY = 24
@@ -782,13 +883,13 @@ function positionTimedEvents(
   const positioned = events
     .filter((event) => !event.allDay)
     .map((event) => {
-      const startMinute = Math.max(
-        0,
-        Math.floor((event.start.getTime() - dayStart) / 60_000)
+      const rawStartMinute = Math.floor(
+        (event.start.getTime() - dayStart) / 60_000
       )
       const rawEndMinute = event.end
         ? Math.ceil((event.end.getTime() - dayStart) / 60_000)
-        : startMinute + 60
+        : rawStartMinute + 60
+      const startMinute = Math.max(0, rawStartMinute)
       const endMinute = Math.min(
         MINUTES_PER_DAY,
         Math.max(startMinute + 30, rawEndMinute)
@@ -800,9 +901,10 @@ function positionTimedEvents(
         endMinute,
         column: 0,
         columnCount: 1,
+        overlapsDay: rawStartMinute < MINUTES_PER_DAY && rawEndMinute > 0,
       }
     })
-    .filter((event) => event.startMinute < MINUTES_PER_DAY)
+    .filter((event) => event.overlapsDay)
     .sort(
       (first, second) =>
         first.startMinute - second.startMinute ||
@@ -844,6 +946,590 @@ function positionTimedEvents(
   finishCluster()
 
   return result
+}
+
+interface WeekTimelineProps {
+  dates: readonly Date[]
+  events: readonly EventCalendarEvent[]
+  selectedDate?: Date
+  locale?: string
+  formatEventTime: (event: EventCalendarEvent) => string
+  formatEventRange: (event: EventCalendarEvent) => string
+  onDateSelect?: (date: Date) => void
+  onEventSelect?: (event: EventCalendarEvent) => void
+  onEventChange?: (
+    nextEvent: EventCalendarEvent,
+    previousEvent: EventCalendarEvent
+  ) => void
+}
+
+interface WeekDropTarget {
+  dayIndex: number
+  minute: number
+  event: EventCalendarEvent
+}
+
+interface EventDragState {
+  event: EventCalendarEvent
+  pointerId: number
+  startX: number
+  startY: number
+  moved: boolean
+  target?: WeekDropTarget
+}
+
+const WEEK_MIN_WIDTH = 42 * 16
+const EVENT_TONE_CLASSES: Record<EventCalendarTone, string> = {
+  accent: "border-code-accent/20 bg-code-accent-soft text-code-ink",
+  positive: "border-code-positive/20 bg-code-positive/10 text-code-ink",
+  warning: "border-code-warning/25 bg-code-warning/15 text-code-ink",
+  neutral: "border-code-line/40 bg-code-quiet/70 text-code-ink",
+}
+
+function WeekTimeline({
+  dates,
+  events,
+  selectedDate,
+  locale,
+  formatEventTime,
+  formatEventRange,
+  onDateSelect,
+  onEventSelect,
+  onEventChange,
+}: WeekTimelineProps) {
+  const reducedMotion = useReducedMotion()
+  const instructionsId = React.useId()
+  const layoutGroupId = React.useId()
+  const gridRef = React.useRef<HTMLDivElement>(null)
+  const dayColumnRefs = React.useRef<Array<HTMLDivElement | null>>([])
+  const eventButtonRefs = React.useRef(new Map<string, HTMLButtonElement>())
+  const dragRef = React.useRef<EventDragState | null>(null)
+  const suppressClickRef = React.useRef(false)
+  const pendingKeyboardFocusRef = React.useRef<string | null>(null)
+  const [dropTarget, setDropTarget] = React.useState<WeekDropTarget | null>(
+    null
+  )
+  const [announcement, setAnnouncement] = React.useState("")
+  const [now, setNow] = React.useState(() => new Date())
+  const weekdays = React.useMemo(
+    () => new Intl.DateTimeFormat(locale, { weekday: "short" }),
+    [locale]
+  )
+  const hours = React.useMemo(
+    () => Array.from({ length: HOURS_PER_DAY }, (_, hour) => hour),
+    []
+  )
+  const hourFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(locale, { hour: "numeric" }),
+    [locale]
+  )
+  const dayFormatter = React.useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      }),
+    [locale]
+  )
+  const shortDateFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(locale, { day: "numeric" }),
+    [locale]
+  )
+  const days = React.useMemo(
+    () =>
+      dates.map((date) => {
+        const start = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        )
+        const end = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() + 1
+        )
+        const dayEvents = events.filter((event) => {
+          if (event.allDay) return dateKey(event.start) === dateKey(date)
+          const eventEnd =
+            event.end ?? new Date(event.start.getTime() + 60 * 60_000)
+          return event.start < end && eventEnd > start
+        })
+
+        return {
+          date,
+          events: dayEvents,
+          allDayEvents: dayEvents.filter((event) => event.allDay),
+          timedEvents: positionTimedEvents(dayEvents, date),
+        }
+      }),
+    [dates, events]
+  )
+  const nowDayIndex = dates.findIndex((date) => dateKey(date) === dateKey(now))
+  const currentMinute = now.getHours() * 60 + now.getMinutes()
+
+  React.useEffect(() => {
+    const interval = window.setInterval(() => setNow(new Date()), 60_000)
+    return () => window.clearInterval(interval)
+  }, [])
+
+  React.useEffect(() => {
+    const eventId = pendingKeyboardFocusRef.current
+    if (!eventId) return
+    eventButtonRefs.current.get(eventId)?.focus()
+    pendingKeyboardFocusRef.current = null
+  }, [events])
+
+  const attachTimelineRef = React.useCallback((node: HTMLDivElement | null) => {
+    if (node) node.scrollTop = DAY_VIEW_START_HOUR * HOUR_HEIGHT
+  }, [])
+
+  const targetAtPoint = (clientX: number, clientY: number) => {
+    const grid = gridRef.current
+    if (!grid) return null
+    const gridRect = grid.getBoundingClientRect()
+    const firstColumn = dayColumnRefs.current[0]?.getBoundingClientRect()
+    const lastColumn = dayColumnRefs.current.at(-1)?.getBoundingClientRect()
+    if (
+      !firstColumn ||
+      !lastColumn ||
+      clientY < gridRect.top ||
+      clientY > gridRect.bottom ||
+      clientX < firstColumn.left ||
+      clientX > lastColumn.right
+    ) {
+      return null
+    }
+    const column = dayColumnRefs.current.findIndex((element) => {
+      if (!element) return false
+      const rect = element.getBoundingClientRect()
+      return clientX >= rect.left && clientX < rect.right
+    })
+    const rowY = clientY - gridRect.top
+    const slotMinutes = 15
+    const rawMinute = (rowY / HOUR_HEIGHT) * 60
+    const minute = Math.min(
+      MINUTES_PER_DAY - slotMinutes,
+      Math.max(0, Math.round(rawMinute / slotMinutes) * slotMinutes)
+    )
+    const dayIndex = column < 0 ? 0 : column
+
+    return { dayIndex, minute }
+  }
+
+  const movedEventAt = (
+    event: EventCalendarEvent,
+    date: Date,
+    minute: number
+  ): EventCalendarEvent => {
+    const nextStart = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      Math.floor(minute / 60),
+      minute % 60
+    )
+    const duration = event.end
+      ? Math.max(30 * 60_000, event.end.getTime() - event.start.getTime())
+      : 60 * 60_000
+    return {
+      ...event,
+      start: nextStart,
+      ...(event.end ? { end: new Date(nextStart.getTime() + duration) } : {}),
+    }
+  }
+
+  const moveEvent = (event: EventCalendarEvent, date: Date, minute: number) => {
+    const nextEvent = movedEventAt(event, date, minute)
+    const nextStart = nextEvent.start
+    onEventChange?.(nextEvent, event)
+    onDateSelect?.(nextStart)
+    setAnnouncement(
+      `${event.title} moved to ${dayFormatter.format(nextStart)} at ${formatEventTime(nextEvent)}`
+    )
+  }
+
+  const beginDrag = (
+    event: EventCalendarEvent,
+    pointerEvent: React.PointerEvent<HTMLButtonElement>
+  ) => {
+    if (!onEventChange || pointerEvent.button !== 0) return
+    dragRef.current = {
+      event,
+      pointerId: pointerEvent.pointerId,
+      startX: pointerEvent.clientX,
+      startY: pointerEvent.clientY,
+      moved: false,
+    }
+    pointerEvent.currentTarget.setPointerCapture(pointerEvent.pointerId)
+  }
+
+  const updateDrag = (pointerEvent: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current
+    if (!drag || drag.pointerId !== pointerEvent.pointerId) return
+    if (
+      !drag.moved &&
+      Math.hypot(
+        pointerEvent.clientX - drag.startX,
+        pointerEvent.clientY - drag.startY
+      ) < 5
+    ) {
+      return
+    }
+
+    drag.moved = true
+    pointerEvent.preventDefault()
+    const target = targetAtPoint(pointerEvent.clientX, pointerEvent.clientY)
+    if (!target) return
+    drag.target = { ...target, event: drag.event }
+    setDropTarget(drag.target)
+  }
+
+  const finishDrag = (pointerEvent: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current
+    if (!drag || drag.pointerId !== pointerEvent.pointerId) return
+    if (drag.moved) {
+      const target = targetAtPoint(pointerEvent.clientX, pointerEvent.clientY)
+      drag.target = target ? { ...target, event: drag.event } : undefined
+    }
+    dragRef.current = null
+    setDropTarget(null)
+
+    if (!drag.moved) return
+    suppressClickRef.current = true
+    window.setTimeout(() => {
+      suppressClickRef.current = false
+    }, 0)
+    if (drag.target) {
+      moveEvent(drag.event, dates[drag.target.dayIndex]!, drag.target.minute)
+    }
+  }
+
+  const handleEventKeyDown = (
+    keyboardEvent: React.KeyboardEvent<HTMLButtonElement>,
+    item: PositionedEvent,
+    date: Date
+  ) => {
+    if (!onEventChange) return
+    const nextDate = new Date(date)
+    let nextMinute = item.startMinute
+    if (keyboardEvent.key === "ArrowUp") nextMinute -= 15
+    else if (keyboardEvent.key === "ArrowDown") nextMinute += 15
+    else if (keyboardEvent.key === "ArrowLeft") {
+      nextDate.setDate(nextDate.getDate() - 1)
+    } else if (keyboardEvent.key === "ArrowRight") {
+      nextDate.setDate(nextDate.getDate() + 1)
+    } else return
+
+    keyboardEvent.preventDefault()
+    if (nextMinute < 0) {
+      nextDate.setDate(nextDate.getDate() - 1)
+      nextMinute += MINUTES_PER_DAY
+    } else if (nextMinute >= MINUTES_PER_DAY) {
+      nextDate.setDate(nextDate.getDate() + 1)
+      nextMinute -= MINUTES_PER_DAY
+    }
+    if (
+      dateKey(nextDate) < dateKey(dates[0]!) ||
+      dateKey(nextDate) > dateKey(dates[dates.length - 1]!)
+    ) {
+      return
+    }
+    pendingKeyboardFocusRef.current = item.event.id
+    moveEvent(item.event, nextDate, nextMinute)
+  }
+
+  return (
+    <section aria-label="Week schedule">
+      {onEventChange ? (
+        <p id={instructionsId} className="sr-only">
+          Drag a timed event to move it. You can also focus an event and use the
+          arrow keys to move it by fifteen minutes or one day.
+        </p>
+      ) : null}
+
+      <LayoutGroup id={layoutGroupId}>
+        <div
+          role="region"
+          aria-label="Seven-day schedule, scroll horizontally to see each day"
+          tabIndex={0}
+          className="overflow-x-auto overscroll-x-contain rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-code-ring/60"
+        >
+          <div style={{ minWidth: WEEK_MIN_WIDTH }}>
+            <div className="grid grid-cols-[3.5rem_repeat(7,minmax(0,1fr))] items-end pb-2 text-center">
+              <span aria-hidden="true" />
+              {dates.map((date, index) => {
+                const today = sameDate(date, now)
+                const selected = sameDate(date, selectedDate)
+
+                return (
+                  <button
+                    key={dateKey(date)}
+                    type="button"
+                    aria-label={`Select ${dayFormatter.format(date)}${days[index]!.events.length ? `, ${days[index]!.events.length} events` : ""}`}
+                    aria-pressed={selected}
+                    onClick={() => onDateSelect?.(date)}
+                    className="flex min-w-0 flex-col items-center gap-1 rounded-lg py-1 text-xs outline-none focus-visible:ring-2 focus-visible:ring-code-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-code-surface"
+                  >
+                    <span className="text-code-muted">
+                      {weekdays.format(date)}
+                    </span>
+                    <span
+                      className={cn(
+                        "grid size-7 place-items-center rounded-full text-sm tabular-nums transition-[background-color,color,box-shadow] duration-150 ease-out motion-reduce:transition-none",
+                        today && !selected && "font-semibold text-code-accent",
+                        selected &&
+                          "bg-code-accent font-semibold text-code-accent-foreground shadow-sm"
+                      )}
+                    >
+                      {shortDateFormatter.format(date)}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="grid min-h-11 grid-cols-[3.5rem_repeat(7,minmax(0,1fr))] items-start rounded-lg bg-code-canvas/65 py-1">
+              <span className="px-2 pt-1 text-[0.68rem] leading-4 text-code-muted">
+                All day
+              </span>
+              {days.map((day) => (
+                <div
+                  key={dateKey(day.date)}
+                  className="min-w-0 space-y-0.5 border-l border-code-line/25 px-1"
+                >
+                  {day.allDayEvents.slice(0, 2).map((event) => (
+                    <button
+                      key={event.id}
+                      type="button"
+                      aria-label={`${event.title}, all day`}
+                      onClick={() => onEventSelect?.(event)}
+                      className="block min-h-6 w-full truncate rounded-md bg-code-accent-soft px-1.5 text-left text-[0.68rem] font-medium text-code-ink transition-colors outline-none hover:bg-code-accent-soft/75 focus-visible:ring-2 focus-visible:ring-code-ring/60 focus-visible:outline-none"
+                    >
+                      {event.title}
+                    </button>
+                  ))}
+                  {day.allDayEvents.length > 2 ? (
+                    <span className="block truncate px-1 text-[0.65rem] text-code-muted">
+                      +{day.allDayEvents.length - 2} more
+                    </span>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+
+            <div
+              ref={attachTimelineRef}
+              role="group"
+              aria-label="Hourly schedule"
+              className="mt-2 max-h-[30rem] overflow-auto overscroll-contain pr-1"
+            >
+              <div
+                ref={gridRef}
+                className="grid grid-cols-[3.5rem_repeat(7,minmax(0,1fr))]"
+                style={{ height: `${HOURS_PER_DAY * HOUR_HEIGHT}px` }}
+              >
+                <div className="relative" aria-hidden="true">
+                  {hours.map((hour) => (
+                    <span
+                      key={hour}
+                      className={cn(
+                        "absolute right-2 text-[0.68rem] leading-none text-code-muted tabular-nums",
+                        hour > 0 && "-translate-y-1/2"
+                      )}
+                      style={{ top: `${hour * HOUR_HEIGHT}px` }}
+                    >
+                      {hourFormatter.format(
+                        new Date(
+                          dates[0]!.getFullYear(),
+                          dates[0]!.getMonth(),
+                          dates[0]!.getDate(),
+                          hour
+                        )
+                      )}
+                    </span>
+                  ))}
+                </div>
+
+                {days.map((day, dayIndex) => {
+                  const isToday = dayIndex === nowDayIndex
+                  const target =
+                    dropTarget?.dayIndex === dayIndex ? dropTarget : null
+
+                  return (
+                    <div
+                      key={dateKey(day.date)}
+                      ref={(node) => {
+                        dayColumnRefs.current[dayIndex] = node
+                      }}
+                      className="relative border-l border-code-line/35"
+                    >
+                      {hours.map((hour) => (
+                        <div
+                          key={hour}
+                          aria-hidden="true"
+                          className="absolute inset-x-0 border-t border-code-line/25"
+                          style={{ top: `${hour * HOUR_HEIGHT}px` }}
+                        />
+                      ))}
+
+                      {target ? (
+                        <motion.div
+                          aria-hidden="true"
+                          className="pointer-events-none absolute z-10 overflow-hidden rounded-md border border-dashed border-code-accent/70 bg-code-accent-soft/60 px-2 py-1 text-xs text-code-ink"
+                          initial={false}
+                          animate={{
+                            top: `${(target.minute / 60) * HOUR_HEIGHT}px`,
+                            height: `${Math.max(24, ((target.event.end ? target.event.end.getTime() - target.event.start.getTime() : 60 * 60_000) / 60_000 / 60) * HOUR_HEIGHT)}px`,
+                            opacity: 1,
+                          }}
+                          transition={
+                            reducedMotion
+                              ? { duration: 0 }
+                              : { type: "spring", duration: 0.24, bounce: 0 }
+                          }
+                          style={{ left: 4, right: 4 }}
+                        >
+                          <span className="block truncate font-semibold">
+                            {target.event.title}
+                          </span>
+                          <span className="block truncate text-[0.68rem] text-code-muted">
+                            {formatEventRange(
+                              movedEventAt(
+                                target.event,
+                                day.date,
+                                target.minute
+                              )
+                            )}
+                          </span>
+                        </motion.div>
+                      ) : null}
+
+                      {isToday ? (
+                        <div
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-x-0 z-20 border-t border-code-accent"
+                          style={{
+                            top: `${(currentMinute / 60) * HOUR_HEIGHT}px`,
+                          }}
+                        >
+                          <span className="absolute -top-[0.28rem] -left-1 size-2 rounded-full bg-code-accent" />
+                        </div>
+                      ) : null}
+
+                      {day.timedEvents.map((item) => {
+                        const duration = item.endMinute - item.startMinute
+                        const blockHeight = Math.min(
+                          HOURS_PER_DAY * HOUR_HEIGHT -
+                            (item.startMinute / 60) * HOUR_HEIGHT,
+                          Math.max(24, (duration / 60) * HOUR_HEIGHT)
+                        )
+                        const columnWidth = 100 / item.columnCount
+                        const description = [
+                          item.event.title,
+                          formatEventRange(item.event),
+                          item.event.category,
+                          item.event.location,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")
+                        const dragging = dropTarget?.event.id === item.event.id
+
+                        return (
+                          <motion.button
+                            key={item.event.id}
+                            layout="position"
+                            layoutId={`event-${item.event.id}`}
+                            ref={(node) => {
+                              if (node) {
+                                eventButtonRefs.current.set(item.event.id, node)
+                              } else {
+                                eventButtonRefs.current.delete(item.event.id)
+                              }
+                            }}
+                            data-event-id={item.event.id}
+                            type="button"
+                            aria-label={description}
+                            aria-describedby={
+                              onEventChange ? instructionsId : undefined
+                            }
+                            aria-keyshortcuts={
+                              onEventChange
+                                ? "ArrowUp ArrowDown ArrowLeft ArrowRight"
+                                : undefined
+                            }
+                            title={description}
+                            onClick={() => {
+                              if (suppressClickRef.current) {
+                                suppressClickRef.current = false
+                                return
+                              }
+                              onEventSelect?.(item.event)
+                            }}
+                            onKeyDown={(event) =>
+                              handleEventKeyDown(event, item, day.date)
+                            }
+                            onPointerDown={(event) =>
+                              beginDrag(item.event, event)
+                            }
+                            onPointerMove={updateDrag}
+                            onPointerUp={finishDrag}
+                            onPointerCancel={() => {
+                              dragRef.current = null
+                              setDropTarget(null)
+                            }}
+                            transition={
+                              reducedMotion
+                                ? { duration: 0 }
+                                : { type: "spring", duration: 0.3, bounce: 0 }
+                            }
+                            className={cn(
+                              "absolute z-[1] overflow-hidden rounded-md border px-1.5 py-1 text-left shadow-[0_2px_6px_-4px_color-mix(in_srgb,var(--code-hero)_22%,transparent)] transition-[opacity,box-shadow,background-color] duration-150 ease-out outline-none hover:shadow-sm focus-visible:z-30 focus-visible:ring-2 focus-visible:ring-code-ring/60 focus-visible:outline-none motion-reduce:transition-none",
+                              EVENT_TONE_CLASSES[item.event.tone ?? "accent"],
+                              onEventChange &&
+                                "cursor-grab touch-none active:cursor-grabbing",
+                              dragging && "opacity-35"
+                            )}
+                            style={{
+                              top: `${(item.startMinute / 60) * HOUR_HEIGHT}px`,
+                              left: `calc(${columnWidth * item.column}% + 4px)`,
+                              width: `calc(${columnWidth}% - 8px)`,
+                              height: `${blockHeight}px`,
+                            }}
+                          >
+                            <span className="block truncate text-xs leading-4 font-semibold">
+                              {item.event.title}
+                            </span>
+                            {blockHeight >= 40 ? (
+                              <span className="block truncate text-[0.68rem] leading-4 text-code-muted">
+                                {formatEventTime(item.event)}
+                              </span>
+                            ) : null}
+                            {blockHeight >= 68 &&
+                            (item.event.category || item.event.location) ? (
+                              <span className="block truncate text-[0.68rem] leading-4 text-code-muted">
+                                {[item.event.category, item.event.location]
+                                  .filter(Boolean)
+                                  .join(" · ")}
+                              </span>
+                            ) : null}
+                          </motion.button>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </LayoutGroup>
+
+      <p aria-live="polite" role="status" className="sr-only">
+        {announcement}
+      </p>
+    </section>
+  )
 }
 
 function DayTimeline({
