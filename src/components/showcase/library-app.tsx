@@ -37,10 +37,14 @@ import "@/components/ui/shader-canvas.css"
 import { loadComponentSpecimens } from "./component-specimen-loader"
 import { LibraryDirectory } from "./library-directory"
 import {
+  firstLibraryCommandMatch,
+  getLibraryCommandGroups,
+  libraryCommandActions,
   libraryEntries,
   libraryEntryById,
   libraryGroups,
   matchesLibraryEntry,
+  matchesLibraryCommandAction,
   type LibraryEntry,
 } from "./library-data"
 import { ComponentPage } from "./component-page"
@@ -56,56 +60,22 @@ const ComponentSpecimen = lazy(() =>
   }))
 )
 
-const MotionCommandGroup = motion.create(CommandGroup)
-const MotionCommandItem = motion.create(CommandItem)
 const MotionCommandList = motion.create(CommandList)
-const commandSpring = {
-  type: "spring",
-  stiffness: 560,
-  damping: 42,
-  mass: 0.85,
-} as const
 
 function SearchCommandItem({
   children,
   className,
-  commandValue,
-  reduceMotion,
   value,
   ...props
-}: Omit<ComponentProps<typeof MotionCommandItem>, "children"> & {
-  children: ComponentProps<typeof CommandItem>["children"]
-  commandValue: string
-  reduceMotion: boolean
-}) {
-  const selected = value === commandValue
-
+}: ComponentProps<typeof CommandItem>) {
   return (
-    <MotionCommandItem
+    <CommandItem
       {...props}
       className={cn("relative isolate", className)}
-      layout={reduceMotion ? false : "position"}
-      transition={reduceMotion ? { duration: 0 } : commandSpring}
       value={value}
     >
-      {selected ? (
-        <motion.span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 rounded-[7px]"
-          layoutId={reduceMotion ? undefined : "library-command-selection"}
-          style={{
-            background:
-              "color-mix(in srgb, var(--code-accent-soft) 72%, var(--code-surface))",
-          }}
-          transition={
-            reduceMotion ? { layout: { duration: 0 } } : commandSpring
-          }
-        />
-      ) : null}
-      <span className="relative z-10 flex min-w-0 flex-1 items-center gap-2">
-        {children}
-      </span>
-    </MotionCommandItem>
+      {children}
+    </CommandItem>
   )
 }
 
@@ -125,41 +95,6 @@ function readRouteHash() {
   }
   const id = aliases[value] ?? value
   return id === "home" || id === "examples" || libraryEntryById[id] ? id : null
-}
-
-function firstCommandMatch(query: string) {
-  const term = query.trim().toLowerCase()
-  const actions = [
-    "component gallery browse all components home",
-    "example pages overview events profile workspace",
-  ]
-  const matchingAction = actions.find((value) => !term || value.includes(term))
-  if (matchingAction) return matchingAction
-
-  for (const group of libraryGroups) {
-    const entries = group.ids
-      .map((id) => libraryEntryById[id])
-      .filter((entry): entry is LibraryEntry => {
-        if (!entry) return false
-        return matchesLibraryEntry(entry, term)
-      })
-      .sort((first, second) => {
-        const rank = (entry: LibraryEntry) => {
-          const name = entry.name.toLowerCase()
-          if (name === term) return 0
-          if (name.startsWith(term)) return 1
-          if (name.includes(term)) return 2
-          if (entry.terms.toLowerCase().includes(term)) return 3
-          return 4
-        }
-        return rank(first) - rank(second)
-      })
-    const firstEntry = entries[0]
-    if (firstEntry) {
-      return `${firstEntry.name} ${firstEntry.group} ${firstEntry.description} ${firstEntry.terms}`
-    }
-  }
-  return ""
 }
 
 function NavHighlight({ reduceMotion }: { reduceMotion: boolean }) {
@@ -593,9 +528,8 @@ function ComponentShowcase() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
   const [commandQuery, setCommandQuery] = useState("")
-  const reduceMotion = useReducedMotion() ?? false
-  const [selectedCommandValue, setSelectedCommandValue] = useState(
-    "component gallery browse all components home"
+  const [selectedCommandValue, setSelectedCommandValue] = useState<string>(
+    libraryCommandActions[0].value
   )
   const searchRef = useRef<HTMLInputElement>(null)
   const mobileMenuRef = useRef<HTMLButtonElement>(null)
@@ -609,24 +543,12 @@ function ComponentShowcase() {
     if (!term) return libraryEntries
     return libraryEntries.filter((entry) => matchesLibraryEntry(entry, term))
   }, [query])
-  const commandTerm = commandQuery.trim().toLowerCase()
-  const matchesCommand = (value: string) =>
-    !commandTerm || value.toLowerCase().includes(commandTerm)
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       void loadComponentSpecimens().catch(() => undefined)
     })
     return () => window.cancelAnimationFrame(frame)
   }, [])
-
-  const commandMatchRank = (entry: LibraryEntry) => {
-    const name = entry.name.toLowerCase()
-    if (name === commandTerm) return 0
-    if (name.startsWith(commandTerm)) return 1
-    if (name.includes(commandTerm)) return 2
-    if (entry.terms.toLowerCase().includes(commandTerm)) return 3
-    return 4
-  }
 
   useEffect(() => {
     const handleHash = () => {
@@ -693,9 +615,10 @@ function ComponentShowcase() {
       if (mobileNavOpen) return
 
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        if (activeId === "command") return
         event.preventDefault()
         setCommandQuery("")
-        setSelectedCommandValue(firstCommandMatch(""))
+        setSelectedCommandValue(firstLibraryCommandMatch(""))
         setCommandOpen(true)
         return
       }
@@ -714,7 +637,7 @@ function ComponentShowcase() {
 
     window.addEventListener("keydown", handleShortcut)
     return () => window.removeEventListener("keydown", handleShortcut)
-  }, [mobileNavOpen])
+  }, [activeId, mobileNavOpen])
 
   useLayoutEffect(() => {
     if (!mobileNavOpen) return
@@ -827,29 +750,19 @@ function ComponentShowcase() {
     navigate("home")
   }
 
-  const commandGroups = libraryGroups
-    .map((group) => ({
-      ...group,
-      entries: group.ids
-        .map((id) => libraryEntryById[id])
-        .filter((entry): entry is LibraryEntry => Boolean(entry))
-        .filter((entry) => matchesLibraryEntry(entry, commandTerm))
-        .sort(
-          (first, second) => commandMatchRank(first) - commandMatchRank(second)
-        ),
-    }))
-    .filter((group) => group.entries.length > 0)
-
-  const showGalleryAction = matchesCommand(
-    "component gallery browse all components home"
+  const commandGroups = getLibraryCommandGroups(commandQuery)
+  const showGalleryAction = matchesLibraryCommandAction(
+    libraryCommandActions[0],
+    commandQuery
   )
-  const showExamplesAction = matchesCommand(
-    "example pages built with codeponents overview events profile workspace"
+  const showExamplesAction = matchesLibraryCommandAction(
+    libraryCommandActions[1],
+    commandQuery
   )
   const hasCommandActions = showGalleryAction || showExamplesAction
   const handleCommandQueryChange = (value: string) => {
     setCommandQuery(value)
-    setSelectedCommandValue(firstCommandMatch(value))
+    setSelectedCommandValue(firstLibraryCommandMatch(value))
   }
 
   return (
@@ -947,7 +860,7 @@ function ComponentShowcase() {
               className="library__topbar-search"
               onClick={() => {
                 setCommandQuery("")
-                setSelectedCommandValue(firstCommandMatch(""))
+                setSelectedCommandValue(firstLibraryCommandMatch(""))
                 setCommandOpen(true)
               }}
               size="sm"
@@ -1054,53 +967,34 @@ function ComponentShowcase() {
                 >
                   <CommandEmpty>No matches. Try another search.</CommandEmpty>
                   {hasCommandActions ? (
-                    <MotionCommandGroup
-                      heading="Actions"
-                      layout={reduceMotion ? false : "position"}
-                      transition={
-                        reduceMotion ? { duration: 0 } : commandSpring
-                      }
-                    >
+                    <CommandGroup heading="Actions">
                       {showGalleryAction ? (
                         <SearchCommandItem
-                          commandValue={selectedCommandValue}
-                          reduceMotion={reduceMotion}
                           onSelect={openGallery}
-                          value="component gallery browse all components home"
+                          value={libraryCommandActions[0].value}
                         >
                           <span>Component gallery</span>
                         </SearchCommandItem>
                       ) : null}
                       {showExamplesAction ? (
                         <SearchCommandItem
-                          commandValue={selectedCommandValue}
-                          reduceMotion={reduceMotion}
                           onSelect={() => navigate("examples")}
-                          value="example pages built with codeponents overview events profile workspace"
+                          value={libraryCommandActions[1].value}
                         >
                           <span>Examples</span>
                         </SearchCommandItem>
                       ) : null}
-                    </MotionCommandGroup>
+                    </CommandGroup>
                   ) : null}
                   {commandGroups.map((group) => (
-                    <MotionCommandGroup
-                      heading={group.name}
-                      key={group.name}
-                      layout={reduceMotion ? false : "position"}
-                      transition={
-                        reduceMotion ? { duration: 0 } : commandSpring
-                      }
-                    >
+                    <CommandGroup heading={group.name} key={group.name}>
                       {group.entries.map((entry) => {
                         const value = `${entry.name} ${entry.group} ${entry.description} ${entry.terms}`
 
                         return (
                           <SearchCommandItem
-                            commandValue={selectedCommandValue}
                             key={entry.id}
                             onSelect={() => navigate(entry.id)}
-                            reduceMotion={reduceMotion}
                             value={value}
                           >
                             <span>{entry.name}</span>
@@ -1108,7 +1002,7 @@ function ComponentShowcase() {
                           </SearchCommandItem>
                         )
                       })}
-                    </MotionCommandGroup>
+                    </CommandGroup>
                   ))}
                 </MotionCommandList>
               </LayoutGroup>

@@ -1,5 +1,6 @@
 import * as React from "react"
-import { Command as CommandPrimitive } from "cmdk"
+import { LayoutGroup, motion, useReducedMotion } from "motion/react"
+import { Command as CommandPrimitive, useCommandState } from "cmdk"
 import { Search } from "lucide-react"
 import {
   Dialog,
@@ -9,10 +10,22 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 
+const MotionCommandItem = motion.create(CommandPrimitive.Item)
+const MotionCommandGroup = motion.create(CommandPrimitive.Group)
+const commandSelectionSpring = {
+  type: "spring",
+  stiffness: 560,
+  damping: 42,
+  mass: 0.85,
+} as const
+
 function Command({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive>) {
+  const layoutGroupId = React.useId()
+
   return (
     <CommandPrimitive
       data-slot="command"
@@ -21,7 +34,11 @@ function Command({
         className
       )}
       {...props}
-    />
+    >
+      <LayoutGroup id={`command-selection-${layoutGroupId}`}>
+        {children}
+      </LayoutGroup>
+    </CommandPrimitive>
   )
 }
 
@@ -32,12 +49,14 @@ export type CommandDialogProps = Omit<
   children: React.ReactNode
   title?: string
   description?: string
+  commandProps?: Omit<React.ComponentProps<typeof CommandPrimitive>, "children">
 }
 
 function CommandDialog({
   children,
   title = "Command menu",
   description = "Search for an item or action",
+  commandProps,
   ...props
 }: CommandDialogProps) {
   return (
@@ -46,7 +65,7 @@ function CommandDialog({
         className="w-[min(38rem,calc(100vw-2rem))] gap-0 overflow-hidden p-0"
         showCloseButton={false}
       >
-        <Command>
+        <Command {...commandProps}>
           <DialogTitle className="sr-only">{title}</DialogTitle>
           <DialogDescription className="sr-only">
             {description}
@@ -116,14 +135,21 @@ function CommandGroup({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Group>) {
+  const reduceMotion = useReducedMotion()
+  const motionProps = props as React.ComponentProps<typeof MotionCommandGroup>
+
   return (
-    <CommandPrimitive.Group
+    <MotionCommandGroup
       data-slot="command-group"
       className={cn(
         "overflow-hidden p-1 text-code-ink [&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-code-muted",
         className
       )}
-      {...props}
+      layout={reduceMotion ? false : "position"}
+      transition={
+        reduceMotion ? { layout: { duration: 0 } } : commandSelectionSpring
+      }
+      {...motionProps}
     />
   )
 }
@@ -143,17 +169,55 @@ function CommandSeparator({
 
 function CommandItem({
   className,
+  value,
+  children,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Item>) {
+  const selectedValue = useCommandState((state) => state.value)
+  const reduceMotion = useReducedMotion()
+  const normalizedSelectedValue = (selectedValue ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase()
+  const isSelected =
+    Boolean(value) &&
+    value?.trim().replace(/\s+/g, " ").toLocaleLowerCase() ===
+      normalizedSelectedValue
+  const motionProps = props as React.ComponentProps<typeof MotionCommandItem>
+
   return (
-    <CommandPrimitive.Item
+    <MotionCommandItem
       data-slot="command-item"
       className={cn(
-        "relative flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2.5 text-sm transition-[background-color,color] duration-150 ease-out outline-none select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-45 data-[selected=true]:bg-code-accent-soft data-[selected=true]:text-code-accent motion-reduce:transition-none",
+        "relative isolate flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2.5 text-sm transition-[color,transform] duration-150 ease-out outline-none select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-45 data-[selected=true]:text-code-accent motion-reduce:transition-none",
+        !value && "data-[selected=true]:bg-code-accent-soft",
         className
       )}
-      {...props}
-    />
+      layout={reduceMotion ? false : "position"}
+      transition={
+        reduceMotion ? { layout: { duration: 0 } } : commandSelectionSpring
+      }
+      value={value}
+      {...motionProps}
+    >
+      {isSelected ? (
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 rounded-[7px]"
+          layoutId={reduceMotion ? undefined : "library-command-selection"}
+          style={{
+            background:
+              "color-mix(in srgb, var(--code-accent-soft) 72%, var(--code-surface))",
+          }}
+          transition={
+            reduceMotion ? { layout: { duration: 0 } } : commandSelectionSpring
+          }
+        />
+      ) : null}
+      <span className="relative z-10 flex min-w-0 flex-1 items-center gap-2">
+        {children}
+      </span>
+    </MotionCommandItem>
   )
 }
 

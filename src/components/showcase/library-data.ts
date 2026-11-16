@@ -646,3 +646,60 @@ export function matchesLibraryEntry(entry: LibraryEntry, query: string) {
 export const libraryEntryById = Object.fromEntries(
   libraryEntries.map((entry) => [entry.id, entry])
 ) as Record<string, LibraryEntry>
+
+export const libraryCommandActions = [
+  {
+    id: "gallery",
+    label: "Component gallery",
+    value: "component gallery browse all components home",
+  },
+  {
+    id: "examples",
+    label: "Examples",
+    value:
+      "example pages built with codeponents overview events profile workspace",
+  },
+] as const
+
+export function matchesLibraryCommandAction(
+  action: (typeof libraryCommandActions)[number],
+  query: string
+) {
+  const term = query.trim().toLowerCase()
+  return !term || action.value.includes(term)
+}
+
+export function getLibraryCommandGroups(query: string) {
+  const term = query.trim().toLowerCase()
+  const rank = (entry: LibraryEntry) => {
+    const name = entry.name.toLowerCase()
+    if (name === term) return 0
+    if (name.startsWith(term)) return 1
+    if (name.includes(term)) return 2
+    if (entry.terms.toLowerCase().includes(term)) return 3
+    return 4
+  }
+
+  return libraryGroups
+    .map((group) => ({
+      ...group,
+      entries: group.ids
+        .map((id) => libraryEntryById[id])
+        .filter((entry): entry is LibraryEntry => Boolean(entry))
+        .filter((entry) => matchesLibraryEntry(entry, term))
+        .sort((first, second) => rank(first) - rank(second)),
+    }))
+    .filter((group) => group.entries.length > 0)
+}
+
+export function firstLibraryCommandMatch(query: string) {
+  const action = libraryCommandActions.find((candidate) =>
+    matchesLibraryCommandAction(candidate, query)
+  )
+  if (action) return action.value
+
+  const firstEntry = getLibraryCommandGroups(query)[0]?.entries[0]
+  return firstEntry
+    ? `${firstEntry.name} ${firstEntry.group} ${firstEntry.description} ${firstEntry.terms}`
+    : ""
+}
