@@ -1,4 +1,5 @@
 import * as React from "react"
+import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { Search } from "lucide-react"
 import { TextMorph } from "torph/react"
 import { Button } from "@/components/ui/button"
@@ -57,6 +58,7 @@ function ListToolbar({
   const searchId = React.useId()
   const hasSelection = Boolean(selection && selection.count > 0)
   const hasTrailingControls = Boolean(sort || view || actions)
+  const prefersReducedMotion = useReducedMotion()
 
   return (
     <div
@@ -102,50 +104,61 @@ function ListToolbar({
         ) : null}
 
         {hasTrailingControls || hasSelection ? (
-          <div
-            aria-label={hasSelection ? "Selected items" : "List actions"}
-            className="flex min-w-0 flex-wrap items-center gap-2 sm:ml-auto sm:justify-end"
-            role="group"
-          >
-            {hasSelection ? (
-              <>
-                <span
-                  aria-live="polite"
-                  className="inline-flex min-h-10 items-center gap-1.5 text-sm text-code-muted"
-                >
-                  <span className="inline-grid min-w-[3ch] place-items-end tabular-nums">
-                    <TextMorph
-                      as="span"
-                      duration={180}
-                      numbers
-                      respectReducedMotion
-                    >
-                      {selection?.count ?? 0}
-                    </TextMorph>
-                  </span>{" "}
-                  {selection?.label ?? "selected"}
-                </span>
-                {selection?.onClear ? (
-                  <Button
-                    className="min-h-10"
-                    onClick={selection.onClear}
-                    size="sm"
-                    type="button"
-                    variant="ghost"
+          <AnimatePresence initial={false} mode="wait">
+            <motion.div
+              key={hasSelection ? "selection" : "list-actions"}
+              aria-label={hasSelection ? "Selected items" : "List actions"}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex min-w-0 flex-wrap items-center gap-2 sm:ml-auto sm:justify-end"
+              exit={prefersReducedMotion ? undefined : { opacity: 0, y: -3 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 3 }}
+              role="group"
+              transition={
+                prefersReducedMotion
+                  ? { duration: 0 }
+                  : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
+              }
+            >
+              {hasSelection ? (
+                <>
+                  <span
+                    aria-live="polite"
+                    className="inline-flex min-h-10 items-center gap-1.5 text-sm text-code-muted"
                   >
-                    Clear selection
-                  </Button>
-                ) : null}
-                {selection?.actions}
-              </>
-            ) : (
-              <>
-                {sort}
-                {view}
-                {actions}
-              </>
-            )}
-          </div>
+                    <span className="inline-grid min-w-[3ch] place-items-end tabular-nums">
+                      <TextMorph
+                        as="span"
+                        duration={180}
+                        numbers
+                        respectReducedMotion
+                      >
+                        {selection?.count ?? 0}
+                      </TextMorph>
+                    </span>{" "}
+                    {selection?.label ?? "selected"}
+                  </span>{" "}
+                  {selection?.onClear ? (
+                    <Button
+                      className="min-h-10"
+                      onClick={selection.onClear}
+                      size="sm"
+                      type="button"
+                      variant="ghost"
+                    >
+                      Clear selection
+                    </Button>
+                  ) : null}
+                  {selection?.actions}
+                </>
+              ) : (
+                <>
+                  {sort}
+                  {view}
+                  {actions}
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
         ) : null}
       </div>
 

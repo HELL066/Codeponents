@@ -52,7 +52,7 @@ function TabsContent({
     <TabsPrimitive.Content
       data-slot="tabs-content"
       className={cn(
-        "min-w-0 pt-4 outline-none focus-visible:ring-2 focus-visible:ring-code-accent/35",
+        "min-w-0 pt-4 outline-none focus-visible:ring-2 focus-visible:ring-code-accent/35 data-[state=active]:animate-in data-[state=active]:duration-150 data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-1 motion-reduce:animate-none",
         className
       )}
       {...props}

@@ -75,6 +75,8 @@ function FieldError({
   children,
   ...props
 }: React.ComponentProps<"p">) {
+  const message = React.Children.toArray(children)
+
   return (
     <p
       data-slot="field-error"
@@ -82,7 +84,11 @@ function FieldError({
       className={cn("min-h-5 text-sm leading-5 text-code-danger", className)}
       {...props}
     >
-      {children}
+      {message.length > 0 && (
+        <span className="animate-in duration-150 fade-in-0 slide-in-from-bottom-1 motion-reduce:animate-none">
+          {children}
+        </span>
+      )}
     </p>
   )
 }

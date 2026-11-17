@@ -32,7 +32,7 @@ function RadioGroupItem({
       )}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
+      <RadioGroupPrimitive.Indicator className="flex animate-in items-center justify-center duration-150 ease-out fade-in-0 zoom-in-90 motion-reduce:animate-none">
         <Circle
           aria-hidden="true"
           className="size-2 fill-current"

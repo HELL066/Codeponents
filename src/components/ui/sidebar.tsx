@@ -83,7 +83,7 @@ function SidebarMenuButton({
       data-active={isActive ? "true" : undefined}
       data-slot="sidebar-menu-button"
       className={cn(
-        "flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm text-white/80 transition-colors hover:bg-white/8 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white data-[active=true]:bg-white/10 data-[active=true]:font-medium data-[active=true]:text-white motion-reduce:transition-none",
+        "relative flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm text-white/80 transition-[color,background-color,transform] duration-150 before:absolute before:top-1/2 before:left-1.5 before:h-4 before:w-0.5 before:-translate-y-1/2 before:scale-y-50 before:rounded-full before:bg-white before:opacity-0 before:transition-[opacity,transform] before:duration-150 before:content-[''] hover:bg-white/8 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-[0.985] data-[active=true]:bg-white/10 data-[active=true]:font-medium data-[active=true]:text-white data-[active=true]:before:scale-y-100 data-[active=true]:before:opacity-70 motion-reduce:transition-none motion-reduce:before:transition-none motion-reduce:active:scale-100",
         className
       )}
       {...props}

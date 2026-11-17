@@ -1,7 +1,20 @@
 import { lazy, useEffect, useState } from "react"
-import { AnimatePresence, motion, useReducedMotion } from "motion/react"
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useReducedMotion,
+} from "motion/react"
 import { TextMorph } from "torph/react"
-import { Bold, Italic, Underline } from "lucide-react"
+import {
+  Bookmark,
+  Bold,
+  Clock3,
+  FolderOpen,
+  Italic,
+  Search,
+  Underline,
+} from "lucide-react"
 import { CopyButton } from "@/components/ui/copy-button"
 import {
   Field,
@@ -149,9 +162,15 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { libraryEntries, libraryGroups } from "./library-data"
+import {
+  firstLibraryCommandMatch,
+  getLibraryCommandGroups,
+  libraryCommandActions,
+  matchesLibraryCommandAction,
+} from "./library-data"
 
 const ChartSpecimen = lazy(() => import("./chart-specimen"))
+const MotionCommandList = motion.create(CommandList)
 
 function CarouselTextControls() {
   const { selectedIndex, scrollSnaps, scrollTo } = useCarousel()
@@ -503,6 +522,13 @@ export function AdvancedSpecimen({
   const [code, setCode] = useState("248")
   const [moreOpen, setMoreOpen] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
+  const [commandQuery, setCommandQuery] = useState("")
+  const [selectedCommandValue, setSelectedCommandValue] = useState<string>(
+    libraryCommandActions[0].value
+  )
+  const [activeSidebarPage, setActiveSidebarPage] = useState<
+    "Recent" | "Collections" | "Saved items"
+  >("Collections")
   const [alertOpen, setAlertOpen] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -513,6 +539,53 @@ export function AdvancedSpecimen({
   const [showUpcoming, setShowUpcoming] = useState(true)
   const [showPast, setShowPast] = useState(true)
   const prefersReducedMotion = useReducedMotion()
+  const commandGroups = getLibraryCommandGroups(commandQuery)
+  const showGalleryAction = matchesLibraryCommandAction(
+    libraryCommandActions[0],
+    commandQuery
+  )
+  const showExamplesAction = matchesLibraryCommandAction(
+    libraryCommandActions[1],
+    commandQuery
+  )
+  const hasCommandActions = showGalleryAction || showExamplesAction
+
+  const handleCommandQueryChange = (value: string) => {
+    setCommandQuery(value)
+    setSelectedCommandValue(firstLibraryCommandMatch(value))
+  }
+
+  useEffect(() => {
+    if (entryId !== "command") return
+
+    const handleShortcut = (event: KeyboardEvent) => {
+      if (
+        event.defaultPrevented ||
+        event.isComposing ||
+        !(event.metaKey || event.ctrlKey) ||
+        event.key.toLowerCase() !== "k"
+      ) {
+        return
+      }
+
+      const target = event.target
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          target.closest("input, textarea, select, [role='textbox']"))
+      ) {
+        return
+      }
+
+      event.preventDefault()
+      setCommandQuery("")
+      setSelectedCommandValue(firstLibraryCommandMatch(""))
+      setCommandOpen(true)
+    }
+
+    window.addEventListener("keydown", handleShortcut)
+    return () => window.removeEventListener("keydown", handleShortcut)
+  }, [entryId])
 
   const runCommand = (destination: string) => {
     setCommandOpen(false)
@@ -759,42 +832,111 @@ export function AdvancedSpecimen({
           </span>
         </div>
       )
-    case "sidebar":
+    case "sidebar": {
+      const sidebarItems = [
+        { label: "Recent", href: "#recent", icon: Clock3 },
+        { label: "Collections", href: "#collections", icon: FolderOpen },
+        { label: "Saved items", href: "#saved", icon: Bookmark },
+      ] as const
+      const activeDescription = {
+        Recent: "Your latest notes and shared resources.",
+        Collections: "Keep related guides together for quick access.",
+        "Saved items": "Resources you have saved for later.",
+      }[activeSidebarPage]
+
       return (
-        <div className="flex min-h-72 w-full max-w-3xl overflow-hidden rounded-xl border border-code-line bg-code-surface">
-          <Sidebar aria-label="Main navigation" className="min-h-72">
-            <SidebarHeader className="text-base font-semibold tracking-tight">
-              Library
+        <div className="flex min-h-80 w-full max-w-3xl overflow-hidden rounded-xl border border-code-line bg-code-surface">
+          <Sidebar
+            aria-label="Library navigation"
+            className="w-[min(14rem,44%)] min-w-36 sm:w-56"
+          >
+            <SidebarHeader className="gap-2 border-b border-white/10 px-4 text-sm font-semibold tracking-tight sm:px-5">
+              <FolderOpen aria-hidden="true" className="size-4 text-white/75" />
+              <span>Library</span>
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent className="px-2 pt-4 sm:px-3">
               <SidebarGroup>
-                <SidebarGroupLabel>Browse</SidebarGroupLabel>
+                <SidebarGroupLabel className="px-3 tracking-[0.08em] uppercase">
+                  Browse
+                </SidebarGroupLabel>
                 <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton href="#home">Recent</SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton href="#collections" isActive>
-                      Collections
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton href="#saved">
-                      Saved items
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  {sidebarItems.map(({ label, href, icon: Icon }) => (
+                    <SidebarMenuItem key={label}>
+                      <SidebarMenuButton
+                        href={href}
+                        isActive={activeSidebarPage === label}
+                        onClick={(event) => {
+                          event.preventDefault()
+                          setActiveSidebarPage(label)
+                        }}
+                      >
+                        <Icon aria-hidden="true" className="size-4 shrink-0" />
+                        <span className="truncate">{label}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
                 </SidebarMenu>
               </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter>
-              <span className="text-sm text-white/85">Preferences</span>
+            <SidebarFooter className="px-4 py-3 sm:px-5">
+              <span className="text-xs text-white/65">3 sections</span>
             </SidebarFooter>
           </Sidebar>
-          <div className="grid min-w-0 flex-1 place-items-center p-8 text-sm text-code-muted">
-            Recent items
-          </div>
+          <section
+            aria-labelledby="sidebar-preview-title"
+            className="min-w-0 flex-1 p-4 sm:p-6"
+          >
+            <AnimatePresence initial={false} mode="wait">
+              <motion.section
+                animate={{ opacity: 1, y: 0 }}
+                className="grid gap-3"
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
+                key={activeSidebarPage}
+                transition={
+                  prefersReducedMotion
+                    ? { duration: 0 }
+                    : { duration: 0.16, ease: [0.22, 1, 0.36, 1] }
+                }
+              >
+                <div>
+                  <h3
+                    className="mt-0 mb-1 truncate text-lg font-semibold tracking-tight text-code-ink"
+                    id="sidebar-preview-title"
+                  >
+                    {activeSidebarPage}
+                  </h3>
+                  <p className="m-0 text-sm leading-5 text-code-muted">
+                    {activeDescription}
+                  </p>
+                </div>
+                <div className="grid gap-2 border-t border-code-line/70 pt-3">
+                  {[
+                    activeSidebarPage === "Collections"
+                      ? "Design system"
+                      : activeSidebarPage === "Recent"
+                        ? "Planning notes"
+                        : "Accessibility checklist",
+                    activeSidebarPage === "Collections"
+                      ? "Product research"
+                      : activeSidebarPage === "Recent"
+                        ? "Event brief"
+                        : "Release guide",
+                  ].map((item) => (
+                    <div
+                      className="flex min-h-10 items-center gap-2 rounded-md px-2 text-sm text-code-ink"
+                      key={item}
+                    >
+                      <span className="size-1.5 shrink-0 rounded-full bg-code-accent/70" />
+                      <span className="truncate">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.section>
+            </AnimatePresence>
+          </section>
         </div>
       )
+    }
     case "collapsible":
       return (
         <Collapsible
@@ -967,48 +1109,112 @@ export function AdvancedSpecimen({
       )
     case "command":
       return (
-        <div className="flex items-center gap-3">
+        <div className="grid w-full max-w-md gap-2">
           <Button
+            className="min-h-12 w-full justify-start gap-3 px-3"
             aria-expanded={commandOpen}
             aria-haspopup="dialog"
-            onClick={() => setCommandOpen(true)}
+            onClick={() => {
+              setCommandQuery("")
+              setSelectedCommandValue(firstLibraryCommandMatch(""))
+              setCommandOpen(true)
+            }}
             variant="outline"
           >
-            Open command menu
+            <Search aria-hidden="true" className="size-4 text-code-muted" />
+            <span className="flex-1 text-left">
+              Search components and actions
+            </span>
+            <span aria-hidden="true" className="flex items-center gap-1">
+              <Kbd>⌘</Kbd>
+              <Kbd>K</Kbd>
+            </span>
           </Button>
+          <p className="m-0 flex flex-wrap items-center gap-1 text-xs text-code-muted">
+            Press <Kbd>⌘</Kbd> <Kbd>K</Kbd> or <Kbd>Ctrl</Kbd> <Kbd>K</Kbd> to
+            open the command menu.
+          </p>
           <CommandDialog
+            commandProps={{
+              className: "rounded-xl",
+              onValueChange: setSelectedCommandValue,
+              shouldFilter: false,
+              value: selectedCommandValue,
+            }}
             description="Find a destination or action."
             open={commandOpen}
-            onOpenChange={setCommandOpen}
+            onOpenChange={(open) => {
+              setCommandOpen(open)
+              if (!open) setCommandQuery("")
+            }}
             title="Quick actions"
           >
-            <CommandInput placeholder="Search components or actions" />
-            <CommandList>
-              <CommandEmpty>No matching components</CommandEmpty>
-              {libraryGroups.map((group) => {
-                const entries = group.ids
-                  .map((id) => libraryEntries.find((entry) => entry.id === id))
-                  .filter(
-                    (entry): entry is (typeof libraryEntries)[number] =>
-                      entry !== undefined
-                  )
+            <div className="library__command">
+              <CommandInput
+                aria-label="Search components and actions"
+                onValueChange={handleCommandQueryChange}
+                placeholder="Search components and actions"
+                value={commandQuery}
+              />
+              <LayoutGroup id="library-command-results">
+                <MotionCommandList
+                  aria-label="Components and actions"
+                  layoutScroll
+                >
+                  <CommandEmpty>No matches. Try another search.</CommandEmpty>
+                  {hasCommandActions ? (
+                    <CommandGroup heading="Actions">
+                      {showGalleryAction ? (
+                        <CommandItem
+                          onSelect={() => runCommand("home")}
+                          value={libraryCommandActions[0].value}
+                        >
+                          <span>Component gallery</span>
+                        </CommandItem>
+                      ) : null}
+                      {showExamplesAction ? (
+                        <CommandItem
+                          onSelect={() => runCommand("examples")}
+                          value={libraryCommandActions[1].value}
+                        >
+                          <span>Examples</span>
+                        </CommandItem>
+                      ) : null}
+                    </CommandGroup>
+                  ) : null}
+                  {commandGroups.map((group) => (
+                    <CommandGroup heading={group.name} key={group.name}>
+                      {group.entries.map((entry) => {
+                        const value = `${entry.name} ${entry.group} ${entry.description} ${entry.terms}`
 
-                return entries.length ? (
-                  <CommandGroup heading={group.name} key={group.name}>
-                    {entries.map((entry) => (
-                      <CommandItem
-                        key={entry.id}
-                        onSelect={() => runCommand(entry.id)}
-                        value={`${entry.name} ${entry.group} ${entry.description} ${entry.terms}`}
-                      >
-                        <span>{entry.name}</span>
-                        <CommandShortcut>{entry.group}</CommandShortcut>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                ) : null
-              })}
-            </CommandList>
+                        return (
+                          <CommandItem
+                            key={entry.id}
+                            onSelect={() => runCommand(entry.id)}
+                            value={value}
+                          >
+                            <span>{entry.name}</span>
+                            <CommandShortcut>{entry.group}</CommandShortcut>
+                          </CommandItem>
+                        )
+                      })}
+                    </CommandGroup>
+                  ))}
+                </MotionCommandList>
+              </LayoutGroup>
+              <div aria-hidden="true" className="library__command-footer">
+                <span>
+                  <Kbd>↑</Kbd>
+                  <Kbd>↓</Kbd> Navigate
+                </span>
+                <span>
+                  <Kbd>↵</Kbd> Open
+                </span>
+                <span>
+                  <Kbd>Esc</Kbd> Close
+                </span>
+              </div>
+            </div>
           </CommandDialog>
         </div>
       )
